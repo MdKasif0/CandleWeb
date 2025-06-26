@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { LayoutGrid, Layers, MoreHorizontal, Sparkles, LayoutTemplate } from 'lucide-react';
+import { LayoutGrid, Layers, MoreHorizontal, Sparkles } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 
 const VIcon = () => (
@@ -63,27 +63,13 @@ export default function DashboardPage() {
                     <p className="text-muted-foreground">Here are your sites</p>
                 </section>
 
-                {/* Action Cards */}
-                <section className="grid grid-cols-2 gap-4 mb-8">
-                    <Link href="/create" passHref>
-                        <Card className="bg-card p-4 border border-primary/30 shadow-[0_0_15px_hsl(var(--primary)/0.1)] hover:border-primary/60 transition-all cursor-pointer group h-full">
-                            <CardContent className="flex flex-col items-start justify-between gap-4 p-0 h-full">
+                {/* Action Card */}
+                <section className="mb-8">
+                    <Link href="/templates" passHref>
+                        <Card className="bg-card p-4 border border-primary/30 shadow-[0_0_15px_hsl(var(--primary)/0.1)] hover:border-primary/60 transition-all cursor-pointer group">
+                            <CardContent className="flex items-center gap-4 p-0">
                                 <Sparkles className="h-8 w-8 text-primary" />
-                                <div>
-                                    <h2 className="font-semibold text-card-foreground">AI</h2>
-                                    <p className="text-sm text-muted-foreground">Create with AI</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                    <Link href="/create" passHref>
-                        <Card className="bg-card p-4 border border-border/50 hover:border-primary/50 transition-colors cursor-pointer group h-full">
-                            <CardContent className="flex flex-col items-start justify-between gap-4 p-0 h-full">
-                                <LayoutTemplate className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
-                                <div>
-                                    <h2 className="font-semibold text-card-foreground">New Site</h2>
-                                    <p className="text-sm text-muted-foreground">Create with Blank</p>
-                                </div>
+                                <h2 className="font-semibold text-card-foreground">Choose a Template and Create with AI</h2>
                             </CardContent>
                         </Card>
                     </Link>
