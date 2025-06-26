@@ -46,9 +46,11 @@ export default function DashboardPage() {
                         <Button variant="ghost" size="icon" className="text-muted-foreground w-8 h-8">
                             <Moon className="h-5 w-5" />
                         </Button>
-                        <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-full px-4 py-1.5 text-sm h-auto shadow-lg shadow-primary/20">
-                            Upgrade
-                        </Button>
+                        <Link href="/upgrade" passHref>
+                          <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-full px-4 py-1.5 text-sm h-auto shadow-lg shadow-primary/20">
+                              Upgrade
+                          </Button>
+                        </Link>
                         <Avatar className="h-9 w-9">
                             <AvatarImage src="https://placehold.co/40x40.png" alt="@user" />
                             <AvatarFallback>U</AvatarFallback>
