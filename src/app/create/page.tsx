@@ -26,7 +26,6 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, Sparkles, Loader2, Copy, ArrowRight } from 'lucide-react';
 import { generateMessage, GenerateMessageInput } from '@/ai/flows/generateMessage';
@@ -35,7 +34,6 @@ const formSchema = z.object({
   toName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   fromName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
-  imageUrl: z.string().optional(),
   template: z.enum(['night-sky', 'premium-night-sky']),
 });
 
@@ -56,60 +54,9 @@ export default function CreateWishPage() {
       toName: '',
       fromName: '',
       message: '',
-      imageUrl: '',
       template: templateId as 'night-sky' | 'premium-night-sky',
     },
   });
-
-  const selectedTemplate = form.watch('template');
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      form.setValue('imageUrl', '');
-      return;
-    }
-
-    if (!file.type.startsWith('image/')) {
-      toast({
-        variant: 'destructive',
-        title: 'Invalid File Type',
-        description: 'Please upload an image file (e.g., PNG, JPG, GIF).',
-      });
-      e.target.value = ''; // Reset file input
-      form.setValue('imageUrl', '');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new window.Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 600;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > MAX_WIDTH) {
-          height = (height * MAX_WIDTH) / width;
-          width = MAX_WIDTH;
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        ctx.drawImage(img, 0, 0, width, height);
-
-        const dataUrl = canvas.toDataURL(file.type);
-        form.setValue('imageUrl', dataUrl, { shouldValidate: true });
-      };
-      if (event.target?.result) {
-        img.src = event.target.result as string;
-      }
-    };
-    reader.readAsDataURL(file);
-  };
   
   const handleGenerateMessage = async () => {
     const toName = form.getValues('toName');
@@ -156,7 +103,6 @@ export default function CreateWishPage() {
             toName: values.toName,
             fromName: values.fromName,
             message: values.message,
-            imageUrl: values.imageUrl || '',
             template: values.template,
             status: 'Published'
         };
@@ -184,21 +130,8 @@ export default function CreateWishPage() {
         if (values.template === 'premium-night-sky') {
             relativeUrl = `/premium-night-sky/index.html?${params.toString()}`;
         } else {
-            if(values.imageUrl) {
-                params.append('imageUrl', values.imageUrl);
-            }
             params.append('template', values.template);
             relativeUrl = `/wish/${newWish.id}?${params.toString()}`;
-        }
-
-
-        if ((window.location.origin + relativeUrl).length > 8192) { // Check for reasonable URL length
-          toast({
-            variant: 'destructive',
-            title: 'Image Too Large',
-            description: 'The uploaded image is too large to share via a link. Please choose a smaller image.',
-          });
-          return;
         }
         
         setGeneratedLink(relativeUrl);
@@ -310,39 +243,6 @@ export default function CreateWishPage() {
                 </FormItem>
               )}
             />
-            {selectedTemplate !== 'premium-night-sky' && (
-              <FormField
-                control={form.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Upload Image (Optional)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept="image/png, image/jpeg, image/gif"
-                        onChange={handleFileChange}
-                        className={`rounded-full file:mr-4 file:rounded-full file:border-0 file:bg-accent file:px-4 file:py-2 file:text-accent-foreground hover:file:bg-accent/90 ${darkInputStyles}`}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    {field.value && (
-                      <div className="mt-4 flex flex-col items-center rounded-md p-4">
-                         <p className="mb-2 text-sm font-medium">Image Preview</p>
-                         <Image
-                          data-ai-hint="birthday person"
-                          src={field.value}
-                          alt="Image preview"
-                          width={150}
-                          height={150}
-                          className="rounded-md object-contain"
-                        />
-                      </div>
-                    )}
-                  </FormItem>
-                )}
-              />
-            )}
             
             <div className="pt-4">
               <Button type="submit" disabled={isSubmitting || isGenerating} className="w-full rounded-full bg-accent py-6 text-lg font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-opacity hover:opacity-90">

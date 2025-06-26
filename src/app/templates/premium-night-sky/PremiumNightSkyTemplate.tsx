@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import './night-sky.css';
+import './premium-night-sky.css';
 
-interface NightSkyTemplateProps {
+interface PremiumNightSkyTemplateProps {
   toName: string;
   fromName: string;
   message: string;
 }
 
-const NightSkyTemplate: React.FC<NightSkyTemplateProps> = ({ toName, fromName, message }) => {
+const PremiumNightSkyTemplate: React.FC<PremiumNightSkyTemplateProps> = ({ toName, fromName, message }) => {
   const [stage, setStage] = useState(0); // 0: start, 1: card, 2: candles blown, 3: fireworks
   
   const nameChars = useMemo(() => toName.split(''), [toName]);
@@ -90,4 +90,4 @@ const NightSkyTemplate: React.FC<NightSkyTemplateProps> = ({ toName, fromName, m
   );
 };
 
-export default NightSkyTemplate;
+export default PremiumNightSkyTemplate;

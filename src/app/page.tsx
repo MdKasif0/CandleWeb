@@ -48,7 +48,6 @@ interface Wish {
     toName: string;
     fromName: string;
     message: string;
-    imageUrl: string;
     template: string;
     status: string;
 }
@@ -81,9 +80,6 @@ export default function DashboardPage() {
         if (wish.template === 'premium-night-sky') {
             relativeUrl = `/premium-night-sky/index.html?${params.toString()}`;
         } else {
-            if (wish.imageUrl) {
-                params.append('imageUrl', wish.imageUrl);
-            }
             params.append('template', wish.template);
             relativeUrl = `/wish/${wish.id}?${params.toString()}`;
         }
