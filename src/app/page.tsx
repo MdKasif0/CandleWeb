@@ -120,7 +120,7 @@ export default function DashboardPage() {
                         <LayoutGrid className="h-6 w-6" />
                         <span className="text-xs font-medium">Dashboard</span>
                     </Link>
-                    <Link href="/create" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
+                    <Link href="/templates" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
                         <Layers className="h-6 w-6" />
                         <span className="text-xs font-medium">Templates</span>
                     </Link>

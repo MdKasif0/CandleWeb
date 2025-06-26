@@ -16,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -42,6 +42,8 @@ const formSchema = z.object({
 export default function CreateWishPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const template = searchParams.get('template') || 'modern';
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,7 +52,7 @@ export default function CreateWishPage() {
       fromName: '',
       message: '',
       imageUrl: '',
-      template: 'modern',
+      template: template as 'modern' | 'classic' | 'funky',
     },
   });
 
@@ -137,7 +139,7 @@ export default function CreateWishPage() {
     <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground">
       <div className="w-full max-w-md">
         <div className="relative mb-8 flex items-center justify-center py-4">
-          <Link href="/" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="/templates" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-foreground">
             <ChevronLeft className="h-5 w-5" />
             <span className="ml-1">Back</span>
           </Link>
