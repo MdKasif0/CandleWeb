@@ -27,8 +27,8 @@ const mockTemplates = [
         id: 'funky',
         name: 'Night Sky',
         description: 'A dreamy, animated night scene with a moon, cake, and a special gift.',
-        imageUrl: 'https://placehold.co/600x400.png',
-        dataAiHint: 'night sky moon'
+        imageUrl: '/night-sky-cover.png',
+        dataAiHint: 'night sky cake'
     },
 ];
 
