@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@300..700&display=swap');
 
-
+/* --- Base & Background --- */
 .birthday-body {
     background: linear-gradient(180deg, #0c0c2c, #1d1d4e);
     height: 100vh;
@@ -21,14 +21,14 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('https://placehold.co/1080x1920.png'); /* placeholder for stars background */
-    background-size: cover;
+    background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
     animation: twinkle 5s infinite alternate;
+    opacity: 0.5;
 }
 
 @keyframes twinkle {
-    from { opacity: 0.8; }
-    to { opacity: 1; }
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
 }
 
 .moon {
@@ -39,136 +39,10 @@
     height: 100px;
     background-color: #f0e68c;
     border-radius: 50%;
-    box-shadow: 0 0 20px #f0e68c, 0 0 40px #f0e68c;
+    box-shadow: 0 0 20px #f0e68c, 0 0 40px #f0e68c, inset -10px 10px 10px rgba(0,0,0,0.1);
 }
 
-.balloon {
-    position: absolute;
-    bottom: -150px;
-    width: 60px;
-    height: 75px;
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    background-color: rgba(220, 53, 69, 0.8); /* Red */
-    animation: float 10s ease-in-out infinite;
-    z-index: 1;
-}
-
-.balloon::after {
-    content: "";
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 50px;
-    background-color: #fff;
-}
-
-.balloon:nth-of-type(2) {
-    left: 20%;
-    animation-duration: 12s;
-    animation-delay: 1s;
-    background-color: rgba(25, 135, 84, 0.8); /* Green */
-}
-.balloon:nth-of-type(3) {
-    left: 60%;
-    animation-duration: 8s;
-    animation-delay: 2s;
-    background-color: rgba(13, 110, 253, 0.8); /* Blue */
-}
-.balloon:nth-of-type(4) {
-    left: 80%;
-    animation-duration: 15s;
-    animation-delay: 0.5s;
-    background-color: rgba(255, 193, 7, 0.8); /* Yellow */
-}
-
-
-@keyframes float {
-    0% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-110vh) rotate(15deg); }
-    100% { transform: translateY(0) rotate(0deg); }
-}
-
-.birthday-card {
-    position: relative;
-    text-align: center;
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 40px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    width: 90%;
-    max-width: 500px;
-    z-index: 10;
-    opacity: 0;
-    transform: scale(0.9);
-    animation: fadeInCard 1.5s ease-out forwards;
-}
-
-@keyframes fadeInCard {
-    to { 
-      opacity: 1;
-      transform: scale(1);
-    }
-}
-
-.birthday-card h1 {
-    font-family: 'Pacifico', cursive;
-    font-size: 3rem;
-    margin-bottom: 10px;
-    color: #ffc107;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-}
-
-.birthday-card h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-}
-
-.birthday-card .message-text {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-.birthday-card .from-name {
-    margin-top: 20px;
-    font-size: 1.2rem;
-    font-style: italic;
-    font-weight: bold;
-    text-align: right;
-}
-
-.birthday-assets {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 30px;
-    align-items: flex-end;
-    z-index: 5;
-    opacity: 0;
-    animation: fadeInCard 1.5s 0.5s ease-out forwards;
-}
-
-.cake, .gift {
-    width: 100px;
-    height: 100px;
-}
-
-.cake img, .gift img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
-}
-
+/* --- Start Button --- */
 .start-container {
     z-index: 20;
     position: relative;
@@ -185,6 +59,7 @@
     cursor: pointer;
     box-shadow: 0 0 20px #00c6ff, inset 0 0 10px #00c6ff;
     transition: all 0.3s ease;
+    text-shadow: 0 0 5px #00c6ff;
 }
 
 .start-button:hover {
@@ -193,27 +68,279 @@
     box-shadow: 0 0 30px #00c6ff, inset 0 0 15px #00c6ff;
 }
 
+/* --- Balloons --- */
+.balloon {
+    position: absolute;
+    bottom: -150px;
+    width: 60px;
+    height: 75px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: float 15s ease-in-out infinite;
+    z-index: 1;
+}
+
+.balloon::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.balloon:nth-of-type(1) { left: 10%; background-color: rgba(220, 53, 69, 0.8); animation-duration: 12s; } /* Red */
+.balloon:nth-of-type(2) { left: 30%; background-color: rgba(25, 135, 84, 0.8); animation-duration: 15s; animation-delay: 1s; } /* Green */
+.balloon:nth-of-type(3) { left: 70%; background-color: rgba(13, 110, 253, 0.8); animation-duration: 10s; animation-delay: 2s; } /* Blue */
+.balloon:nth-of-type(4) { left: 90%; background-color: rgba(255, 193, 7, 0.8); animation-duration: 18s; animation-delay: 0.5s; } /* Yellow */
+
+@keyframes float {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-110vh) rotate(15deg); }
+    100% { transform: translateY(0) rotate(-15deg); }
+}
+
+/* --- Birthday Card --- */
+.birthday-card {
+    position: relative;
+    text-align: center;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 90%;
+    max-width: 500px;
+    z-index: 10;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.fade-in { opacity: 1; transform: scale(1); }
+.fade-out { opacity: 0; transform: scale(0.9); pointer-events: none;}
+
+
+.birthday-card h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 2.5rem;
+    color: #ffc107;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.birthday-card h2 {
+    font-size: 2rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+}
+
+.birthday-card .message-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 15px 0;
+}
+
+.birthday-card .from-name {
+    font-size: 1.1rem;
+    font-style: italic;
+    font-weight: bold;
+    text-align: right;
+    margin-top: 15px;
+}
+
+/* --- Cake & Candle --- */
+.cake-container {
+    margin-top: 25px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cake {
+    position: relative;
+    width: 150px;
+    height: 100px;
+}
+
+.plate {
+    width: 170px;
+    height: 10px;
+    background-color: #ccc;
+    position: absolute;
+    bottom: -5px;
+    left: -10px;
+    border-radius: 50%;
+}
+
+.layer {
+    position: absolute;
+    width: 150px;
+    height: 30px;
+    background-color: #a569bd; /* purple */
+    border: 2px solid #5b316b;
+}
+
+.layer-bottom { bottom: 0; }
+.layer-middle { bottom: 28px; background-color: #5dade2; border-color: #245c7f; } /* blue */
+.layer-top { bottom: 56px; background-color: #f7dc6f; border-color: #b7950b; } /* yellow */
+
+.icing {
+    position: absolute;
+    top: -15px;
+    left: 0;
+    width: 150px;
+    height: 20px;
+    background-color: #f5b7b1; /* pink */
+    border-radius: 50% / 10px;
+}
+
+.drip {
+    position: absolute;
+    width: 10px;
+    height: 20px;
+    background-color: #f5b7b1;
+    border-radius: 0 0 50% 50%;
+    top: 5px;
+}
+.drip1 { left: 30px; height: 25px; }
+.drip2 { left: 70px; height: 18px; }
+.drip3 { left: 110px; height: 22px; }
+
+.candle {
+    position: absolute;
+    width: 8px;
+    height: 30px;
+    background-color: #fff;
+    top: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px 2px 0 0;
+}
+
+.flame {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 15px;
+    background-color: orange;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    opacity: 0;
+    transition: all 0.3s;
+}
+.flame.lit {
+    opacity: 1;
+    animation: flicker 1.5s ease-in-out infinite;
+}
+
+@keyframes flicker {
+    0%, 100% { transform: scaleY(1) translateX(-50%); }
+    50% { transform: scaleY(0.95) translateX(-50%) rotate(2deg); }
+}
+
+.wish-button {
+    margin-top: 20px;
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+
+.wish-button:hover {
+    transform: scale(1.05);
+}
+
+/* --- Fireworks --- */
+.fireworks-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 15;
+    opacity: 0;
+    animation: fadeInFireworks 1s 0.5s forwards;
+}
+
+@keyframes fadeInFireworks {
+    to { opacity: 1; }
+}
+
+.wish-text {
+    font-size: 2rem;
+    font-family: 'Pacifico', cursive;
+    color: #ffc107;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    margin-bottom: 30px;
+    animation: popIn 1s ease-out 0.5s backwards;
+}
+
+.fireworks-name {
+    display: flex;
+}
+
+.firework {
+    font-size: 5rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ffc107, 0 0 30px #ffc107;
+    opacity: 0;
+    transform: translateY(50px);
+    animation: popIn 0.8s ease-out forwards;
+    animation-delay: calc(var(--i) * 0.1s + 1s);
+    position: relative;
+    padding: 0 5px;
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.5);
+    }
+    70% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.firework::before {
+    content: '✨';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 1rem;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: sparkle 1s ease-out infinite;
+    animation-delay: calc(var(--i) * 0.15s + 1.2s);
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .birthday-card h1 {
-        font-size: 2.5rem;
-    }
-    .birthday-card h2 {
-        font-size: 1.8rem;
-    }
-    .birthday-card p {
-        font-size: 1rem;
-    }
-    .cake, .gift {
-        width: 80px;
-        height: 80px;
-    }
-    .moon {
-        width: 80px;
-        height: 80px;
-    }
-    .start-button {
-        padding: 12px 30px;
-        font-size: 1.2rem;
-    }
+    .birthday-card h1 { font-size: 2rem; }
+    .birthday-card h2 { font-size: 1.5rem; }
+    .birthday-card .message-text { font-size: 0.9rem; }
+    .moon { width: 80px; height: 80px; }
+    .start-button { padding: 12px 30px; font-size: 1.2rem; }
+    .fireworks-name .firework { font-size: 3rem; }
+    .wish-text { font-size: 1.5rem; }
 }
