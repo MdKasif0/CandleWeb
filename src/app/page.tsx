@@ -154,7 +154,7 @@ export default function DashboardPage() {
                 {/* Greeting */}
                 <section className="mb-8">
                     <h1 className="text-3xl font-bold mb-1">Hi Paulo</h1>
-                    <p className="text-muted-foreground">Here are your sites</p>
+                    <p className="text-muted-foreground">Here are your CandleWebs</p>
                 </section>
 
                 {/* Action Card */}
@@ -214,10 +214,10 @@ export default function DashboardPage() {
                          <Card className="bg-card p-6 border-border/50 text-center">
                             <CardContent className="p-0 flex flex-col items-center">
                                 <Layers className="h-12 w-12 text-muted-foreground mb-4" />
-                                <h3 className="font-semibold text-card-foreground mb-2">No Websites Built Yet</h3>
-                                <p className="text-sm text-muted-foreground mb-4">Get started by choosing a template and creating your first wish!</p>
+                                <h3 className="font-semibold text-card-foreground mb-2">No CandleWebs Built Yet</h3>
+                                <p className="text-sm text-muted-foreground mb-4">Get started by choosing a template and creating your first CandleWeb!</p>
                                 <Link href="/templates" passHref>
-                                    <Button>Create a Website</Button>
+                                    <Button>Create a CandleWeb</Button>
                                 </Link>
                             </CardContent>
                         </Card>

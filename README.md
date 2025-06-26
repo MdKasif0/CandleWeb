@@ -1,8 +1,8 @@
-# Personalized Birthday Website Generator
+# CandleWeb: Personalized Birthday Websites
 
 ## Introduction
 
-This web application allows you to create and share beautiful, personalized "Happy Birthday" websites in minutes. Leverage the power of AI to generate heartfelt messages, choose from stunning animated templates, and create a unique, shareable link to celebrate a friend or loved one's special day.
+CandleWeb allows you to create and share beautiful, personalized "Happy Birthday" websites in minutes. Leverage the power of AI to generate heartfelt messages, choose from stunning animated templates, and create a unique, shareable link to celebrate a friend or loved one's special day.
 
 ## Core Features
 
@@ -10,9 +10,9 @@ This web application allows you to create and share beautiful, personalized "Hap
 
 -   **Template-Based Creation**: Get started quickly by choosing from a selection of beautifully designed and animated templates. Each template provides a unique and engaging experience for the recipient.
 
--   **Easy Personalization**: Customize your chosen template with the recipient's name, your name, a personal message (written by you or with AI), and an optional photo to make it truly special.
+-   **Easy Personalization**: Customize your chosen template with the recipient's name, your name, and a personal message (written by you or with AI) to make it truly special.
 
--   **Instant, Shareable Websites**: Once you're done, the app generates a unique and private link to the birthday website. Copy the link and share it with the birthday person instantly.
+-   **Instant, Shareable Websites**: Once you're done, CandleWeb generates a unique and private link to the birthday website. Copy the link and share it with the birthday person instantly.
 
 -   **Progressive Web App (PWA)**: Enjoy a seamless, native-app-like experience. The app is fully installable on mobile devices and desktops, and it even works offline, so you can view your created wishes anytime, anywhere.
 

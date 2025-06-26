@@ -145,8 +145,8 @@ function CreateWishForm() {
         form.reset();
 
         toast({
-          title: 'Wish Created!',
-          description: 'Your personalized birthday website is ready to be shared.',
+          title: 'CandleWeb Created!',
+          description: 'Your personalized CandleWeb is ready to be shared.',
         });
         
     } catch (error) {
@@ -188,7 +188,7 @@ function CreateWishForm() {
             <ChevronLeft className="h-5 w-5" />
             <span className="ml-1">Back</span>
           </Link>
-          <h1 className="text-2xl font-bold">Create your Wish</h1>
+          <h1 className="text-2xl font-bold">Create your CandleWeb</h1>
         </div>
 
         <Form {...form}>
@@ -253,9 +253,9 @@ function CreateWishForm() {
             <div className="pt-4">
               <Button type="submit" disabled={isSubmitting || isGenerating} className="w-full rounded-full bg-accent py-6 text-lg font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-opacity hover:opacity-90">
                 {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="ml-2 h-5 w-5" />}
-                Generate Website
+                Generate CandleWeb
               </Button>
-               <p className="mt-4 text-center text-sm text-muted-foreground">45.8k wishes created</p>
+               <p className="mt-4 text-center text-sm text-muted-foreground">45.8k CandleWebs created</p>
             </div>
           </form>
         </Form>
@@ -263,9 +263,9 @@ function CreateWishForm() {
       <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
         <DialogContent className="sm:max-w-md">
             <DialogHeader>
-                <DialogTitle>Your Website is Ready!</DialogTitle>
+                <DialogTitle>Your CandleWeb is Ready!</DialogTitle>
                 <DialogDescription>
-                    Share this link with the birthday person. Anyone with the link can view it.
+                    Share this link with the birthday person. Anyone with the link can view your CandleWeb.
                 </DialogDescription>
             </DialogHeader>
             <div className="flex items-center space-x-2">
@@ -282,7 +282,7 @@ function CreateWishForm() {
                 </DialogClose>
                 <Button asChild>
                     <Link href={generatedLink} target="_blank" rel="noopener noreferrer">
-                        Preview Website <ArrowRight className="ml-2 h-4 w-4" />
+                        Preview CandleWeb <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                 </Button>
             </DialogFooter>

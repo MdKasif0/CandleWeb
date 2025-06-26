@@ -7,8 +7,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Happy Birthday Wishes Generator",
-  description: "Create and share personalized birthday websites.",
+  title: "CandleWeb - Personalized Birthday Websites",
+  description: "Create and share personalized birthday websites with CandleWeb.",
   manifest: "/manifest.webmanifest",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#fafafa" },
