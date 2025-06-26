@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import './animated.css';
 
 interface AnimatedTemplateProps {
@@ -12,29 +12,11 @@ interface AnimatedTemplateProps {
 
 const AnimatedTemplate: React.FC<AnimatedTemplateProps> = ({ toName, fromName, message }) => {
   const [stage, setStage] = useState(0); // 0: start, 1: card, 2: candles blown, 3: fireworks
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   
-  const nameChars = React.useMemo(() => toName.split(''), [toName]);
-
-  useEffect(() => {
-    const audio = new Audio('/audios/happy-birthday.mp3');
-    audio.preload = 'auto';
-    audio.loop = true;
-    audioRef.current = audio;
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
+  const nameChars = useMemo(() => toName.split(''), [toName]);
 
   const handleStart = () => {
     setStage(1);
-    if (audioRef.current) {
-      audioRef.current.play().catch(error => console.error("Audio play failed:", error));
-    }
   };
 
   const handleBlowOut = () => {
@@ -62,11 +44,6 @@ const AnimatedTemplate: React.FC<AnimatedTemplateProps> = ({ toName, fromName, m
     <div className="birthday-body" data-ai-hint="celebration party night">
       <div className="stars" data-ai-hint="twinkling stars night sky"></div>
       <div className="moon" data-ai-hint="bright full moon"></div>
-      
-      <div className="balloon" data-ai-hint="red balloon"></div>
-      <div className="balloon" data-ai-hint="green balloon"></div>
-      <div className="balloon" data-ai-hint="blue balloon"></div>
-      <div className="balloon" data-ai-hint="yellow balloon"></div>
 
       {stage >= 1 && (
         <div className={`birthday-card ${stage > 1 ? 'fade-out' : 'fade-in'}`}>
