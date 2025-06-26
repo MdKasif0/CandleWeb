@@ -677,7 +677,12 @@ canvas {
   position: relative;
   top: -5vh;
   font-size: 3em;
-  color: black;
+  color: white;
+  text-shadow: 
+    -1.5px -1.5px 0 #000,  
+     1.5px -1.5px 0 #000,
+    -1.5px  1.5px 0 #000,
+     1.5px  1.5px 0 #000;
   margin-bottom: 20px;
   animation: fadeInUp 1s ease-out;
 }
