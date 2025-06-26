@@ -159,7 +159,7 @@ export default function DashboardPage() {
 
                 {/* Action Card */}
                 <section className="mb-8">
-                    <Link href="/create" passHref>
+                    <Link href="/templates" passHref>
                         <Card className="p-4 bg-gradient-to-br from-green-400 to-teal-400 transition-all cursor-pointer group">
                             <CardContent className="flex items-center gap-4 p-0">
                                 <Sparkles className="h-8 w-8 text-accent-foreground" />
@@ -216,7 +216,7 @@ export default function DashboardPage() {
                                 <Layers className="h-12 w-12 text-muted-foreground mb-4" />
                                 <h3 className="font-semibold text-card-foreground mb-2">No Websites Built Yet</h3>
                                 <p className="text-sm text-muted-foreground mb-4">Get started by choosing a template and creating your first wish!</p>
-                                <Link href="/create" passHref>
+                                <Link href="/templates" passHref>
                                     <Button>Create a Website</Button>
                                 </Link>
                             </CardContent>

@@ -80,7 +80,7 @@ export default function TemplatesPage() {
                             if (template.id === 'premium-night-sky') {
                                 previewUrl = `/premium-night-sky/index.html?${previewParams.toString()}`;
                             } else {
-                                previewParams.append('template', template.id);
+                                params.append('template', template.id);
                                 previewUrl = `/wish/preview?${previewParams.toString()}`;
                             }
                             
