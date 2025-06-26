@@ -36,7 +36,7 @@ const formSchema = z.object({
   fromName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
   imageUrl: z.string().optional(),
-  template: z.literal('funky'),
+  template: z.literal('night-sky'),
 });
 
 export default function CreateWishPage() {
@@ -54,7 +54,7 @@ export default function CreateWishPage() {
       fromName: '',
       message: '',
       imageUrl: '',
-      template: 'funky',
+      template: 'night-sky',
     },
   });
 

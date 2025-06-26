@@ -24,7 +24,7 @@ const VIcon = () => (
 
 const mockTemplates = [
     {
-        id: 'funky',
+        id: 'night-sky',
         name: 'Night Sky',
         description: 'A dreamy, animated night scene with a moon, cake, and a special gift.',
         imageUrl: '/night-sky-cover.png',
@@ -79,7 +79,7 @@ export default function TemplatesPage() {
                                     <p className="text-sm text-muted-foreground">{template.description}</p>
                                 </CardContent>
                                 <CardFooter className="bg-card/50 px-4 py-3 flex gap-2">
-                                    <Link href="/wish/preview?toName=Someone&fromName=Your Friend&message=Wishing you a day filled with happiness and a year filled with joy. Happy birthday!" passHref className="w-full" target="_blank">
+                                    <Link href="/wish/preview?template=night-sky&toName=Someone&fromName=Your Friend&message=Wishing you a day filled with happiness and a year filled with joy. Happy birthday!" passHref className="w-full" target="_blank">
                                         <Button variant="outline" className="w-full bg-transparent border-input hover:bg-secondary rounded-full">Preview</Button>
                                     </Link>
                                     <Link href={`/create?template=${template.id}`} passHref className="w-full">
