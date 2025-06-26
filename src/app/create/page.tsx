@@ -183,12 +183,12 @@ function CreateWishForm() {
   return (
     <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground">
       <div className="w-full max-w-md">
-        <div className="relative mb-8 flex items-center justify-center py-4">
+        <div className="relative mb-8 flex items-center py-4">
           <Link href="/templates" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-foreground">
             <ChevronLeft className="h-5 w-5" />
             <span className="ml-1">Back</span>
           </Link>
-          <h1 className="text-2xl font-bold">Create your CandleWeb</h1>
+          <h1 className="w-full text-center text-2xl font-bold">Create your CandleWeb</h1>
         </div>
 
         <Form {...form}>
