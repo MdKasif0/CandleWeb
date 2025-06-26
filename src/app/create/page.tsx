@@ -4,20 +4,35 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ChevronLeft, Sparkles } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const formSchema = z.object({
-  toName: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  fromName: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  message: z.string().min(10, { message: 'Message must be at least 10 characters.' }),
+  toName: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  fromName: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  message: z.string().min(10, { message: "Message must be at least 10 characters." }),
   imageUrl: z.string().optional(),
   template: z.enum(['modern', 'classic', 'funky'], {
     required_error: 'You need to select a template.',
@@ -47,14 +62,14 @@ export default function CreateWishPage() {
     }
 
     if (!file.type.startsWith('image/')) {
-        toast({
-            variant: 'destructive',
-            title: 'Invalid File Type',
-            description: 'Please upload an image file (e.g., PNG, JPG, GIF).',
-        });
-        e.target.value = ''; // Reset file input
-        form.setValue('imageUrl', '');
-        return;
+      toast({
+        variant: 'destructive',
+        title: 'Invalid File Type',
+        description: 'Please upload an image file (e.g., PNG, JPG, GIF).',
+      });
+      e.target.value = ''; // Reset file input
+      form.setValue('imageUrl', '');
+      return;
     }
 
     const reader = new FileReader();
@@ -89,7 +104,7 @@ export default function CreateWishPage() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const fakeId = '12345'; // This would be the ID from your database.
-    
+
     const params = new URLSearchParams();
     params.append('toName', values.toName);
     params.append('fromName', values.fromName);
@@ -116,129 +131,124 @@ export default function CreateWishPage() {
     router.push(url);
   }
 
+  const inputStyles = "bg-black/20 border-white/20 backdrop-blur-sm placeholder:text-muted-foreground/60 focus:border-primary/50 focus:ring-primary/50";
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
-      <Card className="w-full max-w-2xl">
-        <CardHeader>
-          <CardTitle>Create a Birthday Wish</CardTitle>
-          <CardDescription>Fill out the form below to create a personalized birthday webpage.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="toName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Birthday Person's Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., Jane Doe" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="fromName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Your Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., John Smith" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Your Personal Message</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Write your heartfelt birthday message here..." className="resize-y" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Upload Image (Optional)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="file" 
-                        accept="image/png, image/jpeg, image/gif" 
-                        onChange={handleFileChange}
+    <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground">
+      <div className="w-full max-w-md">
+        <div className="relative mb-8 flex items-center justify-center py-4">
+          <Link href="/" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-foreground">
+            <ChevronLeft className="h-5 w-5" />
+            <span className="ml-1">Back</span>
+          </Link>
+          <h1 className="text-2xl font-bold">New Wish</h1>
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="toName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Birthday Person's Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Jane Doe" {...field} className={`${inputStyles} rounded-full`} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="fromName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Your Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., John Smith" {...field} className={`${inputStyles} rounded-full`} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Your Personal Message</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Write your heartfelt birthday message here..." className={`${inputStyles} resize-none rounded-2xl min-h-[120px]`} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Upload Image (Optional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/png, image/jpeg, image/gif"
+                      onChange={handleFileChange}
+                      className={`${inputStyles} rounded-full file:mr-4 file:rounded-full file:border-0 file:bg-primary/80 file:px-4 file:py-2 file:text-primary-foreground hover:file:bg-primary`}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  {field.value && (
+                    <div className="mt-4 flex flex-col items-center rounded-md p-4">
+                       <p className="mb-2 text-sm font-medium">Image Preview</p>
+                       <Image
+                        data-ai-hint="birthday person"
+                        src={field.value}
+                        alt="Image preview"
+                        width={150}
+                        height={150}
+                        className="rounded-md object-contain"
                       />
-                    </FormControl>
-                    <FormDescription>Add a special photo. It will be resized for sharing.</FormDescription>
-                    <FormMessage />
-                    {field.value && (
-                        <div className="mt-4 rounded-md border p-4 flex flex-col items-center">
-                            <p className="text-sm font-medium mb-2">Image Preview</p>
-                            <Image
-                                data-ai-hint="birthday person"
-                                src={field.value}
-                                alt="Image preview"
-                                width={200}
-                                height={200}
-                                className="rounded-md object-contain"
-                            />
-                        </div>
-                    )}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="template"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Choose a Template</FormLabel>
+                    </div>
+                  )}
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="template"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Choose a Template</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="modern" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Modern</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="classic" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Classic</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="funky" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Funky (Animated)</FormLabel>
-                        </FormItem>
-                      </RadioGroup>
+                      <SelectTrigger className={`${inputStyles} rounded-full`}>
+                        <SelectValue placeholder="Select a visual style" />
+                      </SelectTrigger>
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full">Generate Birthday Wish</Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+                    <SelectContent>
+                      <SelectItem value="modern">Modern</SelectItem>
+                      <SelectItem value="classic">Classic</SelectItem>
+                      <SelectItem value="funky">Funky (Animated)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <div className="pt-4">
+              <Button type="submit" className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 py-6 text-lg font-semibold shadow-lg shadow-primary/20 transition-opacity hover:opacity-90">
+                Generate Wish
+                <Sparkles className="ml-2 h-5 w-5" />
+              </Button>
+               <p className="mt-4 text-center text-sm text-muted-foreground">45.8k wishes created</p>
+            </div>
+          </form>
+        </Form>
+      </div>
     </main>
   );
 }
