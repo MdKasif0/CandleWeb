@@ -16,11 +16,11 @@ const AnimatedTemplate: React.FC<AnimatedTemplateProps> = ({ toName, fromName, m
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    const audio = new Audio('/audios/Blue.mp3');
+    // A more celebratory audio track might fit this theme better
+    const audio = new Audio('/audios/happy-birthday.mp3'); // Assuming an appropriate audio file exists
     audio.preload = 'auto';
     audioRef.current = audio;
 
-    // Cleanup audio on component unmount
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -31,41 +31,62 @@ const AnimatedTemplate: React.FC<AnimatedTemplateProps> = ({ toName, fromName, m
 
   const handleStart = () => {
     setIsStarted(true);
-    audioRef.current?.play().catch(error => console.error("Audio play failed:", error));
+    if (audioRef.current) {
+        audioRef.current.play().catch(error => console.error("Audio play failed. User may need to interact with the page first.", error));
+    }
   };
+  
+  if (!isStarted) {
+    return (
+      <div className="birthday-body">
+        <div className="stars" data-ai-hint="twinkling stars night sky"></div>
+        <div className="moon" data-ai-hint="bright full moon"></div>
+        <div className="start-container">
+          <button className="start-button" onClick={handleStart}>
+            START
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="birthday-body-v2" data-ai-hint="night sky stars">
-      <div className="moon-v2" data-ai-hint="glowing full moon">
-         <Image 
-            src="https://placehold.co/300x300.png" 
-            alt="Moon" 
-            width={200} 
-            height={200}
-            className="moon-image-v2"
-        />
-      </div>
+    <div className="birthday-body" data-ai-hint="celebration party night">
+      <div className="stars" data-ai-hint="twinkling stars night sky"></div>
+      <div className="moon" data-ai-hint="bright full moon"></div>
       
-      <div className="forest-silhouette-v2" data-ai-hint="forest silhouette"></div>
-      
-      {!isStarted && (
-        <div className="start-container-v2">
-            <button className="start-button-v2" onClick={handleStart}>
-                START
-            </button>
-        </div>
-      )}
+      <div className="balloon" data-ai-hint="red balloon"></div>
+      <div className="balloon" data-ai-hint="green balloon"></div>
+      <div className="balloon" data-ai-hint="blue balloon"></div>
+      <div className="balloon" data-ai-hint="yellow balloon"></div>
 
-      {isStarted && (
-        <div className="wish-container-v2">
-          <h1 className="title-hbd-v2">Happy Birthday</h1>
-          <h2 className="title-name-v2">{toName}!</h2>
-          <div className="message-box-v2">
-            <p className="message-text-v2">{message}</p>
-            <p className="from-name-v2">- {fromName}</p>
-          </div>
+      <div className="birthday-card">
+        <h1>Happy Birthday</h1>
+        <h2>{toName}!</h2>
+        <p className="message-text">{message}</p>
+        <p className="from-name">- {fromName}</p>
+      </div>
+
+      <div className="birthday-assets">
+        <div className="cake">
+            <Image
+                src="https://placehold.co/200x200.png"
+                alt="Birthday Cake"
+                width={100}
+                height={100}
+                data-ai-hint="birthday cake"
+            />
         </div>
-      )}
+        <div className="gift">
+             <Image
+                src="https://placehold.co/200x200.png"
+                alt="Gift Box"
+                width={100}
+                height={100}
+                data-ai-hint="gift box"
+            />
+        </div>
+      </div>
     </div>
   );
 };
