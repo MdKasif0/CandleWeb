@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useParams } from 'next/navigation';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -8,8 +8,9 @@ import { Gift } from 'lucide-react';
 import AnimatedTemplate from '@/app/templates/AnimatedTemplate';
 import Image from 'next/image';
 
-export default function WishPage({ params }: { params: { id: string } }) {
+export default function WishPage() {
   const searchParams = useSearchParams();
+  const params = useParams<{ id: string }>();
 
   // In a real app, you would fetch this data from a database using params.id
   // For now, we get it from URL search parameters.
