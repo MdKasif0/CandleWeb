@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -80,7 +81,7 @@ export default function TemplatesPage() {
                             if (template.id === 'premium-night-sky') {
                                 previewUrl = `/premium-night-sky/index.html?${previewParams.toString()}`;
                             } else {
-                                params.append('template', template.id);
+                                previewParams.append('template', template.id);
                                 previewUrl = `/wish/preview?${previewParams.toString()}`;
                             }
                             
