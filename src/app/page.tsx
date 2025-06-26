@@ -1024,7 +1024,7 @@ export default function Home() {
       <div className="chuvaMeteoro"></div>
 
       <div className="floresta">
-          <img src="/bgTree.png" alt="" />
+          <img src="/images/bgTree.png" alt="" />
       </div>
 
       <div id="cake-holder">
@@ -1091,7 +1091,7 @@ export default function Home() {
         </div>
     </div>
       <canvas id="c"></canvas>
-      <audio id="birthday-audio" src="/Blue.mp3" loop></audio>
+      <audio id="birthday-audio" src="/audios/Blue.mp3" loop></audio>
     </>
   );
 }
