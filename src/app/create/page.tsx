@@ -14,12 +14,21 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronLeft, Sparkles, Loader2 } from 'lucide-react';
+import { ChevronLeft, Sparkles, Loader2, Copy, ArrowRight } from 'lucide-react';
 import { generateMessage, GenerateMessageInput } from '@/ai/flows/generateMessage';
 
 const formSchema = z.object({
@@ -34,6 +43,9 @@ export default function CreateWishPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [generatedLink, setGeneratedLink] = useState('');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -131,55 +143,89 @@ export default function CreateWishPage() {
   };
 
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const newWish = {
-        id: `wish_${Date.now()}`,
-        toName: values.toName,
-        fromName: values.fromName,
-        message: values.message,
-        imageUrl: values.imageUrl || '',
-        template: values.template,
-        status: 'Unpublished'
-    };
-
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
     try {
-        const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
-        const updatedWishes = [...existingWishes, newWish];
-        localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
+        const newWish = {
+            id: `wish_${Date.now()}`,
+            toName: values.toName,
+            fromName: values.fromName,
+            message: values.message,
+            imageUrl: values.imageUrl || '',
+            template: values.template,
+            status: 'Published'
+        };
+
+        try {
+            const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
+            const updatedWishes = [...existingWishes, newWish];
+            localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
+        } catch (error) {
+            console.error("Could not save wish to local storage", error);
+            toast({
+                variant: "destructive",
+                title: "Could not save wish",
+                description: "There was an error saving your wish. Please try again."
+            })
+            return;
+        }
+
+        const params = new URLSearchParams();
+        params.append('toName', values.toName);
+        params.append('fromName', values.fromName);
+        params.append('message', values.message);
+        if(values.imageUrl) {
+            params.append('imageUrl', values.imageUrl);
+        }
+        params.append('template', values.template);
+
+        const relativeUrl = `/wish/${newWish.id}?${params.toString()}`;
+
+        if ((window.location.origin + relativeUrl).length > 8192) { // Check for reasonable URL length
+          toast({
+            variant: 'destructive',
+            title: 'Image Too Large',
+            description: 'The uploaded image is too large to share via a link. Please choose a smaller image.',
+          });
+          return;
+        }
+        
+        setGeneratedLink(relativeUrl);
+        setShowShareDialog(true);
+        form.reset();
+
+        toast({
+          title: 'Wish Created!',
+          description: 'Your personalized birthday website is ready to be shared.',
+        });
+        
     } catch (error) {
-        console.error("Could not save wish to local storage", error);
+        console.error("Could not create wish", error);
         toast({
             variant: "destructive",
-            title: "Could not save wish",
-            description: "There was an error saving your wish. Please try again."
+            title: "Could not create wish",
+            description: "There was an error creating your wish. Please try again."
         })
-        return;
+    } finally {
+        setIsSubmitting(false);
     }
+  }
 
-    const params = new URLSearchParams();
-    params.append('toName', values.toName);
-    params.append('fromName', values.fromName);
-    params.append('message', values.message);
-    params.append('imageUrl', values.imageUrl || '');
-    params.append('template', values.template);
-
-    const url = `/wish/${newWish.id}?${params.toString()}`;
-
-    if (url.length > 4096) { // Check for reasonable URL length
-      toast({
-        variant: 'destructive',
-        title: 'Image Too Large',
-        description: 'The uploaded image is too large to share via a link. Please choose a smaller image.',
-      });
-      return;
-    }
-
-    toast({
-      title: 'Wish Created!',
-      description: 'Your personalized birthday website is ready to be shared.',
-    });
-
-    router.push(url);
+  const handleCopyToClipboard = () => {
+    const fullUrl = window.location.origin + generatedLink;
+    navigator.clipboard.writeText(fullUrl).then(() => {
+        toast({
+            title: "Link Copied!",
+            description: "The link has been copied to your clipboard."
+        });
+    }).catch(err => {
+        console.error("Failed to copy", err);
+        toast({
+            variant: "destructive",
+            title: "Copy Failed",
+            description: "Could not copy the link to the clipboard."
+        })
+    })
   }
 
   const darkInputStyles = "dark:bg-black/20 dark:border-white/20 dark:backdrop-blur-sm dark:placeholder:text-muted-foreground/60 dark:focus:border-primary/50 dark:focus:ring-primary/50";
@@ -286,15 +332,43 @@ export default function CreateWishPage() {
             />
             
             <div className="pt-4">
-              <Button type="submit" className="w-full rounded-full bg-accent py-6 text-lg font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-opacity hover:opacity-90">
+              <Button type="submit" disabled={isSubmitting || isGenerating} className="w-full rounded-full bg-accent py-6 text-lg font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-opacity hover:opacity-90">
+                {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="ml-2 h-5 w-5" />}
                 Generate Website
-                <Sparkles className="ml-2 h-5 w-5" />
               </Button>
                <p className="mt-4 text-center text-sm text-muted-foreground">45.8k wishes created</p>
             </div>
           </form>
         </Form>
       </div>
+      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
+        <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+                <DialogTitle>Your Website is Ready!</DialogTitle>
+                <DialogDescription>
+                    Share this link with the birthday person. Anyone with the link can view it.
+                </DialogDescription>
+            </DialogHeader>
+            <div className="flex items-center space-x-2">
+                <Input value={typeof window !== 'undefined' ? window.location.origin + generatedLink : ''} readOnly />
+                <Button type="button" size="icon" onClick={handleCopyToClipboard}>
+                    <Copy className="h-4 w-4" />
+                </Button>
+            </div>
+            <DialogFooter className="sm:justify-between gap-2 mt-4">
+                <DialogClose asChild>
+                    <Button type="button" variant="secondary" onClick={() => router.push('/')}>
+                        Back to Dashboard
+                    </Button>
+                </DialogClose>
+                <Button asChild>
+                    <Link href={generatedLink} target="_blank" rel="noopener noreferrer">
+                        Preview Website <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                </Button>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
