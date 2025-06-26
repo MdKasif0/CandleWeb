@@ -1,0 +1,24 @@
+{
+  "name": "Happy Birthday Wishes Generator",
+  "short_name": "Birthday Wishes",
+  "description": "Create and share personalized birthday websites.",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+        "src": "/icon.svg",
+        "sizes": "any",
+        "type": "image/svg+xml",
+        "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#a87ff0",
+  "background_color": "#0c0c2e",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}
