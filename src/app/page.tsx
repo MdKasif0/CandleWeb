@@ -153,8 +153,8 @@ export default function DashboardPage() {
 
                 {/* Greeting */}
                 <section className="mb-8">
-                    <h1 className="text-3xl font-bold mb-1">Hi Paulo</h1>
-                    <p className="text-muted-foreground">Here are your CandleWebs</p>
+                    <h1 className="text-3xl font-bold mb-1">Welcome!</h1>
+                    <p className="text-muted-foreground">Explore your CandleWebs</p>
                 </section>
 
                 {/* Action Card */}
