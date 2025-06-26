@@ -10,13 +10,13 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
-export const GenerateMessageInputSchema = z.object({
+const GenerateMessageInputSchema = z.object({
   toName: z.string().describe('The name of the person receiving the birthday wish.'),
   fromName: z.string().describe('The name of the person sending the birthday wish.'),
 });
 export type GenerateMessageInput = z.infer<typeof GenerateMessageInputSchema>;
 
-export const GenerateMessageOutputSchema = z.object({
+const GenerateMessageOutputSchema = z.object({
   message: z.string().describe('The generated birthday message.'),
 });
 export type GenerateMessageOutput = z.infer<typeof GenerateMessageOutputSchema>;
