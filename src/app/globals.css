@@ -538,6 +538,7 @@ canvas {
     margin-bottom: 20px;
     font-size: 25px;
     color: black;
+    font-family: 'Playfair Display', serif;
 }
 
 .popup-content p {
@@ -562,6 +563,7 @@ canvas {
     transition: background-color 0.3s ease;
     flex: 1;
     margin: 0 5px;
+    font-family: 'Itim', cursive;
 }
 
 .popup-content button:hover {
@@ -583,6 +585,7 @@ canvas {
     font-size: 25px;
     color: #fff;
     animation: fadeInOut 3s ease-in-out forwards;
+    font-family: 'Itim', cursive;
 }
 
 @keyframes fadeInOut {
@@ -695,4 +698,8 @@ canvas {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+#secret-message .popup-content p {
+    font-family: 'Underdog', cursive;
 }
