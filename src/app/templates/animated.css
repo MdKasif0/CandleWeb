@@ -1,376 +1,154 @@
-@import url('https://fonts.googleapis.com/css2?family=Itim&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Rubik+Vinyl&family=Rubik+Wet+Paint&family=Underdog&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@300..700&display=swap');
 
-.birthday-body {
-    width: 100%;
+/* Main body for the new template */
+.birthday-body-v2 {
     height: 100vh;
-    background-image: url(/images/happy_birthday_background.jpg);
+    width: 100vw;
+    background-image: url('https://placehold.co/1080x1920.png');
     background-size: cover;
     background-position: center;
     overflow: hidden;
     position: relative;
-    font-family: "Itim", cursive;
-}
-
-.moon {
-    width: 250px;
-    height: 250px;
-    background-image: url(/images/bgMoon.png);
-    background-size: 100%;
-    position: absolute;
-    top: 50px;
-    left: 100px;
-    animation: moon 30s linear forwards infinite;
-}
-
-@keyframes moon {
-    0% {
-        transform: translateX(0);
-    }
-    50% {
-        transform: translateX(20px);
-    }
-    100% {
-        transform: translateX(0px);
-    }
-}
-
-.tree {
-    width: 100%;
-    height: 500px;
-    background-image: url(/images/bgTree.png);
-    background-size: cover;
-    background-repeat: no-repeat;
-    position: absolute;
-    bottom: -150px;
-    left: 0;
-}
-
-.wish-hbd {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
+    font-family: 'Quicksand', sans-serif;
     color: white;
-    text-align: center;
-}
-
-.wish-hbd h1 {
-    font-size: 4rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-}
-.wish-hbd .happy {
-    font-family: 'Rubik Wet Paint', cursive;
-}
-.wish-hbd .birthday {
-    font-family: 'Rubik Vinyl', cursive;
-    font-size: 5rem;
-    color: #fff;
-    -webkit-text-stroke: 2px #000;
-}
-.wish-hbd .name {
-    font-family: 'Underdog', cursive;
-    font-size: 3.5rem;
-    margin-top: 10px;
-}
-
-
-/* Cake styling */
-.cake {
-    position: absolute;
-    width: 250px;
-    height: 200px;
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.velas {
-    position: absolute;
-    bottom: 110px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 150px;
-    height: 50px;
-    display: flex;
-    justify-content: space-around;
-}
-
-.velas > div {
-    width: 8px;
-    height: 35px;
-    background: repeating-linear-gradient(45deg, #f06, #f06 5px, #fff 5px, #fff 10px);
-    position: relative;
-}
-
-.fuego {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 10px;
-    height: 15px;
-    background-color: #ffc107;
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    animation: fire 1s infinite;
-}
-
-@keyframes fire {
-    0% { transform: scaleY(1) translateY(0); }
-    50% { transform: scaleY(1.2) translateY(-5px); }
-    100% { transform: scaleY(1) translateY(0); }
-}
-
-.cobertura {
-    width: 100%;
-    height: 40px;
-    background-color: #f06;
-    position: absolute;
-    bottom: 80px;
-    border-radius: 50% / 20px;
-}
-
-.bizcocho {
-    width: 100%;
-    height: 80px;
-    background-color: #a0522d;
-    position: absolute;
-    bottom: 0;
-}
-
-/* Popup and Button */
-.boton-abrir-popup {
-    padding: 10px 20px;
-    background-image: url(/images/button_background.jpg);
-    background-size: cover;
-    color: white;
-    font-size: 24px;
-    text-shadow: 2px 2px 4px black;
-    border: 2px solid white;
-    border-radius: 20px;
-    cursor: pointer;
-    position: absolute;
-    bottom: 5%;
-    right: 5%;
-    box-shadow: 0 0 20px #ffeb3b;
-    font-family: 'Playfair Display', serif;
-}
-
-.popup {
-    visibility: hidden;
-    opacity: 0;
-    transition: .3s ease-in-out all;
-}
-
-.popup.active {
-    visibility: visible;
-    opacity: 1;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, .8);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.container-popup {
-    width: 80%;
-    max-width: 500px;
-    height: auto;
-    max-height: 90vh;
-    padding: 20px;
-    background-image: url(/images/popup_background.jpg);
-    background-size: cover;
-    border-radius: 10px;
-    position: relative;
-    text-align: center;
-    overflow-y: auto;
+/* Moon */
+.moon-v2 {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.7));
+    animation: moon-rise 60s linear infinite;
 }
 
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 30px;
-    height: 30px;
-    background-color: white;
+.moon-image-v2 {
     border-radius: 50%;
-    cursor: pointer;
-    line-height: 30px;
-    text-align: center;
-}
-.close::before, .close::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 2px;
-    background-color: black;
-}
-.close::before {
-    transform: translate(-50%, -50%) rotate(45deg);
-}
-.close::after {
-    transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-.avatar {
-    width: 80px;
-    height: 80px;
-    background-image: url(/images/avatar.jpg);
-    display: inline-block;
-    border-radius: 50%;
-    background-size: cover;
-    background-position: center;
-    margin-bottom: 10px;
+@keyframes moon-rise {
+    0% { transform: translate(0, 10px); }
+    50% { transform: translate(10px, -10px); }
+    100% { transform: translate(0, 10px); }
 }
 
-.title-popup {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    color: #fff;
-    margin-bottom: 10px;
-}
-
-.des-popup {
-    font-family: 'PT Serif', serif;
-    font-size: 1.2rem;
-    color: #eee;
-    margin-bottom: 15px;
-}
-
-.name-popup {
-    font-family: 'Itim', cursive;
-    font-size: 1.5rem;
-    font-style: italic;
-    color: #ffeb3b;
-    text-align: right;
-    margin-right: 20px;
-}
-
-/* Gift styling */
-.regalo {
-    width: 150px;
-    height: 120px;
-    position: absolute;
-    bottom: 10%;
-    left: 10%;
-}
-
-.caja {
-    width: 100%;
-    height: 100px;
-    background-color: #00bcd4;
+/* Forest Silhouette */
+.forest-silhouette-v2 {
     position: absolute;
     bottom: 0;
-}
-
-.lazo {
-    width: 20px;
-    height: 100%;
-    background-color: #f06;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.lazo::before {
-    content: '';
+    left: 0;
     width: 100%;
-    height: 20px;
-    background-color: #f06;
-    position: absolute;
-    top: 30%;
+    height: 25%;
+    background-image: url('https://placehold.co/1920x300.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    z-index: 10;
 }
 
-.tapa {
-    width: 110%;
-    height: 30px;
-    background-color: #009688;
-    position: absolute;
-    top: -10px;
-    left: -5%;
+/* Start Button */
+.start-container-v2 {
+    z-index: 20;
+    position: relative;
 }
 
-.tapa span {
-    width: 30px;
-    height: 40px;
-    border: 10px solid #f06;
-    border-radius: 50%;
-    border-bottom-color: transparent;
-    border-left-color: transparent;
-    position: absolute;
-    top: -40px;
-    left: 30px;
-    transform: rotate(45deg);
+.start-button-v2 {
+    background-color: transparent;
+    border: 2px solid #00c6ff;
+    color: #00c6ff;
+    padding: 15px 40px;
+    font-size: 1.5rem;
+    font-family: 'Quicksand', sans-serif;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 20px #00c6ff, inset 0 0 10px #00c6ff;
+    transition: all 0.3s ease;
 }
-.tapa span::before {
-    content: '';
-    width: 30px;
-    height: 40px;
-    border: 10px solid #f06;
-    border-radius: 50%;
-    border-bottom-color: transparent;
-    border-right-color: transparent;
-    position: absolute;
-    top: 0px;
-    left: 30px;
-    transform: rotate(-90deg);
+
+.start-button-v2:hover {
+    background-color: #00c6ff;
+    color: black;
+    box-shadow: 0 0 30px #00c6ff, inset 0 0 15px #00c6ff;
+}
+
+/* Wish Container */
+.wish-container-v2 {
+    z-index: 20;
+    text-align: center;
+    animation: fade-in 2s ease-in-out;
+    padding: 20px;
+    width: 90%;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.title-hbd-v2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 0 15px rgba(255,255,255,0.5);
+}
+
+.title-name-v2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin: 10px 0 30px 0;
+    color: #00c6ff;
+    text-shadow: 0 0 10px #00c6ff;
+}
+
+.message-box-v2 {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.message-text-v2 {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.from-name-v2 {
+    font-size: 1.3rem;
+    font-style: italic;
+    text-align: right;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .moon {
-        width: 150px;
-        height: 150px;
-        top: 20px;
-        left: 20px;
-    }
-    .wish-hbd h1 {
+    .title-hbd-v2 {
         font-size: 2.5rem;
     }
-    .wish-hbd .birthday {
-        font-size: 3rem;
-    }
-    .wish-hbd .name {
+    .title-name-v2 {
         font-size: 2rem;
     }
-    .cake {
-        width: 200px;
-        height: 160px;
-        bottom: 15%;
+    .message-text-v2 {
+        font-size: 1rem;
     }
-    .velas {
-        bottom: 90px;
+    .from-name-v2 {
+        font-size: 1.1rem;
     }
-    .cobertura {
-        bottom: 60px;
+    .moon-v2 {
+       /* Adjust size and position for smaller screens */
     }
-    .bizcocho {
-        height: 60px;
+    .moon-v2 .moon-image-v2 {
+        width: 150px !important;
+        height: 150px !important;
     }
-    .regalo {
-        width: 100px;
-        height: 80px;
-        bottom: 15%;
-    }
-    .caja {
-        height: 70px;
-    }
-    .lazo {
-        width: 15px;
-    }
-    .lazo::before {
-        height: 15px;
-    }
-    .tapa {
-        height: 20px;
-    }
-    .boton-abrir-popup {
-        padding: 8px 16px;
-        font-size: 18px;
+    .start-button-v2 {
+        padding: 12px 30px;
+        font-size: 1.2rem;
     }
 }

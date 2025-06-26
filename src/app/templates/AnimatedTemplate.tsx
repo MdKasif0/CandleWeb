@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './animated.css';
+import Image from 'next/image';
 
 interface AnimatedTemplateProps {
   toName: string;
@@ -10,80 +11,61 @@ interface AnimatedTemplateProps {
   imageUrl?: string | null;
 }
 
-const AnimatedTemplate: React.FC<AnimatedTemplateProps> = ({ toName, fromName, message, imageUrl }) => {
+const AnimatedTemplate: React.FC<AnimatedTemplateProps> = ({ toName, fromName, message }) => {
+  const [isStarted, setIsStarted] = useState(false);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
   useEffect(() => {
-    const ad = document.getElementById('ad') as HTMLAudioElement | null;
-    const boton = document.getElementById('boton');
-    const popup = document.getElementById('popup');
-    const close = document.getElementById('close');
+    const audio = new Audio('/audios/Blue.mp3');
+    audio.preload = 'auto';
+    audioRef.current = audio;
 
-    const handleBotonClick = () => {
-      popup?.classList.add('active');
-      ad?.play().catch(error => console.error("Audio play failed:", error));
-    };
-
-    const handleCloseClick = () => {
-      popup?.classList.remove('active');
-      ad?.pause();
-    };
-
-    boton?.addEventListener('click', handleBotonClick);
-    close?.addEventListener('click', handleCloseClick);
-
+    // Cleanup audio on component unmount
     return () => {
-      boton?.removeEventListener('click', handleBotonClick);
-      close?.removeEventListener('click', handleCloseClick);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     };
   }, []);
 
-  const avatarUrl = imageUrl || '/images/avatar.jpg';
+  const handleStart = () => {
+    setIsStarted(true);
+    audioRef.current?.play().catch(error => console.error("Audio play failed:", error));
+  };
 
   return (
-    <div className="birthday-body">
-      <audio id="ad" src="/audios/Blue.mp3" preload="auto"></audio>
-
-      <div className="moon"></div>
-      <div className="tree"></div>
-
-      <div className="wish-hbd">
-        <h1 className="happy">Happy</h1>
-        <h1 className="birthday">Birthday</h1>
-        <h1 className="name">{toName}</h1>
+    <div className="birthday-body-v2" data-ai-hint="night sky stars">
+      <div className="moon-v2" data-ai-hint="glowing full moon">
+         <Image 
+            src="https://placehold.co/300x300.png" 
+            alt="Moon" 
+            width={200} 
+            height={200}
+            className="moon-image-v2"
+        />
       </div>
-
-      <div className="cake">
-        <div className="velas">
-          <div className="fuego"></div>
-          <div className="fuego"></div>
-          <div className="fuego"></div>
-          <div className="fuego"></div>
-          <div className="fuego"></div>
+      
+      <div className="forest-silhouette-v2" data-ai-hint="forest silhouette"></div>
+      
+      {!isStarted && (
+        <div className="start-container-v2">
+            <button className="start-button-v2" onClick={handleStart}>
+                START
+            </button>
         </div>
-        <div className="cobertura"></div>
-        <div className="bizcocho"></div>
-      </div>
+      )}
 
-      <div id="boton" className="boton-abrir-popup">
-        Click Me
-      </div>
-
-      <div id="popup" className="popup">
-        <div className="container-popup">
-          <div id="close" className="close"></div>
-          <div className="avatar" style={{ backgroundImage: `url(${avatarUrl})` }} data-ai-hint="birthday person"></div>
-          <h2 className="title-popup">A special message for you!</h2>
-          <p className="des-popup">{message}</p>
-          <p className="name-popup">- {fromName}</p>
+      {isStarted && (
+        <div className="wish-container-v2">
+          <h1 className="title-hbd-v2">Happy Birthday</h1>
+          <h2 className="title-name-v2">{toName}!</h2>
+          <div className="message-box-v2">
+            <p className="message-text-v2">{message}</p>
+            <p className="from-name-v2">- {fromName}</p>
+          </div>
         </div>
-      </div>
-
-      <div className="regalo" id="regalo">
-        <div className="tapa">
-          <span></span>
-        </div>
-        <div className="lazo"></div>
-        <div className="caja"></div>
-      </div>
+      )}
     </div>
   );
 };
