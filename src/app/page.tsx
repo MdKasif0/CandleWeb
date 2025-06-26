@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -20,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { LayoutGrid, Layers, MoreHorizontal, Sparkles, Trash2 } from 'lucide-react';
+import { Copy, LayoutGrid, Layers, MoreHorizontal, Sparkles, Trash2 } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -45,6 +46,10 @@ const VIcon = () => (
 interface Wish {
     id: string;
     toName: string;
+    fromName: string;
+    message: string;
+    imageUrl: string;
+    template: string;
     status: string;
 }
 
@@ -63,6 +68,36 @@ export default function DashboardPage() {
             setWishes([]);
         }
     }, []);
+
+    const handleCopyLink = (wish: Wish) => {
+        if (typeof window === 'undefined') return;
+
+        const params = new URLSearchParams();
+        params.append('toName', wish.toName);
+        params.append('fromName', wish.fromName);
+        params.append('message', wish.message);
+        if (wish.imageUrl) {
+            params.append('imageUrl', wish.imageUrl);
+        }
+        params.append('template', wish.template);
+
+        const relativeUrl = `/wish/${wish.id}?${params.toString()}`;
+        const fullUrl = window.location.origin + relativeUrl;
+
+        navigator.clipboard.writeText(fullUrl).then(() => {
+            toast({
+                title: "Link Copied!",
+                description: "The wish link has been copied to your clipboard."
+            });
+        }).catch(err => {
+            console.error("Failed to copy link", err);
+            toast({
+                variant: "destructive",
+                title: "Copy Failed",
+                description: "Could not copy the link."
+            });
+        });
+    };
 
     const handleDeleteClick = (wish: Wish) => {
         setWishToDelete(wish);
@@ -155,6 +190,11 @@ export default function DashboardPage() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
+                                                <DropdownMenuItem onSelect={() => handleCopyLink(wish)}>
+                                                    <Copy className="mr-2 h-4 w-4" />
+                                                    <span>Copy Link</span>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
                                                 <DropdownMenuItem
                                                     className="text-destructive"
                                                     onSelect={() => handleDeleteClick(wish)}
