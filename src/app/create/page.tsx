@@ -158,7 +158,7 @@ export default function CreateWishPage() {
 
         try {
             const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
-            const updatedWishes = [...existingWishes, newWish];
+            const updatedWishes = [newWish, ...existingWishes];
             localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
         } catch (error) {
             console.error("Could not save wish to local storage", error);
