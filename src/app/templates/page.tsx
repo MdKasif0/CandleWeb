@@ -56,7 +56,7 @@ export default function TemplatesPage() {
                     <div className="flex items-center gap-2 md:gap-4">
                         <ThemeToggle />
                         <Link href="/upgrade" passHref>
-                          <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-full px-4 py-1.5 text-sm h-auto shadow-lg shadow-primary/20">
+                          <Button className="bg-accent text-accent-foreground font-semibold rounded-full px-4 py-1.5 text-sm h-auto shadow-lg shadow-accent/20">
                               Upgrade
                           </Button>
                         </Link>
@@ -93,9 +93,9 @@ export default function TemplatesPage() {
                                     <p className="text-sm text-muted-foreground">{template.description}</p>
                                 </CardContent>
                                 <CardFooter className="bg-card/50 px-4 py-3 flex gap-2">
-                                    <Button variant="outline" className="w-full bg-transparent border-white/20 hover:bg-white/10 rounded-full">Preview</Button>
+                                    <Button variant="outline" className="w-full bg-transparent border-input hover:bg-secondary rounded-full">Preview</Button>
                                     <Link href={`/create?template=${template.id}`} passHref className="w-full">
-                                        <Button className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold shadow-md shadow-primary/10 rounded-full">Use Template</Button>
+                                        <Button className="w-full bg-accent text-accent-foreground font-semibold shadow-md shadow-accent/10 rounded-full">Use Template</Button>
                                     </Link>
                                 </CardFooter>
                             </Card>

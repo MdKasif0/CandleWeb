@@ -155,7 +155,7 @@ export default function CreateWishPage() {
     router.push(url);
   }
 
-  const inputStyles = "bg-black/20 border-white/20 backdrop-blur-sm placeholder:text-muted-foreground/60 focus:border-primary/50 focus:ring-primary/50";
+  const darkInputStyles = "dark:bg-black/20 dark:border-white/20 dark:backdrop-blur-sm dark:placeholder:text-muted-foreground/60 dark:focus:border-primary/50 dark:focus:ring-primary/50";
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground">
@@ -177,7 +177,7 @@ export default function CreateWishPage() {
                 <FormItem>
                   <FormLabel>Birthday Person's Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Jane Doe" {...field} className={`${inputStyles} rounded-full`} />
+                    <Input placeholder="e.g., Jane Doe" {...field} className={`rounded-full ${darkInputStyles}`} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -190,7 +190,7 @@ export default function CreateWishPage() {
                 <FormItem>
                   <FormLabel>Your Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., John Smith" {...field} className={`${inputStyles} rounded-full`} />
+                    <Input placeholder="e.g., John Smith" {...field} className={`rounded-full ${darkInputStyles}`} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -203,7 +203,7 @@ export default function CreateWishPage() {
                 <FormItem>
                   <FormLabel>Your Personal Message</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Write your heartfelt birthday message here..." className={`${inputStyles} resize-none rounded-2xl min-h-[120px]`} {...field} />
+                    <Textarea placeholder="Write your heartfelt birthday message here..." className={`resize-none rounded-2xl min-h-[120px] ${darkInputStyles}`} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -220,7 +220,7 @@ export default function CreateWishPage() {
                       type="file"
                       accept="image/png, image/jpeg, image/gif"
                       onChange={handleFileChange}
-                      className={`${inputStyles} rounded-full file:mr-4 file:rounded-full file:border-0 file:bg-primary/80 file:px-4 file:py-2 file:text-primary-foreground hover:file:bg-primary`}
+                      className={`rounded-full file:mr-4 file:rounded-full file:border-0 file:bg-accent file:px-4 file:py-2 file:text-accent-foreground hover:file:bg-accent/90 ${darkInputStyles}`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -248,7 +248,7 @@ export default function CreateWishPage() {
                   <FormLabel>Choose a Template</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className={`${inputStyles} rounded-full`}>
+                      <SelectTrigger className={`rounded-full ${darkInputStyles}`}>
                         <SelectValue placeholder="Select a visual style" />
                       </SelectTrigger>
                     </FormControl>
@@ -264,7 +264,7 @@ export default function CreateWishPage() {
             />
             
             <div className="pt-4">
-              <Button type="submit" className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 py-6 text-lg font-semibold shadow-lg shadow-primary/20 transition-opacity hover:opacity-90">
+              <Button type="submit" className="w-full rounded-full bg-accent py-6 text-lg font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-opacity hover:opacity-90">
                 Generate Wish
                 <Sparkles className="ml-2 h-5 w-5" />
               </Button>

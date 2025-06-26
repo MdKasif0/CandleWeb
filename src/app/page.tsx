@@ -47,7 +47,7 @@ export default function DashboardPage() {
                     <div className="flex items-center gap-2 md:gap-4">
                         <ThemeToggle />
                         <Link href="/upgrade" passHref>
-                          <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-full px-4 py-1.5 text-sm h-auto shadow-lg shadow-primary/20">
+                          <Button className="bg-accent text-accent-foreground font-semibold rounded-full px-4 py-1.5 text-sm h-auto shadow-lg shadow-accent/20">
                               Upgrade
                           </Button>
                         </Link>
@@ -67,10 +67,10 @@ export default function DashboardPage() {
                 {/* Action Card */}
                 <section className="mb-8">
                     <Link href="/templates" passHref>
-                        <Card className="bg-card p-4 border border-primary/30 shadow-[0_0_15px_hsl(var(--primary)/0.1)] hover:border-primary/60 transition-all cursor-pointer group">
+                        <Card className="p-4 bg-gradient-to-br from-green-400 to-teal-400 transition-all cursor-pointer group">
                             <CardContent className="flex items-center gap-4 p-0">
-                                <Sparkles className="h-8 w-8 text-primary" />
-                                <h2 className="font-semibold text-card-foreground">Choose a Template and Create with AI</h2>
+                                <Sparkles className="h-8 w-8 text-accent-foreground" />
+                                <h2 className="font-semibold text-accent-foreground">Choose a Template and Create with AI</h2>
                             </CardContent>
                         </Card>
                     </Link>

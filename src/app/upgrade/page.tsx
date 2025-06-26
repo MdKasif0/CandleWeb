@@ -67,14 +67,14 @@ const monthlyPlans = [
 ];
 
 const PlanCard = ({ plan }: { plan: typeof yearlyPlans[0] }) => (
-    <Card className="bg-card border-primary/20 relative overflow-hidden shadow-lg shadow-primary/10">
+    <Card className="bg-card border-border relative overflow-hidden shadow-lg shadow-primary/10">
         {plan.save && (
-             <div className="absolute top-3 right-[-34px] transform rotate-45 bg-primary text-primary-foreground text-center text-xs font-semibold py-1 w-28 shadow-md">
+             <div className="absolute top-3 right-[-34px] transform rotate-45 bg-accent/20 text-accent text-center text-xs font-semibold py-1 w-28 shadow-md">
                 Save {plan.save}
             </div>
         )}
         <CardContent className="p-6">
-            <Badge variant="outline" className="mb-4 border-primary/50 text-primary font-semibold bg-primary/10 uppercase">{plan.name}</Badge>
+            <Badge variant="secondary" className="mb-4 uppercase">{plan.name}</Badge>
             <div className="mb-4">
                 <span className="text-4xl font-bold">${plan.price}</span>
                 <span className="text-muted-foreground"> / per month</span>
@@ -83,12 +83,12 @@ const PlanCard = ({ plan }: { plan: typeof yearlyPlans[0] }) => (
             <ul className="space-y-3 text-sm">
                 {plan.features.map((feature, index) => (
                     <li key={index} className="flex items-center gap-3">
-                        <Check className="h-5 w-5 text-primary" />
+                        <Check className="h-5 w-5 text-accent" />
                         <span>{feature}</span>
                     </li>
                 ))}
             </ul>
-             <Button className="w-full mt-8 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 py-6 text-lg font-semibold shadow-lg shadow-primary/20 transition-opacity hover:opacity-90">
+             <Button className="w-full mt-8 rounded-full bg-accent text-accent-foreground py-6 text-lg font-semibold shadow-lg shadow-accent/20 transition-opacity hover:opacity-90">
                 Choose Plan
             </Button>
         </CardContent>
@@ -108,9 +108,9 @@ export default function UpgradePage() {
                 </div>
                 
                 <Tabs defaultValue="pro" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 bg-black/20 backdrop-blur-sm rounded-full mb-6 p-1 h-auto">
-                        <TabsTrigger value="pro" className="rounded-full data-[state=active]:bg-primary/90 data-[state=active]:text-primary-foreground">Pro</TabsTrigger>
-                        <TabsTrigger value="basic" className="rounded-full data-[state=active]:bg-primary/90 data-[state=active]:text-primary-foreground">Basic</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-2 bg-muted rounded-full mb-6 p-1 h-auto">
+                        <TabsTrigger value="pro" className="rounded-full data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">Pro</TabsTrigger>
+                        <TabsTrigger value="basic" className="rounded-full data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">Basic</TabsTrigger>
                     </TabsList>
                     <TabsContent value="pro">
                         <div className="space-y-6">
