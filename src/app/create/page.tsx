@@ -11,12 +11,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import React from 'react';
+import Image from 'next/image';
 
 const formSchema = z.object({
   toName: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   fromName: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   message: z.string().min(10, { message: 'Message must be at least 10 characters.' }),
-  imageUrl: z.string().url({ message: 'Please enter a valid image URL.' }).optional().or(z.literal('')),
+  imageUrl: z.string().optional(),
   template: z.enum(['modern', 'classic', 'funky'], {
     required_error: 'You need to select a template.',
   }),
@@ -37,6 +39,54 @@ export default function CreateWishPage() {
     },
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      form.setValue('imageUrl', '');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+        toast({
+            variant: 'destructive',
+            title: 'Invalid File Type',
+            description: 'Please upload an image file (e.g., PNG, JPG, GIF).',
+        });
+        e.target.value = ''; // Reset file input
+        form.setValue('imageUrl', '');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 600;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > MAX_WIDTH) {
+          height = (height * MAX_WIDTH) / width;
+          width = MAX_WIDTH;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL(file.type);
+        form.setValue('imageUrl', dataUrl, { shouldValidate: true });
+      };
+      if (event.target?.result) {
+        img.src = event.target.result as string;
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     const fakeId = '12345'; // This would be the ID from your database.
     
@@ -47,12 +97,23 @@ export default function CreateWishPage() {
     params.append('imageUrl', values.imageUrl || '');
     params.append('template', values.template);
 
+    const url = `/wish/${fakeId}?${params.toString()}`;
+
+    if (url.length > 4096) { // Check for reasonable URL length
+      toast({
+        variant: 'destructive',
+        title: 'Image Too Large',
+        description: 'The uploaded image is too large to share via a link. Please choose a smaller image.',
+      });
+      return;
+    }
+
     toast({
       title: 'Wish Created!',
       description: 'Your personalized birthday website is ready to be shared.',
     });
 
-    router.push(`/wish/${fakeId}?${params.toString()}`);
+    router.push(url);
   }
 
   return (
@@ -111,12 +172,29 @@ export default function CreateWishPage() {
                 name="imageUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Image URL (Optional)</FormLabel>
+                    <FormLabel>Upload Image (Optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
+                      <Input 
+                        type="file" 
+                        accept="image/png, image/jpeg, image/gif" 
+                        onChange={handleFileChange}
+                      />
                     </FormControl>
-                    <FormDescription>Add a link to a special photo for any template.</FormDescription>
+                    <FormDescription>Add a special photo. It will be resized for sharing.</FormDescription>
                     <FormMessage />
+                    {field.value && (
+                        <div className="mt-4 rounded-md border p-4 flex flex-col items-center">
+                            <p className="text-sm font-medium mb-2">Image Preview</p>
+                            <Image
+                                data-ai-hint="birthday person"
+                                src={field.value}
+                                alt="Image preview"
+                                width={200}
+                                height={200}
+                                className="rounded-md object-contain"
+                            />
+                        </div>
+                    )}
                   </FormItem>
                 )}
               />
