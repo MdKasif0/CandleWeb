@@ -1,9 +1,13 @@
-import type {Metadata} from 'next';
-import './globals.css';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Happy Birthday Kasif',
-  description: 'An interactive birthday wishes experience',
+  title: "Happy Birthday Wishes Generator",
+  description: "Create and share personalized birthday websites.",
 };
 
 export default function RootLayout({
@@ -13,8 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={inter.className}>
         {children}
+        <Toaster />
       </body>
     </html>
   );
