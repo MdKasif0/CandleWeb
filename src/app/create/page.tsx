@@ -105,7 +105,29 @@ export default function CreateWishPage() {
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const fakeId = '12345'; // This would be the ID from your database.
+    const newWish = {
+        id: `wish_${Date.now()}`,
+        toName: values.toName,
+        fromName: values.fromName,
+        message: values.message,
+        imageUrl: values.imageUrl || '',
+        template: values.template,
+        status: 'Unpublished'
+    };
+
+    try {
+        const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
+        const updatedWishes = [...existingWishes, newWish];
+        localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
+    } catch (error) {
+        console.error("Could not save wish to local storage", error);
+        toast({
+            variant: "destructive",
+            title: "Could not save wish",
+            description: "There was an error saving your wish. Please try again."
+        })
+        return;
+    }
 
     const params = new URLSearchParams();
     params.append('toName', values.toName);
@@ -114,7 +136,7 @@ export default function CreateWishPage() {
     params.append('imageUrl', values.imageUrl || '');
     params.append('template', values.template);
 
-    const url = `/wish/${fakeId}?${params.toString()}`;
+    const url = `/wish/${newWish.id}?${params.toString()}`;
 
     if (url.length > 4096) { // Check for reasonable URL length
       toast({

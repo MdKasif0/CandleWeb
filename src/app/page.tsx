@@ -1,9 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { LayoutGrid, Layers, MoreHorizontal, Sparkles } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
+import React, { useState, useEffect } from 'react';
 
 const VIcon = () => (
     <svg
@@ -21,22 +24,20 @@ const VIcon = () => (
     </svg>
   );
 
-const mockWishes = [
-    {
-        id: '1',
-        name: 'Fintech Website',
-        status: 'Unpublished',
-        icon: <VIcon />,
-    },
-    {
-        id: '2',
-        name: 'E-commerce Website',
-        status: 'Unpublished',
-        icon: <VIcon />,
-    },
-];
+interface Wish {
+    id: string;
+    toName: string;
+    status: string;
+}
 
 export default function DashboardPage() {
+    const [wishes, setWishes] = useState<Wish[]>([]);
+
+    useEffect(() => {
+        const storedWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
+        setWishes(storedWishes);
+    }, []);
+
     return (
         <div className="bg-background text-foreground min-h-screen font-sans">
             <div className="p-4 md:p-6 max-w-lg mx-auto pb-24">
@@ -77,26 +78,39 @@ export default function DashboardPage() {
 
                 {/* Wish List */}
                 <section>
-                    <div className="space-y-3">
-                        {mockWishes.map((wish) => (
-                            <Card key={wish.id} className="bg-card p-3 border-border/50">
-                                <CardContent className="flex items-center justify-between p-0">
-                                    <div className="flex items-center gap-3">
-                                        <div className="bg-background p-2 rounded-lg">
-                                            {wish.icon}
+                    {wishes.length > 0 ? (
+                        <div className="space-y-3">
+                            {wishes.map((wish) => (
+                                <Card key={wish.id} className="bg-card p-3 border-border/50">
+                                    <CardContent className="flex items-center justify-between p-0">
+                                        <div className="flex items-center gap-3">
+                                            <div className="bg-background p-2 rounded-lg">
+                                                <VIcon />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-semibold text-card-foreground">Wish for {wish.toName}</h3>
+                                                <p className="text-sm text-muted-foreground">Free &bull; {wish.status}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h3 className="font-semibold text-card-foreground">{wish.name}</h3>
-                                            <p className="text-sm text-muted-foreground">Free &bull; {wish.status}</p>
-                                        </div>
-                                    </div>
-                                    <Button variant="ghost" size="icon" className="text-muted-foreground w-8 h-8">
-                                        <MoreHorizontal className="h-5 w-5" />
-                                    </Button>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
+                                        <Button variant="ghost" size="icon" className="text-muted-foreground w-8 h-8">
+                                            <MoreHorizontal className="h-5 w-5" />
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : (
+                         <Card className="bg-card p-6 border-border/50 text-center">
+                            <CardContent className="p-0 flex flex-col items-center">
+                                <Layers className="h-12 w-12 text-muted-foreground mb-4" />
+                                <h3 className="font-semibold text-card-foreground mb-2">No Websites Built Yet</h3>
+                                <p className="text-sm text-muted-foreground mb-4">Get started by choosing a template and creating your first wish!</p>
+                                <Link href="/templates" passHref>
+                                    <Button>Create a Website</Button>
+                                </Link>
+                            </CardContent>
+                        </Card>
+                    )}
                 </section>
             </div>
             
