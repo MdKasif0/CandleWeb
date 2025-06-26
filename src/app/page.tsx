@@ -1,53 +1,131 @@
 import Link from 'next/link';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Cake, Sparkles } from 'lucide-react';
-import Image from 'next/image';
+import { Card, CardContent } from '@/components/ui/card';
+import { LayoutGrid, Layers, MoreHorizontal, Moon, Sparkles, LayoutTemplate } from 'lucide-react';
 
-export default function Home() {
-  return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-background">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
-      
-      <main className="flex min-h-screen flex-col items-center justify-between p-8 text-center z-10 relative">
-        <header className="flex items-center gap-2 self-start">
-          <Cake className="h-7 w-7 text-primary" />
-          <h2 className="text-xl font-bold text-foreground">Birthday Wish</h2>
-        </header>
-
-        <div className="flex flex-col items-center">
-            <div className="relative w-full max-w-[350px] mb-8">
-              <div className="absolute -inset-1.5 bg-gradient-to-r from-primary to-fuchsia-500 rounded-3xl blur-xl opacity-30"></div>
-              <Image
-                src="https://placehold.co/350x700"
-                alt="App Preview"
-                width={350}
-                height={700}
-                className="relative rounded-3xl border-4 border-gray-800 shadow-2xl shadow-primary/20"
-                data-ai-hint="birthday card mobile"
-              />
-            </div>
-
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-4">
-              Create Personalized <br /> Birthday Websites
-            </h1>
-            <p className="max-w-md text-lg text-muted-foreground mb-8">
-              Surprise your loved ones with a unique, interactive birthday card they'll never forget.
-            </p>
-
-            <Button asChild size="lg" className="w-64 h-14 text-lg font-semibold relative overflow-hidden group bg-gradient-to-r from-primary to-fuchsia-500 hover:from-primary/90 hover:to-fuchsia-500/90 transition-all duration-300 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40">
-                <Link href="/create" className="flex items-center gap-2">
-                  Create a free Wish
-                  <Sparkles className="h-5 w-5 transition-transform duration-500 group-hover:rotate-180" />
-                </Link>
-            </Button>
-        </div>
-
-        <footer className="w-full">
-            <p className="text-sm text-muted-foreground">
-                Easy, fast, and free!
-            </p>
-        </footer>
-      </main>
-    </div>
+const VIcon = () => (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="text-primary"
+    >
+      <path
+        d="M6.7901 3.39001L12.0001 13L17.2101 3.39001H21.0001L12.0001 21L3.0001 3.39001H6.7901Z"
+        fill="currentColor"
+      />
+    </svg>
   );
+
+const mockWishes = [
+    {
+        id: '1',
+        name: 'Fintech Website',
+        status: 'Unpublished',
+        icon: <VIcon />,
+    },
+    {
+        id: '2',
+        name: 'E-commerce Website',
+        status: 'Unpublished',
+        icon: <VIcon />,
+    },
+];
+
+export default function DashboardPage() {
+    return (
+        <div className="bg-background text-foreground min-h-screen font-sans">
+            <div className="p-4 md:p-6 max-w-lg mx-auto pb-24">
+                {/* Header */}
+                <header className="flex items-center justify-between mb-8">
+                    <VIcon />
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <Button variant="ghost" size="icon" className="text-muted-foreground w-8 h-8">
+                            <Moon className="h-5 w-5" />
+                        </Button>
+                        <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-full px-4 py-1.5 text-sm h-auto shadow-lg shadow-primary/20">
+                            Upgrade
+                        </Button>
+                        <Avatar className="h-9 w-9">
+                            <AvatarImage src="https://placehold.co/40x40.png" alt="@user" />
+                            <AvatarFallback>U</AvatarFallback>
+                        </Avatar>
+                    </div>
+                </header>
+
+                {/* Greeting */}
+                <section className="mb-8">
+                    <h1 className="text-3xl font-bold mb-1">Hi Paulo</h1>
+                    <p className="text-muted-foreground">Here are your sites</p>
+                </section>
+
+                {/* Action Cards */}
+                <section className="grid grid-cols-2 gap-4 mb-8">
+                    <Link href="/create" passHref>
+                        <Card className="bg-card p-4 border border-primary/30 shadow-[0_0_15px_hsl(var(--primary)/0.1)] hover:border-primary/60 transition-all cursor-pointer group h-full">
+                            <CardContent className="flex flex-col items-start justify-between gap-4 p-0 h-full">
+                                <Sparkles className="h-8 w-8 text-primary" />
+                                <div>
+                                    <h2 className="font-semibold text-card-foreground">AI</h2>
+                                    <p className="text-sm text-muted-foreground">Create with AI</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                    <Link href="/create" passHref>
+                        <Card className="bg-card p-4 border border-border/50 hover:border-primary/50 transition-colors cursor-pointer group h-full">
+                            <CardContent className="flex flex-col items-start justify-between gap-4 p-0 h-full">
+                                <LayoutTemplate className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                                <div>
+                                    <h2 className="font-semibold text-card-foreground">New Site</h2>
+                                    <p className="text-sm text-muted-foreground">Create with Blank</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                </section>
+
+                {/* Wish List */}
+                <section>
+                    <div className="space-y-3">
+                        {mockWishes.map((wish) => (
+                            <Card key={wish.id} className="bg-card p-3 border-border/50">
+                                <CardContent className="flex items-center justify-between p-0">
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-background p-2 rounded-lg">
+                                            {wish.icon}
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-card-foreground">{wish.name}</h3>
+                                            <p className="text-sm text-muted-foreground">Free &bull; {wish.status}</p>
+                                        </div>
+                                    </div>
+                                    <Button variant="ghost" size="icon" className="text-muted-foreground w-8 h-8">
+                                        <MoreHorizontal className="h-5 w-5" />
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                </section>
+            </div>
+            
+            {/* Bottom Navigation */}
+            <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-sm border-t border-border">
+                <div className="flex justify-around items-center h-16">
+                    <Link href="/" className="flex flex-col items-center gap-1 text-primary">
+                        <LayoutGrid className="h-6 w-6" />
+                        <span className="text-xs font-medium">Dashboard</span>
+                    </Link>
+                    <Link href="/create" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
+                        <Layers className="h-6 w-6" />
+                        <span className="text-xs font-medium">Templates</span>
+                    </Link>
+                </div>
+            </footer>
+        </div>
+    );
 }
