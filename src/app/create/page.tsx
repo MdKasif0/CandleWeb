@@ -192,7 +192,7 @@ export default function CreateWishPage() {
             <ChevronLeft className="h-5 w-5" />
             <span className="ml-1">Back</span>
           </Link>
-          <h1 className="text-2xl font-bold">New Wish</h1>
+          <h1 className="text-2xl font-bold">Create your Wish</h1>
         </div>
 
         <Form {...form}>
@@ -287,7 +287,7 @@ export default function CreateWishPage() {
             
             <div className="pt-4">
               <Button type="submit" className="w-full rounded-full bg-accent py-6 text-lg font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-opacity hover:opacity-90">
-                Generate Wish
+                Generate Website
                 <Sparkles className="ml-2 h-5 w-5" />
               </Button>
                <p className="mt-4 text-center text-sm text-muted-foreground">45.8k wishes created</p>
