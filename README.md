@@ -2,24 +2,28 @@
 
 ## Introduction
 
-This web application allows users to create personalized "Happy Birthday" websites. Users can choose from various templates, add personal messages and images, and generate a unique, shareable link to celebrate a friend or loved one's special day.
+This web application allows you to create and share beautiful, personalized "Happy Birthday" websites in minutes. Leverage the power of AI to generate heartfelt messages, choose from stunning animated templates, and create a unique, shareable link to celebrate a friend or loved one's special day.
 
 ## Core Features
 
-### Progressive Web App (PWA)
+-   **AI-Powered Message Generation**: Never be at a loss for words. Our integrated AI helps you craft the perfect witty, heartfelt, or humorous birthday message based on who it's for and from.
 
-This application is a fully-featured Progressive Web App (PWA), offering a seamless, native-app-like experience on any device.
+-   **Template-Based Creation**: Get started quickly by choosing from a selection of beautifully designed and animated templates. Each template provides a unique and engaging experience for the recipient.
 
--   **Installable:** Users can add the app directly to their home screen on mobile and desktop for quick and easy access, just like a native app.
--   **Offline Capable:** Thanks to advanced caching with a service worker, the application and any created wishes are accessible even without a stable internet connection.
--   **Reliable & Engaging:** Enjoy a fast, reliable, and engaging experience with a custom icon and splash screen.
+-   **Easy Personalization**: Customize your chosen template with the recipient's name, your name, a personal message (written by you or with AI), and an optional photo to make it truly special.
+
+-   **Instant, Shareable Websites**: Once you're done, the app generates a unique and private link to the birthday website. Copy the link and share it with the birthday person instantly.
+
+-   **Progressive Web App (PWA)**: Enjoy a seamless, native-app-like experience. The app is fully installable on mobile devices and desktops, and it even works offline, so you can view your created wishes anytime, anywhere.
 
 ## Project Structure
 
 -   `/src/app/`: Contains the main application pages.
-    -   `/src/app/page.tsx`: The landing page where users can start creating a wish.
+    -   `/src/app/page.tsx`: The landing page where users can see their created wishes.
+    -   `/src/app/templates/page.tsx`: The page to browse and select a template.
     -   `/src/app/create/page.tsx`: The form for customizing the birthday website.
-    -   `/src/app/wish/[id]/page.tsx`: The dynamic page that will display the final, generated birthday wish.
+    -   `/src/app/wish/[id]/page.tsx`: The dynamic page that displays the final, generated birthday wish.
+-   `/src/ai/`: Contains the Genkit AI flows, such as message generation.
 -   `/src/components/ui`: Contains the ShadCN UI components.
 -   `/public/`: For static assets like images, fonts, and the `manifest.webmanifest` for PWA configuration.
 
@@ -28,6 +32,7 @@ This application is a fully-featured Progressive Web App (PWA), offering a seaml
 -   **Next.js**: React framework for server-side rendering and static site generation.
 -   **React**: For building the user interface.
 -   **TypeScript**: For type-safe JavaScript.
+-   **Genkit**: For integrating powerful AI features like message generation.
 -   **Tailwind CSS**: For styling the application.
 -   **ShadCN UI**: For pre-built, accessible UI components.
 -   **React Hook Form & Zod**: For robust form handling and validation.
