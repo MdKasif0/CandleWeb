@@ -38,19 +38,21 @@ export default function CreateWishPage() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // In a real application, you would save this data to a database
-    // and get a unique ID for the wish.
-    console.log('Form values:', values);
-    
-    // For now, we'll just show a success message and redirect to a placeholder page.
     const fakeId = '12345'; // This would be the ID from your database.
+    
+    const params = new URLSearchParams();
+    params.append('toName', values.toName);
+    params.append('fromName', values.fromName);
+    params.append('message', values.message);
+    params.append('imageUrl', values.imageUrl || '');
+    params.append('template', values.template);
 
     toast({
       title: 'Wish Created!',
       description: 'Your personalized birthday website is ready to be shared.',
     });
 
-    router.push(`/wish/${fakeId}`);
+    router.push(`/wish/${fakeId}?${params.toString()}`);
   }
 
   return (
@@ -113,7 +115,7 @@ export default function CreateWishPage() {
                     <FormControl>
                       <Input placeholder="https://example.com/image.png" {...field} />
                     </FormControl>
-                    <FormDescription>Add a link to a special photo.</FormDescription>
+                    <FormDescription>Add a link to a special photo for any template.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -146,7 +148,7 @@ export default function CreateWishPage() {
                           <FormControl>
                             <RadioGroupItem value="funky" />
                           </FormControl>
-                          <FormLabel className="font-normal">Funky</FormLabel>
+                          <FormLabel className="font-normal">Funky (Animated)</FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
