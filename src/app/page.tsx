@@ -76,12 +76,18 @@ export default function DashboardPage() {
         params.append('toName', wish.toName);
         params.append('fromName', wish.fromName);
         params.append('message', wish.message);
-        if (wish.imageUrl) {
-            params.append('imageUrl', wish.imageUrl);
+        
+        let relativeUrl;
+        if (wish.template === 'premium-night-sky') {
+            relativeUrl = `/premium-night-sky/index.html?${params.toString()}`;
+        } else {
+            if (wish.imageUrl) {
+                params.append('imageUrl', wish.imageUrl);
+            }
+            params.append('template', wish.template);
+            relativeUrl = `/wish/${wish.id}?${params.toString()}`;
         }
-        params.append('template', wish.template);
 
-        const relativeUrl = `/wish/${wish.id}?${params.toString()}`;
         const fullUrl = window.location.origin + relativeUrl;
 
         navigator.clipboard.writeText(fullUrl).then(() => {

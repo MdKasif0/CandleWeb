@@ -362,7 +362,7 @@ function showBalloons() {
 // Fireworks functionality
 let w, h, ctx;
 const opts = {
-    strings: ['HAPPY', 'BIRTHDAY', 'KASIF'],
+    strings: ['HAPPY', 'BIRTHDAY', window.birthdayData.toName.toUpperCase()],
     charSize: 30,
     charSpacing: 35,
     lineHeight: 40,
@@ -957,17 +957,18 @@ document.getElementById('cancel-button').addEventListener('click', function() {
 
 function showMessages() {
     const messages = [
-       "Once again Happy Birthday Kasif 🎂",
+       `Once again Happy Birthday ${window.birthdayData.toName} 🎂`,
+        window.birthdayData.message,
         "Wishing you all the best!",
         "May all your dreams come true!",
         "May your whole life be healthy and peaceful", 
-        "Did you like it?🤔",
+        "Did you Liked it?🤔",
         "If Yes then click on 'Liked it' at last,", 
         "else rewatch it 😅", 
         "Sorry, because it wasn't perfectly build", 
         "as it is still in developing stage",
         "The End", 
-        "💖"
+        `💖 A special wish from ${window.birthdayData.fromName} 💖`
     ];
 
     const messagesElement = document.getElementById('messages');

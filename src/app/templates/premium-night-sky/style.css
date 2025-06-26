@@ -509,7 +509,7 @@ canvas {
 
 
 .popup-content {
-    background: url(/popup_background.jpg);
+    background: url(popup_background.jpg);
     background-size: cover;
     padding: 30px;
     border-radius: 15px;
@@ -547,7 +547,7 @@ canvas {
 }
 
 .popup-content button {
-    background: url(/button_background.jpg);
+    background: url(button_background.jpg);
     background-size: cover;
     color: black;
     border: 0.2vw solid black;
@@ -653,7 +653,7 @@ canvas {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url(/happy_birthday_background.jpg);
+    background: url(happy_birthday_background.jpg);
     background-size: cover;
     display: none;
     justify-content: center;

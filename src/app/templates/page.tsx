@@ -30,6 +30,13 @@ const mockTemplates = [
         imageUrl: '/night-sky-cover.png',
         dataAiHint: 'night sky cake'
     },
+    {
+        id: 'premium-night-sky',
+        name: 'Premium Night Sky',
+        description: 'A highly animated and interactive birthday experience with fireworks and audio.',
+        imageUrl: '/premium-night-sky-cover.png',
+        dataAiHint: 'fireworks celebration audio'
+    },
 ];
 
 export default function TemplatesPage() {
@@ -62,32 +69,48 @@ export default function TemplatesPage() {
                 {/* Template List */}
                 <section>
                     <div className="space-y-6">
-                        {mockTemplates.map((template) => (
-                            <Card key={template.id} className="bg-card border-border/50 shadow-lg overflow-hidden transition-all hover:border-primary/30 hover:shadow-primary/10">
-                                <CardContent className="p-4">
-                                    <div className="aspect-video w-full rounded-md overflow-hidden mb-4 border border-border/50">
-                                        <Image
-                                            src={template.imageUrl}
-                                            alt={template.name}
-                                            width={600}
-                                            height={400}
-                                            className="w-full h-full object-cover"
-                                            data-ai-hint={template.dataAiHint}
-                                        />
-                                    </div>
-                                    <h2 className="text-lg font-semibold text-card-foreground">{template.name}</h2>
-                                    <p className="text-sm text-muted-foreground">{template.description}</p>
-                                </CardContent>
-                                <CardFooter className="bg-card/50 px-4 py-3 flex gap-2">
-                                    <Link href="/wish/preview?template=night-sky&toName=Someone&fromName=Your Friend&message=Wishing you a day filled with happiness and a year filled with joy. Happy birthday!" passHref className="w-full" target="_blank">
-                                        <Button variant="outline" className="w-full bg-transparent border-input hover:bg-secondary rounded-full">Preview</Button>
-                                    </Link>
-                                    <Link href={`/create?template=${template.id}`} passHref className="w-full">
-                                        <Button className="w-full bg-accent text-accent-foreground font-semibold shadow-md shadow-accent/10 rounded-full">Use Template</Button>
-                                    </Link>
-                                </CardFooter>
-                            </Card>
-                        ))}
+                        {mockTemplates.map((template) => {
+                            const previewParams = new URLSearchParams({
+                                toName: 'Someone',
+                                fromName: 'Your Friend',
+                                message: 'Wishing you a day filled with happiness and a year filled with joy. Happy birthday!',
+                            });
+
+                            let previewUrl;
+                            if (template.id === 'premium-night-sky') {
+                                previewUrl = `/premium-night-sky/index.html?${previewParams.toString()}`;
+                            } else {
+                                previewParams.append('template', template.id);
+                                previewUrl = `/wish/preview?${previewParams.toString()}`;
+                            }
+                            
+                            return (
+                                <Card key={template.id} className="bg-card border-border/50 shadow-lg overflow-hidden transition-all hover:border-primary/30 hover:shadow-primary/10">
+                                    <CardContent className="p-4">
+                                        <div className="aspect-video w-full rounded-md overflow-hidden mb-4 border border-border/50">
+                                            <Image
+                                                src={template.imageUrl}
+                                                alt={template.name}
+                                                width={600}
+                                                height={400}
+                                                className="w-full h-full object-cover"
+                                                data-ai-hint={template.dataAiHint}
+                                            />
+                                        </div>
+                                        <h2 className="text-lg font-semibold text-card-foreground">{template.name}</h2>
+                                        <p className="text-sm text-muted-foreground">{template.description}</p>
+                                    </CardContent>
+                                    <CardFooter className="bg-card/50 px-4 py-3 flex gap-2">
+                                        <Link href={previewUrl} passHref className="w-full" target="_blank">
+                                            <Button variant="outline" className="w-full bg-transparent border-input hover:bg-secondary rounded-full">Preview</Button>
+                                        </Link>
+                                        <Link href={`/create?template=${template.id}`} passHref className="w-full">
+                                            <Button className="w-full bg-accent text-accent-foreground font-semibold shadow-md shadow-accent/10 rounded-full">Use Template</Button>
+                                        </Link>
+                                    </CardFooter>
+                                </Card>
+                            )
+                        })}
                     </div>
                 </section>
                 

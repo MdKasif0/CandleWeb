@@ -24,7 +24,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -36,12 +36,15 @@ const formSchema = z.object({
   fromName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
   imageUrl: z.string().optional(),
-  template: z.literal('night-sky'),
+  template: z.enum(['night-sky', 'premium-night-sky']),
 });
 
 export default function CreateWishPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const templateId = searchParams.get('template') || 'night-sky';
+  
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
@@ -54,9 +57,11 @@ export default function CreateWishPage() {
       fromName: '',
       message: '',
       imageUrl: '',
-      template: 'night-sky',
+      template: templateId as 'night-sky' | 'premium-night-sky',
     },
   });
+
+  const selectedTemplate = form.watch('template');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -174,12 +179,18 @@ export default function CreateWishPage() {
         params.append('toName', values.toName);
         params.append('fromName', values.fromName);
         params.append('message', values.message);
-        if(values.imageUrl) {
-            params.append('imageUrl', values.imageUrl);
-        }
-        params.append('template', values.template);
 
-        const relativeUrl = `/wish/${newWish.id}?${params.toString()}`;
+        let relativeUrl;
+        if (values.template === 'premium-night-sky') {
+            relativeUrl = `/premium-night-sky/index.html?${params.toString()}`;
+        } else {
+            if(values.imageUrl) {
+                params.append('imageUrl', values.imageUrl);
+            }
+            params.append('template', values.template);
+            relativeUrl = `/wish/${newWish.id}?${params.toString()}`;
+        }
+
 
         if ((window.location.origin + relativeUrl).length > 8192) { // Check for reasonable URL length
           toast({
@@ -299,37 +310,39 @@ export default function CreateWishPage() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Upload Image (Optional)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/png, image/jpeg, image/gif"
-                      onChange={handleFileChange}
-                      className={`rounded-full file:mr-4 file:rounded-full file:border-0 file:bg-accent file:px-4 file:py-2 file:text-accent-foreground hover:file:bg-accent/90 ${darkInputStyles}`}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                  {field.value && (
-                    <div className="mt-4 flex flex-col items-center rounded-md p-4">
-                       <p className="mb-2 text-sm font-medium">Image Preview</p>
-                       <Image
-                        data-ai-hint="birthday person"
-                        src={field.value}
-                        alt="Image preview"
-                        width={150}
-                        height={150}
-                        className="rounded-md object-contain"
+            {selectedTemplate !== 'premium-night-sky' && (
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Upload Image (Optional)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        accept="image/png, image/jpeg, image/gif"
+                        onChange={handleFileChange}
+                        className={`rounded-full file:mr-4 file:rounded-full file:border-0 file:bg-accent file:px-4 file:py-2 file:text-accent-foreground hover:file:bg-accent/90 ${darkInputStyles}`}
                       />
-                    </div>
-                  )}
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                    <FormMessage />
+                    {field.value && (
+                      <div className="mt-4 flex flex-col items-center rounded-md p-4">
+                         <p className="mb-2 text-sm font-medium">Image Preview</p>
+                         <Image
+                          data-ai-hint="birthday person"
+                          src={field.value}
+                          alt="Image preview"
+                          width={150}
+                          height={150}
+                          className="rounded-md object-contain"
+                        />
+                      </div>
+                    )}
+                  </FormItem>
+                )}
+              />
+            )}
             
             <div className="pt-4">
               <Button type="submit" disabled={isSubmitting || isGenerating} className="w-full rounded-full bg-accent py-6 text-lg font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-opacity hover:opacity-90">

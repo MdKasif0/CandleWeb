@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Happy Birthday Wishes">
     <meta name="keywords" content="birthday, cake, happy birthday, greetings, fireworks">
-    <title>Happy Birthday Kasif</title>
+    <title>Happy Birthday</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -41,13 +41,13 @@
             <!-- Candles will be dynamically added here -->
         </div>
         <div class="text-center">
-            <h5 class="cake-off">💖 Happy Birthday Dude 💖</h5>
+            <h5 class="cake-off" id="cake-greeting">💖 Happy Birthday 💖</h5>
             <p class="cake-off">💝 Wish you the best 💝</p>
         </div>
     </div>
    <!-- Greetings screen -->
     <div id="greetings-screen">
-        <h1 id="greetings-title">Happy Birthday Kasif</h1>
+        <h1 id="greetings-title">Happy Birthday</h1>
         <!-- Fireworks here -->
     </div>
     <div id="popup" class="popup">
@@ -92,6 +92,25 @@
   </div>
     <canvas id="c"></canvas>
     <audio id="birthday-audio" src="Blue.mp3" loop></audio>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const toName = params.get('toName') || 'Friend';
+        const fromName = params.get('fromName') || 'A Friend';
+        const message = params.get('message') || 'Wishing you a fantastic day filled with joy and happiness!';
+
+        window.birthdayData = { toName, fromName, message };
+
+        // Update dynamic content
+        document.title = `Happy Birthday ${toName}`;
+        const greetingsTitle = document.getElementById('greetings-title');
+        if (greetingsTitle) {
+            greetingsTitle.textContent = `Happy Birthday ${toName}`;
+        }
+        const cakeGreeting = document.getElementById('cake-greeting');
+        if (cakeGreeting) {
+            cakeGreeting.innerHTML = `💖 Happy Birthday ${toName} 💖`;
+        }
+    </script>
     <script src="main.js"></script>
 </body>
 </html>
