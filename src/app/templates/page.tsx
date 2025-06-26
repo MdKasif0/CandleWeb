@@ -79,7 +79,9 @@ export default function TemplatesPage() {
                                     <p className="text-sm text-muted-foreground">{template.description}</p>
                                 </CardContent>
                                 <CardFooter className="bg-card/50 px-4 py-3 flex gap-2">
-                                    <Button variant="outline" className="w-full bg-transparent border-input hover:bg-secondary rounded-full">Preview</Button>
+                                    <Link href="/wish/preview?toName=Someone&fromName=Your Friend&message=Wishing you a day filled with happiness and a year filled with joy. Happy birthday!" passHref className="w-full" target="_blank">
+                                        <Button variant="outline" className="w-full bg-transparent border-input hover:bg-secondary rounded-full">Preview</Button>
+                                    </Link>
                                     <Link href={`/create?template=${template.id}`} passHref className="w-full">
                                         <Button className="w-full bg-accent text-accent-foreground font-semibold shadow-md shadow-accent/10 rounded-full">Use Template</Button>
                                     </Link>
