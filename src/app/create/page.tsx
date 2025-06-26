@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, Sparkles, Loader2, Copy, ArrowRight } from 'lucide-react';
 import { generateMessage, GenerateMessageInput } from '@/ai/flows/generateMessage';
@@ -37,11 +37,10 @@ const formSchema = z.object({
   template: z.enum(['night-sky', 'premium-night-sky']),
 });
 
-export default function CreateWishPage() {
+function CreateWishForm() {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const templateId = searchParams.get('template') || 'night-sky';
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,9 +53,16 @@ export default function CreateWishPage() {
       toName: '',
       fromName: '',
       message: '',
-      template: templateId as 'night-sky' | 'premium-night-sky',
+      template: 'night-sky',
     },
   });
+
+  useEffect(() => {
+    const templateId = searchParams.get('template');
+    if (templateId === 'night-sky' || templateId === 'premium-night-sky') {
+      form.setValue('template', templateId);
+    }
+  }, [searchParams, form]);
   
   const handleGenerateMessage = async () => {
     const toName = form.getValues('toName');
@@ -284,4 +290,16 @@ export default function CreateWishPage() {
       </Dialog>
     </main>
   );
+}
+
+export default function CreateWishPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex min-h-screen w-full items-center justify-center bg-background">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        }>
+            <CreateWishForm />
+        </Suspense>
+    );
 }
