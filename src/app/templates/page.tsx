@@ -30,20 +30,6 @@ const mockTemplates = [
         imageUrl: 'https://placehold.co/600x400.png',
         dataAiHint: 'night sky moon'
     },
-    {
-        id: 'modern',
-        name: 'Modern',
-        description: 'A sleek, modern design for a stylish wish.',
-        imageUrl: 'https://placehold.co/600x400.png',
-        dataAiHint: 'website template modern'
-    },
-    {
-        id: 'classic',
-        name: 'Classic',
-        description: 'A timeless, classic look for an elegant message.',
-        imageUrl: 'https://placehold.co/600x400.png',
-        dataAiHint: 'website template classic'
-    },
 ];
 
 export default function TemplatesPage() {

@@ -16,34 +16,23 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, Sparkles } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 
 const formSchema = z.object({
   toName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   fromName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
   imageUrl: z.string().optional(),
-  template: z.enum(['modern', 'classic', 'funky'], {
-    required_error: 'You need to select a template.',
-  }),
+  template: z.literal('funky'),
 });
 
 export default function CreateWishPage() {
   const { toast } = useToast();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const template = searchParams.get('template') || 'funky';
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,7 +41,7 @@ export default function CreateWishPage() {
       fromName: '',
       message: '',
       imageUrl: '',
-      template: template as 'modern' | 'classic' | 'funky',
+      template: 'funky',
     },
   });
 
@@ -237,28 +226,6 @@ export default function CreateWishPage() {
                       />
                     </div>
                   )}
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="template"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Choose a Template</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className={`rounded-full ${darkInputStyles}`}>
-                        <SelectValue placeholder="Select a visual style" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="funky">Night Sky</SelectItem>
-                      <SelectItem value="modern">Modern</SelectItem>
-                      <SelectItem value="classic">Classic</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
                 </FormItem>
               )}
             />
