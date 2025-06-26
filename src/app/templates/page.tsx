@@ -24,6 +24,13 @@ const VIcon = () => (
 
 const mockTemplates = [
     {
+        id: 'funky',
+        name: 'Night Sky',
+        description: 'A dreamy, animated night scene with a moon, cake, and a special gift.',
+        imageUrl: 'https://placehold.co/600x400.png',
+        dataAiHint: 'night sky moon'
+    },
+    {
         id: 'modern',
         name: 'Modern',
         description: 'A sleek, modern design for a stylish wish.',
@@ -36,13 +43,6 @@ const mockTemplates = [
         description: 'A timeless, classic look for an elegant message.',
         imageUrl: 'https://placehold.co/600x400.png',
         dataAiHint: 'website template classic'
-    },
-    {
-        id: 'funky',
-        name: 'Funky (Animated)',
-        description: 'A fun, animated experience with music.',
-        imageUrl: 'https://placehold.co/600x400.png',
-        dataAiHint: 'website template funky'
     },
 ];
 

@@ -43,7 +43,7 @@ export default function CreateWishPage() {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const template = searchParams.get('template') || 'modern';
+  const template = searchParams.get('template') || 'funky';
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -253,9 +253,9 @@ export default function CreateWishPage() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
+                      <SelectItem value="funky">Night Sky</SelectItem>
                       <SelectItem value="modern">Modern</SelectItem>
                       <SelectItem value="classic">Classic</SelectItem>
-                      <SelectItem value="funky">Funky (Animated)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
