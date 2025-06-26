@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Happy Birthday Wishes">
+    <meta name="keywords" content="birthday, cake, happy birthday, greetings, fireworks">
+    <title>Happy Birthday</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button id="start">START</button>
+    <button id="startconsoledebug" style="display: none;">enable console logs</button>
+    <button id="stopconsoledebug" style="display: none;">disable console logs</button>
+
+    <div class="noite"></div>
+
+    <div class="constelacao"></div>
+
+    <div class="lua">
+        <div class="textura"></div>
+    </div>
+
+    <div class="chuvaMeteoro"></div>
+
+    <div class="floresta">
+        <img src="bgTree.png" alt="" />
+    </div>
+
+    <div id="cake-holder">
+        <h4 id="instructions">'Blow the candles'</h4>
+        <div class="cake">
+            <div class="plate"></div>
+            <div class="layer layer-bottom"></div>
+            <div class="layer layer-middle"></div>
+            <div class="layer layer-top"></div>
+            <div class="icing"></div>
+            <div class="drip drip1"></div>
+            <div class="drip drip2"></div>
+            <div class="drip drip3"></div>
+            <!-- Candles will be dynamically added here -->
+        </div>
+        <div class="text-center">
+            <h5 class="cake-off" id="cake-greeting">💖 Happy Birthday 💖</h5>
+            <p class="cake-off">💝 Wish you the best 💝</p>
+        </div>
+    </div>
+   <!-- Greetings screen -->
+    <div id="greetings-screen">
+        <h1 id="greetings-title">Happy Birthday</h1>
+        <!-- Fireworks here -->
+    </div>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h2>Happy Birthday!</h2>
+            <p>Wishing you a fantastic day filled with joy and happiness!</p>
+            <div class="popup-buttons">
+                <button id="cancel-button">Cancel</button>
+                <button id="ok-button">OK</button>
+            </div>
+        </div>
+    </div>
+     <!-- Cake pop-up -->
+    <div id="cake-popup" class="popup">
+        <div class="popup-content">
+            <h2>Let's blow out the candles.</h2>
+            <div class="popup-buttons">
+                <button id="cake-cancel-button">Cancel</button>
+                <button id="cake-ok-button">OK</button>
+            </div>
+        </div>
+    </div>
+    <div id="messages" class="messages">
+        <!-- Birthday messages will be displayed here -->
+    </div>
+
+    <div id="final-popup" class="popup">
+        <div class="popup-content">
+            <h2>Shukriya Dekhne ke liye</h2>
+            <p>Did you Liked it?</p>
+            <div class="popup-buttons">
+                <button id="rewatch-button">Re-watch</button>
+                <button id="liked-button">Liked it</button>
+            </div>
+        </div>
+    </div>
+    <div id="secret-message" class="popup">
+      <div class="popup-content">
+          <h2>Secret Message</h2>
+          <p>May Allah grant you the success in Deen and Duniya 💖</p>
+      </div>
+  </div>
+    <canvas id="c"></canvas>
+    <audio id="birthday-audio" src="Blue.mp3" loop></audio>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const toName = params.get('toName') || 'Friend';
+        const fromName = params.get('fromName') || 'A Friend';
+        const message = params.get('message') || 'Wishing you a fantastic day filled with joy and happiness!';
+
+        window.birthdayData = { toName, fromName, message };
+
+        // Update dynamic content
+        document.title = `Happy Birthday ${toName}`;
+        const greetingsTitle = document.getElementById('greetings-title');
+        if (greetingsTitle) {
+            greetingsTitle.textContent = `Happy Birthday ${toName}`;
+        }
+        const cakeGreeting = document.getElementById('cake-greeting');
+        if (cakeGreeting) {
+            cakeGreeting.innerHTML = `💖 Happy Birthday ${toName} 💖`;
+        }
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>
