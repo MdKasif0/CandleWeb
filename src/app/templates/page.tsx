@@ -86,7 +86,7 @@ export default function TemplatesPage() {
                             }
                             
                             return (
-                                <Card key={template.id} className="bg-card border-border/50 shadow-lg overflow-hidden transition-all hover:border-primary/30 hover:shadow-primary/10">
+                                <Card key={template.id} className="bg-card border-border/50 shadow-lg overflow-hidden group transition-all hover:shadow-primary/20 hover:-translate-y-1 duration-300">
                                     <CardContent className="p-4">
                                         <div className="aspect-video w-full rounded-md overflow-hidden mb-4 border border-border/50">
                                             <Image
@@ -94,7 +94,7 @@ export default function TemplatesPage() {
                                                 alt={template.name}
                                                 width={600}
                                                 height={400}
-                                                className="w-full h-full object-cover"
+                                                className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
                                                 data-ai-hint={template.dataAiHint}
                                             />
                                         </div>

@@ -160,7 +160,7 @@ export default function DashboardPage() {
                 {/* Action Card */}
                 <section className="mb-8">
                     <Link href="/templates" passHref>
-                        <Card className="p-4 bg-gradient-to-br from-green-400 to-teal-400 transition-all cursor-pointer group">
+                        <Card className="p-4 bg-accent transition-all cursor-pointer group hover:shadow-lg hover:shadow-accent/20 hover:-translate-y-1 duration-300">
                             <CardContent className="flex items-center gap-4 p-0">
                                 <Sparkles className="h-8 w-8 text-accent-foreground" />
                                 <h2 className="font-semibold text-accent-foreground">Choose a Template and Create with AI</h2>
@@ -174,7 +174,7 @@ export default function DashboardPage() {
                     {wishes.length > 0 ? (
                         <div className="space-y-3">
                             {wishes.map((wish) => (
-                                <Card key={wish.id} className="bg-card p-3 border-border/50">
+                                <Card key={wish.id} className="bg-card p-3 border-border/50 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10">
                                     <CardContent className="flex items-center justify-between p-0">
                                         <div className="flex items-center gap-3">
                                             <div className="bg-background p-2 rounded-lg">

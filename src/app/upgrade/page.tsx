@@ -67,7 +67,7 @@ const monthlyPlans = [
 ];
 
 const PlanCard = ({ plan }: { plan: typeof yearlyPlans[0] }) => (
-    <Card className="bg-card border-border relative overflow-hidden shadow-lg shadow-primary/10">
+    <Card className="bg-card border-border relative overflow-hidden shadow-lg shadow-primary/10 transition-all hover:shadow-primary/20 hover:-translate-y-1 duration-300">
         {plan.save && (
              <div className="absolute top-3 right-[-34px] transform rotate-45 bg-accent/20 text-accent text-center text-xs font-semibold py-1 w-28 shadow-md">
                 Save {plan.save}
