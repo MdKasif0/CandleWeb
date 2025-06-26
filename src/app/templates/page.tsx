@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { LayoutGrid, Layers } from 'lucide-react';
+import { LayoutGrid, Layers, Sparkles } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 
 const VIcon = () => (
@@ -88,6 +88,15 @@ export default function TemplatesPage() {
                         ))}
                     </div>
                 </section>
+                
+                <div className="mt-12 text-center">
+                    <div className="inline-flex items-center justify-center rounded-full bg-secondary p-3 mb-4">
+                        <Sparkles className="h-6 w-6 text-accent" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground">More templates coming soon!</h3>
+                    <p className="text-muted-foreground mt-1 text-sm">We're working hard to bring you more amazing designs. Stay tuned!</p>
+                </div>
+
             </div>
             
             {/* Bottom Navigation */}
