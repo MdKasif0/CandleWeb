@@ -2,11 +2,29 @@
 
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { LayoutGrid, Layers, MoreHorizontal, Sparkles } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { LayoutGrid, Layers, MoreHorizontal, Sparkles, Trash2 } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import React, { useState, useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
+
 
 const VIcon = () => (
     <svg
@@ -32,11 +50,49 @@ interface Wish {
 
 export default function DashboardPage() {
     const [wishes, setWishes] = useState<Wish[]>([]);
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [wishToDelete, setWishToDelete] = useState<Wish | null>(null);
+    const { toast } = useToast();
 
     useEffect(() => {
-        const storedWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
-        setWishes(storedWishes);
+        try {
+            const storedWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
+            setWishes(storedWishes);
+        } catch (error) {
+            console.error("Could not parse wishes from local storage", error);
+            setWishes([]);
+        }
     }, []);
+
+    const handleDeleteClick = (wish: Wish) => {
+        setWishToDelete(wish);
+        setIsAlertOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        if (!wishToDelete) return;
+
+        try {
+            const updatedWishes = wishes.filter(w => w.id !== wishToDelete.id);
+            localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
+            setWishes(updatedWishes);
+
+            toast({
+                title: "Wish Deleted",
+                description: `The wish for ${wishToDelete.toName} has been removed.`,
+            });
+        } catch (error) {
+            console.error("Could not delete wish from local storage", error);
+            toast({
+                variant: "destructive",
+                title: "Could not delete wish",
+                description: "There was an error deleting your wish. Please try again."
+            });
+        } finally {
+            setIsAlertOpen(false);
+            setWishToDelete(null);
+        }
+    };
 
     return (
         <div className="bg-background text-foreground min-h-screen font-sans">
@@ -66,7 +122,7 @@ export default function DashboardPage() {
 
                 {/* Action Card */}
                 <section className="mb-8">
-                    <Link href="/templates" passHref>
+                    <Link href="/create" passHref>
                         <Card className="p-4 bg-gradient-to-br from-green-400 to-teal-400 transition-all cursor-pointer group">
                             <CardContent className="flex items-center gap-4 p-0">
                                 <Sparkles className="h-8 w-8 text-accent-foreground" />
@@ -92,9 +148,22 @@ export default function DashboardPage() {
                                                 <p className="text-sm text-muted-foreground">Free &bull; {wish.status}</p>
                                             </div>
                                         </div>
-                                        <Button variant="ghost" size="icon" className="text-muted-foreground w-8 h-8">
-                                            <MoreHorizontal className="h-5 w-5" />
-                                        </Button>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" size="icon" className="text-muted-foreground w-8 h-8">
+                                                    <MoreHorizontal className="h-5 w-5" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem
+                                                    className="text-destructive"
+                                                    onSelect={() => handleDeleteClick(wish)}
+                                                >
+                                                    <Trash2 className="mr-2 h-4 w-4" />
+                                                    <span>Delete</span>
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </CardContent>
                                 </Card>
                             ))}
@@ -105,7 +174,7 @@ export default function DashboardPage() {
                                 <Layers className="h-12 w-12 text-muted-foreground mb-4" />
                                 <h3 className="font-semibold text-card-foreground mb-2">No Websites Built Yet</h3>
                                 <p className="text-sm text-muted-foreground mb-4">Get started by choosing a template and creating your first wish!</p>
-                                <Link href="/templates" passHref>
+                                <Link href="/create" passHref>
                                     <Button>Create a Website</Button>
                                 </Link>
                             </CardContent>
@@ -113,6 +182,26 @@ export default function DashboardPage() {
                     )}
                 </section>
             </div>
+            
+            <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the birthday wish for {wishToDelete?.toName}.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => setWishToDelete(null)}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirmDelete}
+                            className={buttonVariants({ variant: "destructive" })}
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
             
             {/* Bottom Navigation */}
             <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-sm border-t border-border">
