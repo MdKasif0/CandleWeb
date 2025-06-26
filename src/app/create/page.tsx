@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,10 +16,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronLeft, Sparkles } from 'lucide-react';
+import { ChevronLeft, Sparkles, Loader2 } from 'lucide-react';
+import { generateMessage, GenerateMessageInput } from '@/ai/flows/generateMessage';
 
 const formSchema = z.object({
   toName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -33,6 +33,7 @@ const formSchema = z.object({
 export default function CreateWishPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -92,6 +93,43 @@ export default function CreateWishPage() {
     };
     reader.readAsDataURL(file);
   };
+  
+  const handleGenerateMessage = async () => {
+    const toName = form.getValues('toName');
+    const fromName = form.getValues('fromName');
+
+    if (!toName || !fromName) {
+      toast({
+        variant: 'destructive',
+        title: 'Please fill in names',
+        description: "We need both names to generate a personalized message.",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const input: GenerateMessageInput = { toName, fromName };
+      const result = await generateMessage(input);
+      if (result.message) {
+        form.setValue('message', result.message, { shouldValidate: true });
+        toast({
+            title: "Message Generated!",
+            description: "A new message has been created for you."
+        });
+      }
+    } catch (error) {
+      console.error("Could not generate message", error);
+      toast({
+        variant: 'destructive',
+        title: 'Message Generation Failed',
+        description: 'There was an error generating your message. Please try again.',
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const newWish = {
@@ -190,7 +228,24 @@ export default function CreateWishPage() {
               name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Your Personal Message</FormLabel>
+                   <div className="flex items-center justify-between">
+                    <FormLabel>Your Personal Message</FormLabel>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleGenerateMessage}
+                      disabled={isGenerating}
+                      className="rounded-full text-xs"
+                    >
+                      {isGenerating ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Sparkles className="mr-2 h-4 w-4" />
+                      )}
+                      Generate with AI
+                    </Button>
+                  </div>
                   <FormControl>
                     <Textarea placeholder="Write your heartfelt birthday message here..." className={`resize-none rounded-2xl min-h-[120px] ${darkInputStyles}`} {...field} />
                   </FormControl>
