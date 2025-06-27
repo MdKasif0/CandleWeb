@@ -1,6 +1,9 @@
+# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
 User-agent: *
-Disallow: /wish/
-Disallow: /premium-night-sky/
 Allow: /
 
-Sitemap: https://example.com/sitemap.xml
+# Disallow crawling of wish pages to keep them private
+Disallow: /wish/
+Disallow: /create
+
+Sitemap: https://candleweb.netlify.app/sitemap.xml

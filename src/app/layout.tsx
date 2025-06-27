@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://candleweb.netlify.app"),
   applicationName: "CandleWeb",
   title: {
     default: "CandleWeb - Personalized Birthday Websites",
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CandleWeb - Personalized Birthday Websites",
     description: "Create and share beautiful, personalized AI-powered 'Happy Birthday' websites in minutes.",
+    url: "https://candleweb.netlify.app",
     siteName: 'CandleWeb',
     images: [
       {

@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://example.com/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <loc>https://candleweb.netlify.app/</loc>
+    <lastmod>2024-05-21</lastmod>
+    <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://example.com/templates</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://candleweb.netlify.app/templates</loc>
+    <lastmod>2024-05-21</lastmod>
+    <priority>0.80</priority>
   </url>
-  <url>
-    <loc>https://example.com/create</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
-  </url>
-    <url>
-    <loc>https://example.com/upgrade</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+   <url>
+    <loc>https://candleweb.netlify.app/upgrade</loc>
+    <lastmod>2024-05-21</lastmod>
+    <priority>0.60</priority>
   </url>
 </urlset>
