@@ -965,8 +965,6 @@ function showMessages() {
         "Did you Liked it?🤔",
         "If Yes then click on 'Liked it' at last,", 
         "else rewatch it 😅", 
-        "Sorry, because it wasn't perfectly build", 
-        "as it is still in developing stage",
         "The End", 
         `💖 A special wish from ${window.birthdayData.fromName} 💖`
     ];
