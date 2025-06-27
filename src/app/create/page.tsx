@@ -36,7 +36,7 @@ const formSchema = z.object({
   toName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   fromName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
-  template: z.enum(['night-sky', 'premium-night-sky']),
+  template: z.enum(['night-sky', 'premium-night-sky', 'celestial-wishes']),
 });
 
 function CreateWishForm() {
@@ -62,7 +62,7 @@ function CreateWishForm() {
 
   useEffect(() => {
     const templateId = searchParams.get('template');
-    if (templateId === 'night-sky' || templateId === 'premium-night-sky') {
+    if (templateId === 'night-sky' || templateId === 'premium-night-sky' || templateId === 'celestial-wishes') {
       form.setValue('template', templateId);
       setTemplate(templateId);
     } else {
@@ -142,7 +142,10 @@ function CreateWishForm() {
         let relativeUrl;
         if (values.template === 'premium-night-sky') {
             relativeUrl = `/premium-night-sky/index.html?${params.toString()}`;
-        } else {
+        } else if (values.template === 'celestial-wishes') {
+            relativeUrl = `/celestial-wishes/celestial-wishes.html?${params.toString()}`;
+        }
+        else {
             params.append('template', values.template);
             relativeUrl = `/wish/${newWish.id}?${params.toString()}`;
         }
@@ -186,18 +189,21 @@ function CreateWishForm() {
   }
   
   const isPremium = template === 'premium-night-sky';
+  const isCelestial = template === 'celestial-wishes';
 
   return (
     <main className={cn(
-        "flex min-h-screen flex-col items-center p-4 font-sans text-white",
-        isPremium ? 'bg-gradient-to-b from-[#0c0c2c] to-[#1d1d4e]' : 'bg-gradient-to-br from-gray-900 via-slate-900 to-black'
+        "flex min-h-screen flex-col items-center p-4 font-sans",
+        isPremium ? 'bg-gradient-to-b from-[#0c0c2c] to-[#1d1d4e] text-white' : 
+        isCelestial ? 'bg-gradient-to-br from-indigo-100 via-rose-100 to-amber-100 text-gray-800' :
+        'bg-gradient-to-br from-gray-900 via-slate-900 to-black text-white'
     )}>
         {isPremium && (
             <div className="absolute inset-0 z-0 opacity-30" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
         )}
       <div className="w-full max-w-md relative z-10">
         <div className="relative mb-8 flex items-center py-4">
-          <Link href="/templates" className="absolute left-0 flex items-center text-gray-400 transition-colors hover:text-white">
+          <Link href="/templates" className={cn("absolute left-0 flex items-center transition-colors", isCelestial ? "text-gray-600 hover:text-black" : "text-gray-400 hover:text-white")}>
             <ChevronLeft className="h-5 w-5" />
             <span className="ml-1">Back</span>
           </Link>
@@ -211,9 +217,13 @@ function CreateWishForm() {
               name="toName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Birthday Person's Name</FormLabel>
+                  <FormLabel className={cn(isCelestial && 'text-gray-700')}>Birthday Person's Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Jane Doe" {...field} className="rounded-full bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" />
+                    <Input placeholder="e.g., Jane Doe" {...field} className={cn(
+                        "rounded-full",
+                        isPremium || !isCelestial ? "bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" : 
+                        "bg-white/60 border-rose-200 text-gray-800 placeholder:text-gray-500/80 focus:border-rose-400 focus:ring-rose-400"
+                    )} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -224,9 +234,13 @@ function CreateWishForm() {
               name="fromName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Your Name</FormLabel>
+                  <FormLabel className={cn(isCelestial && 'text-gray-700')}>Your Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., John Smith" {...field} className="rounded-full bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" />
+                    <Input placeholder="e.g., John Smith" {...field} className={cn(
+                        "rounded-full",
+                        isPremium || !isCelestial ? "bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" : 
+                        "bg-white/60 border-rose-200 text-gray-800 placeholder:text-gray-500/80 focus:border-rose-400 focus:ring-rose-400"
+                    )} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -238,14 +252,18 @@ function CreateWishForm() {
               render={({ field }) => (
                 <FormItem>
                    <div className="flex items-center justify-between">
-                    <FormLabel>Your Personal Message</FormLabel>
+                    <FormLabel className={cn(isCelestial && 'text-gray-700')}>Your Personal Message</FormLabel>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={handleGenerateMessage}
                       disabled={isGenerating}
-                      className="rounded-full text-xs bg-black/20 border-white/20 hover:bg-black/40"
+                      className={cn(
+                          "rounded-full text-xs",
+                          isPremium || !isCelestial ? "bg-black/20 border-white/20 hover:bg-black/40" :
+                          "bg-white/60 border-rose-200 text-rose-600 hover:bg-white/80"
+                      )}
                     >
                       {isGenerating ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -256,7 +274,11 @@ function CreateWishForm() {
                     </Button>
                   </div>
                   <FormControl>
-                    <Textarea placeholder="Write your heartfelt birthday message here..." className="resize-none rounded-2xl min-h-[120px] bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" {...field} />
+                    <Textarea placeholder="Write your heartfelt birthday message here..." className={cn(
+                        "resize-none rounded-2xl min-h-[120px]",
+                        isPremium || !isCelestial ? "bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" : 
+                        "bg-white/60 border-rose-200 text-gray-800 placeholder:text-gray-500/80 focus:border-rose-400 focus:ring-rose-400"
+                    )} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -264,11 +286,15 @@ function CreateWishForm() {
             />
             
             <div className="pt-4">
-              <Button type="submit" disabled={isSubmitting || isGenerating} className="w-full rounded-full bg-primary py-6 text-lg font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-opacity hover:opacity-90">
+              <Button type="submit" disabled={isSubmitting || isGenerating} className={cn(
+                  "w-full rounded-full py-6 text-lg font-semibold shadow-lg transition-opacity hover:opacity-90",
+                  isCelestial ? "bg-gradient-to-r from-rose-400 to-orange-300 text-white shadow-rose-500/20" :
+                  "bg-primary text-primary-foreground shadow-primary/20"
+              )}>
                 {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
                 Generate CandleWeb
               </Button>
-               <p className="mt-4 text-center text-sm text-gray-400">45.8k CandleWebs created</p>
+               <p className={cn("mt-4 text-center text-sm", isCelestial ? "text-gray-600" : "text-gray-400")}>45.8k CandleWebs created</p>
             </div>
           </form>
         </Form>

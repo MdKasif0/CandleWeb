@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -79,6 +80,8 @@ export default function DashboardPage() {
         let relativeUrl;
         if (wish.template === 'premium-night-sky') {
             relativeUrl = `/premium-night-sky/index.html?${params.toString()}`;
+        } else if (wish.template === 'celestial-wishes') {
+            relativeUrl = `/celestial-wishes/celestial-wishes.html?${params.toString()}`;
         } else {
             params.append('template', wish.template);
             relativeUrl = `/wish/${wish.id}?${params.toString()}`;

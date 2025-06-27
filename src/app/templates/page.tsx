@@ -38,6 +38,13 @@ const mockTemplates = [
         imageUrl: '/premium-night-sky-cover.png',
         dataAiHint: 'fireworks celebration audio'
     },
+    {
+        id: 'celestial-wishes',
+        name: 'Celestial Wishes',
+        description: 'A magical, animated birthday webpage that feels like a digital gift.',
+        imageUrl: '/celestial-wishes-cover.png',
+        dataAiHint: 'celestial gift box'
+    },
 ];
 
 export default function TemplatesPage() {
@@ -80,7 +87,10 @@ export default function TemplatesPage() {
                             let previewUrl;
                             if (template.id === 'premium-night-sky') {
                                 previewUrl = `/premium-night-sky/index.html?${previewParams.toString()}`;
-                            } else {
+                            } else if (template.id === 'celestial-wishes') {
+                                previewUrl = `/celestial-wishes/celestial-wishes.html?${previewParams.toString()}`;
+                            }
+                            else {
                                 previewParams.append('template', template.id);
                                 previewUrl = `/wish/preview?${previewParams.toString()}`;
                             }
