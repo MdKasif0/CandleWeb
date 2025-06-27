@@ -160,9 +160,9 @@ export default function DashboardPage() {
                 {/* Action Card */}
                 <section className="mb-8">
                     <Link href="/templates" passHref>
-                        <Card className="p-8 bg-gradient-to-br from-purple-600 to-indigo-700 text-white transition-all cursor-pointer group hover:shadow-xl hover:shadow-indigo-500/20 hover:-translate-y-1 duration-300 min-h-[160px] flex items-center">
-                            <CardContent className="flex items-center gap-6 p-0">
-                                <Sparkles className="h-16 w-16" />
+                        <Card className="p-6 bg-gradient-to-br from-purple-600 to-indigo-700 text-white transition-all cursor-pointer group hover:shadow-xl hover:shadow-indigo-500/20 hover:-translate-y-1 duration-300 min-h-36 flex items-center">
+                            <CardContent className="flex items-center gap-4 p-0">
+                                <Sparkles className="h-12 w-12" />
                                 <h2 className="text-2xl font-semibold">Choose a Template and Create with AI</h2>
                             </CardContent>
                         </Card>
