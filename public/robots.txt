@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /wish/
+Disallow: /premium-night-sky/
+Allow: /
+
+Sitemap: https://example.com/sitemap.xml
