@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  applicationName: "CandleWeb",
   title: "CandleWeb - Personalized Birthday Websites",
   description: "Create and share personalized birthday websites with CandleWeb.",
   manifest: "/manifest.webmanifest",
