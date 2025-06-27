@@ -687,3 +687,58 @@ canvas {
         transform: translateY(0);
     }
 }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .lua {
+        right: 10px;
+        top: 20px;
+        width: 80px;
+        height: 80px;
+    }
+
+    #cake-holder {
+        transform: translateX(-50%) scale(0.8);
+        bottom: 0;
+    }
+
+    #instructions {
+        font-size: 18px;
+        top: -45vh;
+    }
+
+    .messages p {
+        font-size: 20px;
+    }
+
+    .popup-content h2 {
+        font-size: 20px;
+    }
+
+    .popup-content p {
+        font-size: 16px;
+    }
+
+    #greetings-title {
+        font-size: 2em;
+    }
+}
+
+@media (max-width: 480px) {
+    #cake-holder {
+        transform: translateX(-50%) scale(0.7);
+        bottom: -20px;
+    }
+
+     #instructions {
+        top: -40vh;
+    }
+
+    .popup-content {
+        padding: 20px;
+    }
+
+    #greetings-title {
+        font-size: 1.8em;
+    }
+}

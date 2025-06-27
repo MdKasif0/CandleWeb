@@ -43,7 +43,7 @@ const mockTemplates = [
 export default function TemplatesPage() {
     return (
         <div className="bg-background text-foreground min-h-screen font-sans">
-            <div className="p-4 md:p-6 max-w-lg mx-auto pb-24">
+            <div className="p-4 md:p-6 max-w-4xl mx-auto pb-24">
                 {/* Header */}
                 <header className="flex items-center justify-between mb-8">
                     <VIcon />
@@ -69,7 +69,7 @@ export default function TemplatesPage() {
                 
                 {/* Template List */}
                 <section>
-                    <div className="space-y-6">
+                    <div className="space-y-6 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
                         {mockTemplates.map((template) => {
                             const previewParams = new URLSearchParams({
                                 toName: 'Someone',

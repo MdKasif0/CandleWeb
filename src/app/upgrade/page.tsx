@@ -98,7 +98,7 @@ const PlanCard = ({ plan }: { plan: typeof yearlyPlans[0] }) => (
 export default function UpgradePage() {
     return (
         <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground">
-            <div className="w-full max-w-md">
+            <div className="w-full max-w-4xl">
                 <div className="relative mb-8 flex items-center justify-center py-4">
                     <Link href="/" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-foreground">
                         <ChevronLeft className="h-5 w-5" />
@@ -108,17 +108,17 @@ export default function UpgradePage() {
                 </div>
                 
                 <Tabs defaultValue="pro" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 bg-muted rounded-full mb-6 p-1 h-auto">
+                    <TabsList className="grid w-full max-w-xs mx-auto grid-cols-2 bg-muted rounded-full mb-6 p-1 h-auto">
                         <TabsTrigger value="pro" className="rounded-full data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">Pro</TabsTrigger>
                         <TabsTrigger value="basic" className="rounded-full data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">Basic</TabsTrigger>
                     </TabsList>
                     <TabsContent value="pro">
-                        <div className="space-y-6">
+                        <div className="space-y-6 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
                             {yearlyPlans.map((plan) => <PlanCard key={plan.name} plan={plan} />)}
                         </div>
                     </TabsContent>
                     <TabsContent value="basic">
-                        <div className="space-y-6">
+                        <div className="space-y-6 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
                             {monthlyPlans.map((plan) => <PlanCard key={plan.name} plan={plan} />)}
                         </div>
                     </TabsContent>
