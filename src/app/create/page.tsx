@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -29,6 +30,7 @@ import React, { useState, Suspense, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, Sparkles, Loader2, Copy, ArrowRight } from 'lucide-react';
 import { generateMessage, GenerateMessageInput } from '@/ai/flows/generateMessage';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   toName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -46,6 +48,7 @@ function CreateWishForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [generatedLink, setGeneratedLink] = useState('');
+  const [template, setTemplate] = useState('night-sky');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,6 +64,10 @@ function CreateWishForm() {
     const templateId = searchParams.get('template');
     if (templateId === 'night-sky' || templateId === 'premium-night-sky') {
       form.setValue('template', templateId);
+      setTemplate(templateId);
+    } else {
+      form.setValue('template', 'night-sky');
+      setTemplate('night-sky');
     }
   }, [searchParams, form]);
   
@@ -177,14 +184,20 @@ function CreateWishForm() {
         })
     })
   }
-
-  const darkInputStyles = "dark:bg-black/20 dark:border-white/20 dark:backdrop-blur-sm dark:placeholder:text-muted-foreground/60 dark:focus:border-primary/50 dark:focus:ring-primary/50";
+  
+  const isPremium = template === 'premium-night-sky';
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground">
-      <div className="w-full max-w-md">
+    <main className={cn(
+        "flex min-h-screen flex-col items-center p-4 font-sans text-white",
+        isPremium ? 'bg-gradient-to-b from-[#0c0c2c] to-[#1d1d4e]' : 'bg-gradient-to-br from-gray-900 via-slate-900 to-black'
+    )}>
+        {isPremium && (
+            <div className="absolute inset-0 z-0 opacity-30" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+        )}
+      <div className="w-full max-w-md relative z-10">
         <div className="relative mb-8 flex items-center py-4">
-          <Link href="/templates" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="/templates" className="absolute left-0 flex items-center text-gray-400 transition-colors hover:text-white">
             <ChevronLeft className="h-5 w-5" />
             <span className="ml-1">Back</span>
           </Link>
@@ -200,7 +213,7 @@ function CreateWishForm() {
                 <FormItem>
                   <FormLabel>Birthday Person's Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Jane Doe" {...field} className={`rounded-full ${darkInputStyles}`} />
+                    <Input placeholder="e.g., Jane Doe" {...field} className="rounded-full bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -213,7 +226,7 @@ function CreateWishForm() {
                 <FormItem>
                   <FormLabel>Your Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., John Smith" {...field} className={`rounded-full ${darkInputStyles}`} />
+                    <Input placeholder="e.g., John Smith" {...field} className="rounded-full bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -232,7 +245,7 @@ function CreateWishForm() {
                       size="sm"
                       onClick={handleGenerateMessage}
                       disabled={isGenerating}
-                      className="rounded-full text-xs"
+                      className="rounded-full text-xs bg-black/20 border-white/20 hover:bg-black/40"
                     >
                       {isGenerating ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -243,7 +256,7 @@ function CreateWishForm() {
                     </Button>
                   </div>
                   <FormControl>
-                    <Textarea placeholder="Write your heartfelt birthday message here..." className={`resize-none rounded-2xl min-h-[120px] ${darkInputStyles}`} {...field} />
+                    <Textarea placeholder="Write your heartfelt birthday message here..." className="resize-none rounded-2xl min-h-[120px] bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -251,17 +264,17 @@ function CreateWishForm() {
             />
             
             <div className="pt-4">
-              <Button type="submit" disabled={isSubmitting || isGenerating} className="w-full rounded-full bg-accent py-6 text-lg font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-opacity hover:opacity-90">
-                {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="ml-2 h-5 w-5" />}
+              <Button type="submit" disabled={isSubmitting || isGenerating} className="w-full rounded-full bg-primary py-6 text-lg font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-opacity hover:opacity-90">
+                {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
                 Generate CandleWeb
               </Button>
-               <p className="mt-4 text-center text-sm text-muted-foreground">45.8k CandleWebs created</p>
+               <p className="mt-4 text-center text-sm text-gray-400">45.8k CandleWebs created</p>
             </div>
           </form>
         </Form>
       </div>
       <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md dark">
             <DialogHeader>
                 <DialogTitle>Your CandleWeb is Ready!</DialogTitle>
                 <DialogDescription>
@@ -269,7 +282,7 @@ function CreateWishForm() {
                 </DialogDescription>
             </DialogHeader>
             <div className="flex items-center space-x-2">
-                <Input value={typeof window !== 'undefined' ? window.location.origin + generatedLink : ''} readOnly />
+                <Input value={typeof window !== 'undefined' ? window.location.origin + generatedLink : ''} readOnly className="bg-muted border-border" />
                 <Button type="button" size="icon" onClick={handleCopyToClipboard}>
                     <Copy className="h-4 w-4" />
                 </Button>
@@ -295,7 +308,7 @@ function CreateWishForm() {
 export default function CreateWishPage() {
     return (
         <Suspense fallback={
-            <div className="flex min-h-screen w-full items-center justify-center bg-background">
+            <div className="flex min-h-screen w-full items-center justify-center bg-black">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
         }>
