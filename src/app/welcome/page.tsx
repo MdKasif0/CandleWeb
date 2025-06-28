@@ -69,11 +69,6 @@ export default function WelcomePage() {
                             </p>
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                                 <Link href="/auth" passHref className="w-full sm:w-auto">
-                                    <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-full bg-transparent border-white/30 hover:bg-white/10 text-white font-semibold text-lg py-6 px-8">
-                                        Skip
-                                    </Button>
-                                </Link>
-                                <Link href="/auth" passHref className="w-full sm:w-auto">
                                     <Button size="lg" className="w-full sm:w-auto rounded-full font-semibold text-lg py-6 px-8 group bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:bg-primary/90">
                                         Create free Site
                                         <Sparkles className="ml-2 h-5 w-5" />
