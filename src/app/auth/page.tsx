@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -52,8 +53,7 @@ const signUpSchema = z.object({
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState('login');
-  const { user, signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
-  const { toast } = useToast();
+  const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -70,36 +70,19 @@ export default function AuthPage() {
             <VIcon />
             <span className="text-2xl font-bold">CandleWeb</span>
           </Link>
-          <h1 className="text-2xl font-bold">Welcome to CandleWeb</h1>
+          <h1 className="text-2xl font-bold">
+            {activeTab === 'login' ? 'Welcome Back' : 'Create an Account'}
+          </h1>
           <p className="text-muted-foreground mt-2 text-sm">
-            {activeTab === 'login' ? 'Log in to continue creating instantly!' : 'Sign up to access CandleWeb\'s amazing features.'}
+            {activeTab === 'login' ? 'Log in to continue your journey.' : 'Join us to create magical birthday wishes.'}
           </p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-muted/80 rounded-full mb-6">
-            <TabsTrigger value="login" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Login</TabsTrigger>
-            <TabsTrigger value="signup" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Sign Up</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 bg-muted/80 rounded-full mb-6 p-1 h-auto">
+            <TabsTrigger value="login" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md">Login</TabsTrigger>
+            <TabsTrigger value="signup" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md">Sign Up</TabsTrigger>
           </TabsList>
-
-          <Button variant="outline" className="w-full mb-4" onClick={async () => {
-             try {
-                await signInWithGoogle();
-                toast({ title: 'Successfully signed in with Google!' });
-             } catch (error: any) {
-                toast({ variant: 'destructive', title: 'Google Sign-In Failed', description: error.message });
-             }
-          }}>
-            <GoogleIcon className="mr-2 h-4 w-4" />
-            Continue with Google
-          </Button>
-          
-          <div className="flex items-center my-4">
-            <div className="flex-grow border-t border-muted"></div>
-            <span className="mx-4 text-xs uppercase text-muted-foreground">Or</span>
-            <div className="flex-grow border-t border-muted"></div>
-          </div>
-
           <TabsContent value="login">
             <AuthForm type="login" />
           </TabsContent>
@@ -107,10 +90,54 @@ export default function AuthPage() {
             <AuthForm type="signup" />
           </TabsContent>
         </Tabs>
+        
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+        </div>
+
+        <GoogleButton />
+
       </div>
     </div>
   );
 }
+
+function GoogleButton() {
+  const { signInWithGoogle } = useAuth();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    try {
+      await signInWithGoogle();
+      toast({ title: 'Successfully signed in with Google!' });
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Google Sign-In Failed', description: error.message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Button variant="outline" className="w-full h-11" onClick={handleGoogleSignIn} disabled={isLoading}>
+      {isLoading ? (
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      ) : (
+        <GoogleIcon className="mr-2 h-4 w-4" />
+      )}
+      Google
+    </Button>
+  );
+}
+
 
 function AuthForm({ type }: { type: 'login' | 'signup' }) {
     const { signInWithEmail, signUpWithEmail } = useAuth();
@@ -150,18 +177,18 @@ function AuthForm({ type }: { type: 'login' | 'signup' }) {
 
     return (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-1">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="Enter your Email" {...form.register('email')} />
+            <div className="space-y-2">
+                <Label htmlFor="email">Email address</Label>
+                <Input id="email" type="email" placeholder="name@example.com" {...form.register('email')} required/>
                 {form.formState.errors.email && <p className="text-xs text-destructive">{form.formState.errors.email.message}</p>}
             </div>
-            <div className="space-y-1">
+            <div className="space-y-2">
                 <div className="flex items-center justify-between">
                     <Label htmlFor="password">Password</Label>
                     {type === 'login' && <Link href="#" className="text-xs text-primary hover:underline">Forgot password?</Link>}
                 </div>
                  <div className="relative">
-                    <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your Password" {...form.register('password')} />
+                    <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="••••••••" {...form.register('password')} required />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground">
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -169,14 +196,14 @@ function AuthForm({ type }: { type: 'login' | 'signup' }) {
                 {form.formState.errors.password && <p className="text-xs text-destructive">{form.formState.errors.password.message}</p>}
             </div>
             {type === 'login' && (
-                 <div className="flex items-center">
+                 <div className="flex items-center space-x-2">
                     <Checkbox id="remember" {...form.register('remember')} />
-                    <Label htmlFor="remember" className="ml-2 font-normal text-sm">Remember me</Label>
+                    <Label htmlFor="remember" className="font-normal text-sm text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Remember me</Label>
                 </div>
             )}
-            <Button type="submit" className="w-full font-bold" disabled={isLoading}>
-                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                {type === 'login' ? 'Login' : 'Sign Up'}
+            <Button type="submit" className="w-full font-bold h-11" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {type === 'login' ? 'Login' : 'Create Account'}
             </Button>
         </form>
     );
