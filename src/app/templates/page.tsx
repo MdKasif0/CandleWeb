@@ -5,9 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { LayoutGrid, Layers, Sparkles, Loader2, User } from 'lucide-react';
+import { Sparkles, Loader2 } from 'lucide-react';
 import { useRequireAuth } from '@/hooks/use-auth';
 import { UserNav } from '@/components/user-nav';
+import { BottomNavBar } from '@/components/bottom-nav-bar';
 
 const VIcon = () => (
     <svg
@@ -143,23 +144,7 @@ export default function TemplatesPage() {
 
             </div>
             
-            {/* Bottom Navigation */}
-            <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-sm border-t border-border">
-                <div className="flex justify-around items-center h-16">
-                    <Link href="/" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
-                        <LayoutGrid className="h-6 w-6" />
-                        <span className="text-xs font-medium">Dashboard</span>
-                    </Link>
-                    <Link href="/templates" className="flex flex-col items-center gap-1 text-primary">
-                        <Layers className="h-6 w-6" />
-                        <span className="text-xs font-medium">Templates</span>
-                    </Link>
-                    <Link href="/account" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
-                        <User className="h-6 w-6" />
-                        <span className="text-xs font-medium">Account</span>
-                    </Link>
-                </div>
-            </footer>
+            <BottomNavBar />
         </div>
     );
 }

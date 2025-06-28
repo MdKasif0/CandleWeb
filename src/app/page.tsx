@@ -21,11 +21,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Copy, LayoutGrid, Layers, MoreHorizontal, Sparkles, Trash2, Loader2, User } from 'lucide-react';
+import { Copy, Layers, MoreHorizontal, Sparkles, Trash2, Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useRequireAuth } from '@/hooks/use-auth';
 import { UserNav } from '@/components/user-nav';
+import { BottomNavBar } from '@/components/bottom-nav-bar';
 
 
 const VIcon = () => (
@@ -253,23 +254,7 @@ export default function DashboardPage() {
                 </AlertDialogContent>
             </AlertDialog>
             
-            {/* Bottom Navigation */}
-            <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-sm border-t border-border">
-                <div className="flex justify-around items-center h-16">
-                    <Link href="/" className="flex flex-col items-center gap-1 text-primary">
-                        <LayoutGrid className="h-6 w-6" />
-                        <span className="text-xs font-medium">Dashboard</span>
-                    </Link>
-                    <Link href="/templates" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
-                        <Layers className="h-6 w-6" />
-                        <span className="text-xs font-medium">Templates</span>
-                    </Link>
-                     <Link href="/account" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
-                        <User className="h-6 w-6" />
-                        <span className="text-xs font-medium">Account</span>
-                    </Link>
-                </div>
-            </footer>
+            <BottomNavBar />
         </div>
     );
 }

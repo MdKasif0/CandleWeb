@@ -4,12 +4,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRequireAuth, useAuth } from '@/hooks/use-auth';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ChevronRight, Edit2, KeyRound, Loader2, LogOut, Mail, Palette, Share2, Shield, User as UserIcon, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { BottomNavBar } from '@/components/bottom-nav-bar';
 
 export default function AccountPage() {
     const auth = useRequireAuth();
@@ -112,23 +113,7 @@ export default function AccountPage() {
                     </div>
                 </div>
             </div>
-             {/* Bottom Navigation */}
-            <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-sm border-t border-border">
-                <div className="flex justify-around items-center h-16">
-                    <Link href="/" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
-                        <UserIcon className="h-6 w-6" />
-                        <span className="text-xs font-medium">Dashboard</span>
-                    </Link>
-                    <Link href="/templates" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
-                        <Layers className="h-6 w-6" />
-                        <span className="text-xs font-medium">Templates</span>
-                    </Link>
-                    <Link href="/account" className="flex flex-col items-center gap-1 text-primary">
-                        <UserIcon className="h-6 w-6" />
-                        <span className="text-xs font-medium">Account</span>
-                    </Link>
-                </div>
-            </footer>
+            <BottomNavBar />
         </div>
     );
 }
