@@ -4,6 +4,8 @@
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default function TermsOfUsePage() {
   return (
     <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground">
