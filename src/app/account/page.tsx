@@ -265,21 +265,39 @@ export default function AccountPage() {
 }
 
 const SettingsItem = ({ icon: Icon, text, onClick, href }: { icon: React.ElementType, text: string, onClick?: () => void, href?: string }) => {
-    const isLink = !!href;
-    const Component = isLink ? Link : 'button';
+    const commonClassName = "flex items-center justify-between p-4 cursor-pointer hover:bg-secondary/50 transition-colors w-full group text-left first:rounded-t-lg last:rounded-b-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:z-10 relative";
 
-    return (
-        <Component
-            href={href || ''}
-            onClick={onClick}
-            className="flex items-center justify-between p-4 cursor-pointer hover:bg-secondary/50 transition-colors w-full group text-left first:rounded-t-lg last:rounded-b-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:z-10 relative"
-            {...(isLink && href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-        >
+    const content = (
+        <>
             <div className="flex items-center gap-4">
                 <Icon className="h-5 w-5 text-muted-foreground" />
                 <span>{text}</span>
             </div>
             <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-        </Component>
+        </>
+    );
+
+    if (href) {
+        const isExternal = href.startsWith('http') || href.startsWith('mailto:');
+        return (
+            <Link
+                href={href}
+                target={isExternal ? '_blank' : undefined}
+                rel={isExternal ? 'noopener noreferrer' : undefined}
+                className={commonClassName}
+            >
+                {content}
+            </Link>
+        );
+    }
+
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            className={commonClassName}
+        >
+            {content}
+        </button>
     );
 };
