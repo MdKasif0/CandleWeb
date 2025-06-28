@@ -10,6 +10,8 @@ import { useAuth } from '@/hooks/use-auth';
 import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
+
 const VIcon = () => (
     <svg
       width="24"
