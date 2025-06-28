@@ -1,12 +1,13 @@
 'use client'
 
 import Link from 'next/link';
-import { ChevronLeft, Check } from 'lucide-react';
+import { ChevronLeft, Check, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import React from 'react';
+import { useRequireAuth } from '@/hooks/use-auth';
 
 const yearlyPlans = [
     {
@@ -96,6 +97,16 @@ const PlanCard = ({ plan }: { plan: typeof yearlyPlans[0] }) => (
 );
 
 export default function UpgradePage() {
+    const auth = useRequireAuth();
+
+    if (auth.loading || !auth.user) {
+        return (
+            <div className="flex min-h-screen w-full items-center justify-center bg-background">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
+    
     return (
         <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground">
             <div className="w-full max-w-4xl">

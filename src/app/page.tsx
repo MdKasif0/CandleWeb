@@ -2,7 +2,6 @@
 'use client';
 
 import Link from 'next/link';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -22,10 +21,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Copy, LayoutGrid, Layers, MoreHorizontal, Sparkles, Trash2 } from 'lucide-react';
+import { Copy, LayoutGrid, Layers, MoreHorizontal, Sparkles, Trash2, Loader2 } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useRequireAuth, useAuth } from '@/hooks/use-auth';
+import { UserNav } from '@/components/user-nav';
 
 
 const VIcon = () => (
@@ -54,6 +55,7 @@ interface Wish {
 }
 
 export default function DashboardPage() {
+    const auth = useRequireAuth();
     const [wishes, setWishes] = useState<Wish[]>([]);
     const [isAlertOpen, setIsAlertOpen] = useState(false);
     const [wishToDelete, setWishToDelete] = useState<Wish | null>(null);
@@ -133,6 +135,14 @@ export default function DashboardPage() {
             setWishToDelete(null);
         }
     };
+    
+    if (auth.loading || !auth.user) {
+        return (
+            <div className="flex min-h-screen w-full items-center justify-center bg-background">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
 
     return (
         <div className="bg-background text-foreground min-h-screen font-sans">
@@ -147,16 +157,13 @@ export default function DashboardPage() {
                               Upgrade
                           </Button>
                         </Link>
-                        <Avatar className="h-9 w-9">
-                            <AvatarImage src="https://placehold.co/40x40.png" alt="@user" />
-                            <AvatarFallback>U</AvatarFallback>
-                        </Avatar>
+                        <UserNav />
                     </div>
                 </header>
 
                 {/* Greeting */}
                 <section className="mb-8">
-                    <h1 className="text-3xl font-bold mb-1">Welcome!</h1>
+                    <h1 className="text-3xl font-bold mb-1">Welcome, {auth.user.displayName || auth.user.email}!</h1>
                     <p className="text-muted-foreground">Explore your CandleWebs</p>
                 </section>
 

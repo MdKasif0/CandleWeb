@@ -31,6 +31,7 @@ import Link from 'next/link';
 import { ChevronLeft, Sparkles, Loader2, Copy, ArrowRight } from 'lucide-react';
 import { generateMessage, GenerateMessageInput } from '@/ai/flows/generateMessage';
 import { cn } from '@/lib/utils';
+import { useRequireAuth } from '@/hooks/use-auth';
 
 const formSchema = z.object({
   toName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -40,6 +41,7 @@ const formSchema = z.object({
 });
 
 function CreateWishForm() {
+  const auth = useRequireAuth();
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -190,6 +192,14 @@ function CreateWishForm() {
   
   const isPremium = template === 'premium-night-sky';
   const isCelestial = template === 'celestial-wishes';
+
+  if (auth.loading || !auth.user) {
+    return (
+        <div className="flex min-h-screen w-full items-center justify-center bg-background">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+    );
+  }
 
   return (
     <main className={cn(

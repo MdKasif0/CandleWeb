@@ -1,11 +1,14 @@
 
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { LayoutGrid, Layers, Sparkles } from 'lucide-react';
+import { LayoutGrid, Layers, Sparkles, Loader2 } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { useRequireAuth } from '@/hooks/use-auth';
+import { UserNav } from '@/components/user-nav';
 
 const VIcon = () => (
     <svg
@@ -48,6 +51,16 @@ const mockTemplates = [
 ];
 
 export default function TemplatesPage() {
+    const auth = useRequireAuth();
+
+    if (auth.loading || !auth.user) {
+        return (
+            <div className="flex min-h-screen w-full items-center justify-center bg-background">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
+    
     return (
         <div className="bg-background text-foreground min-h-screen font-sans">
             <div className="p-4 md:p-6 max-w-4xl mx-auto pb-24">
@@ -61,10 +74,7 @@ export default function TemplatesPage() {
                               Upgrade
                           </Button>
                         </Link>
-                        <Avatar className="h-9 w-9">
-                            <AvatarImage src="https://placehold.co/40x40.png" alt="@user" />
-                            <AvatarFallback>U</AvatarFallback>
-                        </Avatar>
+                        <UserNav />
                     </div>
                 </header>
 
