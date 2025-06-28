@@ -37,9 +37,8 @@ const passwordSchema = z.object({
 
 export default function AccountPage() {
     const auth = useRequireAuth();
-    const { user, signOut, updateUserName, updateUserPassword, updateUserProfilePicture } = useAuth();
+    const { user, signOut, updateUserName, updateUserPassword } = useAuth();
     const { toast } = useToast();
-    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [isNameDialogOpen, setIsNameDialogOpen] = useState(false);
     const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
@@ -101,22 +100,6 @@ export default function AccountPage() {
             setIsSubmitting(false);
         }
     };
-    
-    const handleProfilePicChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            setIsSubmitting(true);
-            toast({ title: "Uploading...", description: "Your new profile picture is being uploaded." });
-            try {
-                await updateUserProfilePicture(file);
-                toast({ title: "Success", description: "Profile picture updated." });
-            } catch (error: any) {
-                toast({ variant: 'destructive', title: 'Upload Failed', description: error.message });
-            } finally {
-                setIsSubmitting(false);
-            }
-        }
-    };
 
     if (auth.loading || !user) {
         return (
@@ -130,22 +113,15 @@ export default function AccountPage() {
 
     return (
         <div className="bg-background text-foreground min-h-screen">
-            <input type="file" ref={fileInputRef} onChange={handleProfilePicChange} accept="image/*" className="hidden" />
-
             <div className="p-4 md:p-6 max-w-2xl mx-auto pb-24">
                 <h1 className="text-3xl font-bold mb-6">My Account</h1>
 
                 <div className="flex flex-col items-center text-center mb-8">
-                    <div className="relative mb-4">
-                        <Avatar className="w-24 h-24 border-4 border-primary/20 shadow-lg">
-                            <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'User'} />
-                            <AvatarFallback className="text-4xl">{userInitial}</AvatarFallback>
-                        </Avatar>
-                        <Button variant="outline" size="icon" className="absolute -bottom-2 -right-2 bg-background h-8 w-8 rounded-full shadow-md" onClick={() => fileInputRef.current?.click()}>
-                            <Upload className="h-4 w-4" />
-                        </Button>
-                    </div>
-                    <h2 className="text-2xl font-bold">{user.displayName || 'CandleWeb User'}</h2>
+                    <Avatar className="w-24 h-24 border-4 border-primary/20 shadow-lg">
+                        <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'User'} />
+                        <AvatarFallback className="text-4xl">{userInitial}</AvatarFallback>
+                    </Avatar>
+                    <h2 className="text-2xl font-bold mt-4">{user.displayName || 'CandleWeb User'}</h2>
                     <p className="text-muted-foreground">{user.email}</p>
                 </div>
                 

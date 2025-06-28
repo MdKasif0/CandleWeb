@@ -1,11 +1,11 @@
+
 // src/hooks/use-auth.tsx
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { onAuthStateChanged, User, signOut as firebaseSignOut, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, updatePassword } from 'firebase/auth';
-import { auth, storage } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 interface AuthContextType {
   user: User | null;
@@ -16,7 +16,6 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   updateUserName: (name: string) => Promise<void>;
   updateUserPassword: (password: string) => Promise<void>;
-  updateUserProfilePicture: (file: File) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -88,18 +87,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await updatePassword(auth.currentUser, password);
   };
   
-  const updateUserProfilePicture = async (file: File) => {
-    if (!auth.currentUser) throw new Error("Not authenticated");
-    const storageRef = ref(storage, `avatars/${auth.currentUser.uid}`);
-    await uploadBytes(storageRef, file);
-    const photoURL = await getDownloadURL(storageRef);
-    await updateProfile(auth.currentUser, { photoURL });
-    setUser(auth.currentUser ? { ...auth.currentUser } : null);
-  };
-
-
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signUpWithEmail, signInWithEmail, signOut, updateUserName, updateUserPassword, updateUserProfilePicture }}>
+    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signUpWithEmail, signInWithEmail, signOut, updateUserName, updateUserPassword }}>
       {children}
     </AuthContext.Provider>
   );
