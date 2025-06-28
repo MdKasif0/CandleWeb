@@ -21,11 +21,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Copy, LayoutGrid, Layers, MoreHorizontal, Sparkles, Trash2, Loader2 } from 'lucide-react';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { Copy, LayoutGrid, Layers, MoreHorizontal, Sparkles, Trash2, Loader2, User } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { useRequireAuth, useAuth } from '@/hooks/use-auth';
+import { useRequireAuth } from '@/hooks/use-auth';
 import { UserNav } from '@/components/user-nav';
 
 
@@ -151,7 +150,6 @@ export default function DashboardPage() {
                 <header className="flex items-center justify-between mb-8">
                     <VIcon />
                     <div className="flex items-center gap-2 md:gap-4">
-                        <ThemeToggle />
                         <Link href="/upgrade" passHref>
                           <Button className="bg-primary text-primary-foreground font-semibold rounded-full px-4 py-1.5 text-sm h-auto shadow-lg shadow-primary/20">
                               Upgrade
@@ -265,6 +263,10 @@ export default function DashboardPage() {
                     <Link href="/templates" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
                         <Layers className="h-6 w-6" />
                         <span className="text-xs font-medium">Templates</span>
+                    </Link>
+                     <Link href="/account" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
+                        <User className="h-6 w-6" />
+                        <span className="text-xs font-medium">Account</span>
                     </Link>
                 </div>
             </footer>
