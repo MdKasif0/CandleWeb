@@ -28,6 +28,7 @@ import { useRequireAuth } from '@/hooks/use-auth';
 import { UserNav } from '@/components/user-nav';
 import { BottomNavBar } from '@/components/bottom-nav-bar';
 
+export const dynamic = 'force-dynamic';
 
 const VIcon = () => (
     <svg

@@ -33,6 +33,8 @@ import { generateMessage, GenerateMessageInput } from '@/ai/flows/generateMessag
 import { cn } from '@/lib/utils';
 import { useRequireAuth } from '@/hooks/use-auth';
 
+export const dynamic = 'force-dynamic';
+
 const formSchema = z.object({
   toName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   fromName: z.string().min(2, { message: "Name must be at least 2 characters." }),

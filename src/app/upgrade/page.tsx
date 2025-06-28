@@ -1,3 +1,4 @@
+
 'use client'
 
 import Link from 'next/link';
@@ -8,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import React from 'react';
 import { useRequireAuth } from '@/hooks/use-auth';
+
+export const dynamic = 'force-dynamic';
 
 const yearlyPlans = [
     {
