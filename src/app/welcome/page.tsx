@@ -52,12 +52,11 @@ export default function WelcomePage() {
                 <main className="flex-1 flex flex-col items-center justify-end text-center p-4">
                     <div className="relative -mb-16 md:-mb-24 w-full max-w-sm">
                          <Image
-                            src="https://placehold.co/400x800.png"
+                            src="/app-preview.png"
                             alt="CandleWeb App Preview"
                             width={400}
                             height={800}
                             className="w-full h-auto object-contain"
-                            data-ai-hint="app screenshot phone"
                             priority
                         />
                     </div>
