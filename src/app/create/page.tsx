@@ -29,7 +29,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState, Suspense, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, Sparkles, Loader2, Copy, ArrowRight } from 'lucide-react';
-import { generateMessage, GenerateMessageInput } from '@/ai/flows/generateMessage';
+import { generateWishContent, GenerateWishContentInput } from '@/ai/flows/generateWishContent';
 import { cn } from '@/lib/utils';
 import { useRequireAuth } from '@/hooks/use-auth';
 
@@ -43,6 +43,10 @@ const formSchema = z.object({
   closingMessages: z.string().optional(),
   secretMessage: z.string().optional(),
 });
+
+const defaultClosingMessages = "Wishing you all the best!\nMay all your dreams come true!\nMay your whole life be healthy and peaceful";
+const defaultSecretMessage = "Here's to another amazing year! 🤫";
+
 
 function CreateWishForm() {
   const auth = useRequireAuth();
@@ -73,13 +77,20 @@ function CreateWishForm() {
     if (templateId === 'night-sky' || templateId === 'premium-night-sky' || templateId === 'celestial-wishes') {
       form.setValue('template', templateId);
       setTemplate(templateId);
+      if (templateId === 'premium-night-sky') {
+        form.setValue('closingMessages', defaultClosingMessages);
+        form.setValue('secretMessage', defaultSecretMessage);
+      } else {
+        form.setValue('closingMessages', '');
+        form.setValue('secretMessage', '');
+      }
     } else {
       form.setValue('template', 'night-sky');
       setTemplate('night-sky');
     }
   }, [searchParams, form]);
   
-  const handleGenerateMessage = async () => {
+  const handleGenerateAllContent = async () => {
     const toName = form.getValues('toName');
     const fromName = form.getValues('fromName');
 
@@ -94,21 +105,26 @@ function CreateWishForm() {
 
     setIsGenerating(true);
     try {
-      const input: GenerateMessageInput = { toName, fromName };
-      const result = await generateMessage(input);
-      if (result.message) {
-        form.setValue('message', result.message, { shouldValidate: true });
-        toast({
-            title: "Message Generated!",
-            description: "A new message has been created for you."
-        });
+      const input: GenerateWishContentInput = { toName, fromName };
+      const result = await generateWishContent(input);
+      
+      form.setValue('message', result.message, { shouldValidate: true });
+
+      if (form.getValues('template') === 'premium-night-sky') {
+        form.setValue('closingMessages', result.closingMessages.join('\n'), { shouldValidate: true });
+        form.setValue('secretMessage', result.secretMessage, { shouldValidate: true });
       }
+
+      toast({
+          title: "Content Generated!",
+          description: "All fields have been filled with AI magic."
+      });
     } catch (error) {
-      console.error("Could not generate message", error);
+      console.error("Could not generate content", error);
       toast({
         variant: 'destructive',
-        title: 'Message Generation Failed',
-        description: 'There was an error generating your message. Please try again.',
+        title: 'Generation Failed',
+        description: 'There was an error generating content. Please try again.',
       });
     } finally {
       setIsGenerating(false);
@@ -231,6 +247,27 @@ function CreateWishForm() {
           </Link>
           <h1 className="w-full text-center text-2xl font-bold">Create your CandleWeb</h1>
         </div>
+        
+        <div className="mb-6">
+            <Button
+                type="button"
+                variant="outline"
+                onClick={handleGenerateAllContent}
+                disabled={isGenerating}
+                className={cn(
+                    "w-full rounded-full py-5 text-base font-semibold transition-all group",
+                    isPremium || !isCelestial ? "bg-white/10 border-white/20 hover:bg-white/20 text-white" :
+                    "bg-white/60 border-rose-200 text-rose-600 hover:bg-white/80"
+                )}
+            >
+                {isGenerating ? (
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : (
+                    <Sparkles className="mr-2 h-5 w-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-yellow-300" />
+                )}
+                Auto-fill with AI Magic
+            </Button>
+        </div>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -275,25 +312,6 @@ function CreateWishForm() {
                 <FormItem>
                    <div className="flex items-center justify-between">
                     <FormLabel className={cn(isCelestial && 'text-gray-700')}>Your Personal Message</FormLabel>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleGenerateMessage}
-                      disabled={isGenerating}
-                      className={cn(
-                          "rounded-full text-xs",
-                          isPremium || !isCelestial ? "bg-black/20 border-white/20 hover:bg-black/40" :
-                          "bg-white/60 border-rose-200 text-rose-600 hover:bg-white/80"
-                      )}
-                    >
-                      {isGenerating ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                        <Sparkles className="mr-2 h-4 w-4" />
-                      )}
-                      Generate with AI
-                    </Button>
                   </div>
                   <FormControl>
                     <Textarea placeholder="Write your heartfelt birthday message here..." className={cn(

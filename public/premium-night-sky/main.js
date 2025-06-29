@@ -1,3 +1,4 @@
+
 function initNightSky() {
 
   //estrelas
@@ -956,20 +957,27 @@ document.getElementById('cancel-button').addEventListener('click', function() {
 
 
 function showMessages() {
-    const messages = [
+    const baseMessages = [
        `Once again Happy Birthday ${window.birthdayData.toName} 🎂`,
-        window.birthdayData.message,
-        "Wishing you all the best!",
-        "May all your dreams come true!",
-        "May your whole life be healthy and peaceful", 
+        window.birthdayData.message || ''
+    ];
+
+    const userClosingMessages = window.birthdayData.closingMessages
+        ? window.birthdayData.closingMessages.split('\n').filter(line => line.trim() !== '')
+        : [];
+
+    const concludingMessages = [
         "Did you Liked it?🤔",
-        "If Yes then click on 'Liked it' at last,", 
-        "else rewatch it 😅", 
-        "Sorry, because it wasn't perfectly build", 
+        "If Yes then click on 'Liked it' at last,",
+        "else rewatch it 😅",
+        "Sorry, because it wasn't perfectly build",
         "as it is still in developing stage",
-        "The End", 
+        "The End",
         `💖 A special wish from ${window.birthdayData.fromName} 💖`
     ];
+
+    const messages = [...baseMessages, ...userClosingMessages, ...concludingMessages];
+
 
     const messagesElement = document.getElementById('messages');
     messagesElement.style.display = 'block';
@@ -995,11 +1003,14 @@ document.getElementById('rewatch-button').addEventListener('click', function() {
 });
 
 document.getElementById('liked-button').addEventListener('click', function() {
-     // Show the secret message popup
-        document.getElementById('final-popup').classList.remove('show');
-        document.getElementById('secret-message').classList.add('show');
+    document.getElementById('final-popup').classList.remove('show');
     
-    setTimeout(() => {
-           document.getElementById('secret-message').classList.remove('show');
-       }, 5000); //Hide after 5 seconds
+    const secretMessageContainer = document.getElementById('secret-message');
+    if (window.birthdayData.secretMessage && secretMessageContainer) {
+        secretMessageContainer.classList.add('show');
+    
+        setTimeout(() => {
+            secretMessageContainer.classList.remove('show');
+        }, 5000); //Hide after 5 seconds
+    }
 });
