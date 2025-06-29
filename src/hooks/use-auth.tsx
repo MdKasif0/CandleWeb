@@ -3,14 +3,13 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { onAuthStateChanged, User, signOut as firebaseSignOut, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, updatePassword } from 'firebase/auth';
+import { onAuthStateChanged, User, signOut as firebaseSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, updatePassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<void>;
   signUpWithEmail: (email:string, password:string) => Promise<any>;
   signInWithEmail: (email:string, password:string) => Promise<any>;
   signOut: () => Promise<void>;
@@ -33,17 +32,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     return () => unsubscribe();
   }, []);
-
-  const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      router.push('/');
-    } catch (error) {
-      console.error("Error signing in with Google", error);
-      throw error;
-    }
-  };
 
   const signUpWithEmail = async (email:string, password:string) => {
     try {
@@ -88,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signUpWithEmail, signInWithEmail, signOut, updateUserName, updateUserPassword }}>
+    <AuthContext.Provider value={{ user, loading, signUpWithEmail, signInWithEmail, signOut, updateUserName, updateUserPassword }}>
       {children}
     </AuthContext.Provider>
   );

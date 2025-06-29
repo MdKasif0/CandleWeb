@@ -15,7 +15,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 const VIcon = () => (
     <svg
@@ -32,13 +31,6 @@ const VIcon = () => (
       />
     </svg>
   );
-
-const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
-        <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.85 3.18-1.73 4.1-1.02 1.02-2.62 2.04-4.75 2.04-3.77 0-6.82-3.02-6.82-6.75s3.05-6.75 6.82-6.75c2.14 0 3.52.88 4.34 1.68l2.5-2.52C18.12 3 15.46 2.18 12.48 2.18c-5.45 0-9.84 4.38-9.84 9.82s4.39 9.82 9.84 9.82c5.28 0 9.4-3.55 9.4-9.56 0-.6-.07-1.2-.18-1.78Z" />
-    </svg>
-);
-
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
@@ -90,54 +82,10 @@ export default function AuthPage() {
             <AuthForm type="signup" />
           </TabsContent>
         </Tabs>
-        
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <GoogleButton />
-
       </div>
     </div>
   );
 }
-
-function GoogleButton() {
-  const { signInWithGoogle } = useAuth();
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleGoogleSignIn = async () => {
-    setIsLoading(true);
-    try {
-      await signInWithGoogle();
-      toast({ title: 'Successfully signed in with Google!' });
-    } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Google Sign-In Failed', description: error.message });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <Button variant="outline" className="w-full h-11" onClick={handleGoogleSignIn} disabled={isLoading}>
-      {isLoading ? (
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-      ) : (
-        <GoogleIcon className="mr-2 h-4 w-4" />
-      )}
-      Google
-    </Button>
-  );
-}
-
 
 function AuthForm({ type }: { type: 'login' | 'signup' }) {
     const { signInWithEmail, signUpWithEmail } = useAuth();
