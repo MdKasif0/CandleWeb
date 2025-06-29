@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: 'CandleWeb',
     images: [
       {
-        url: '/night-sky-cover.png',
+        url: '/candleweb-cover.png',
         width: 1200,
         height: 630,
         alt: 'CandleWeb social sharing image',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "CandleWeb - Personalized Birthday Websites",
     description: "Create and share beautiful, personalized AI-powered 'Happy Birthday' websites in minutes.",
-    images: ['/night-sky-cover.png'],
+    images: ['/candleweb-cover.png'],
   },
   keywords: ['birthday wishes', 'personalized birthday', 'ai message generator', 'ecard', 'digital birthday card', 'happy birthday website'],
 };
