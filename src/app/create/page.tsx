@@ -40,6 +40,8 @@ const formSchema = z.object({
   fromName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
   template: z.enum(['night-sky', 'premium-night-sky', 'celestial-wishes']),
+  closingMessages: z.string().optional(),
+  secretMessage: z.string().optional(),
 });
 
 function CreateWishForm() {
@@ -61,6 +63,8 @@ function CreateWishForm() {
       fromName: '',
       message: '',
       template: 'night-sky',
+      closingMessages: '',
+      secretMessage: '',
     },
   });
 
@@ -145,6 +149,12 @@ function CreateWishForm() {
 
         let relativeUrl;
         if (values.template === 'premium-night-sky') {
+            if (values.closingMessages) {
+              params.append('closingMessages', values.closingMessages);
+            }
+            if (values.secretMessage) {
+              params.append('secretMessage', values.secretMessage);
+            }
             relativeUrl = `/premium-night-sky/index.html?${params.toString()}`;
         } else if (values.template === 'celestial-wishes') {
             relativeUrl = `/celestial-wishes/celestial-wishes.html?${params.toString()}`;
@@ -296,6 +306,53 @@ function CreateWishForm() {
                 </FormItem>
               )}
             />
+
+            {template === 'premium-night-sky' && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="closingMessages"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className={cn(isCelestial && 'text-gray-700')}>Closing Messages (one per line)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder={"Wishing you all the best!\nMay all your dreams come true!"}
+                          {...field}
+                          className={cn(
+                              "resize-none rounded-2xl min-h-[100px]",
+                              isPremium || !isCelestial ? "bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" : 
+                              "bg-white/60 border-rose-200 text-gray-800 placeholder:text-gray-500/80 focus:border-rose-400 focus:ring-rose-400"
+                          )}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="secretMessage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className={cn(isCelestial && 'text-gray-700')}>Final Secret Message</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="A little secret just for you..."
+                          {...field}
+                          className={cn(
+                              "rounded-full",
+                              isPremium || !isCelestial ? "bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" : 
+                              "bg-white/60 border-rose-200 text-gray-800 placeholder:text-gray-500/80 focus:border-rose-400 focus:ring-rose-400"
+                          )}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
             
             <div className="pt-4">
               <Button type="submit" disabled={isSubmitting || isGenerating} className={cn(

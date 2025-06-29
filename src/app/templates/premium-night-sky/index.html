@@ -69,8 +69,8 @@
     </div>
     <div id="popup" class="popup">
         <div class="popup-content">
-            <h2>Happy Birthday!</h2>
-            <p>Wishing you a fantastic day filled with joy and happiness!</p>
+            <h2 id="popup-main-title">Happy Birthday!</h2>
+            <p id="popup-main-message"></p>
             <div class="popup-buttons">
                 <button id="cancel-button">Cancel</button>
                 <button id="ok-button">OK</button>
@@ -104,9 +104,9 @@
     <div id="secret-message" class="popup">
       <div class="popup-content">
           <h2>Secret Message</h2>
-          <p>May Allah grant you the success in Deen and Duniya 💖</p>
+          <p id="secret-message-body"></p>
       </div>
-  </div>
+    </div>
     <canvas id="c"></canvas>
     <audio id="birthday-audio" src="Blue.mp3" loop></audio>
     <script>
@@ -114,8 +114,10 @@
         const toName = params.get('toName') || 'Friend';
         const fromName = params.get('fromName') || 'A Friend';
         const message = params.get('message') || 'Wishing you a fantastic day filled with joy and happiness!';
+        const closingMessages = decodeURIComponent(params.get('closingMessages') || '');
+        const secretMessage = decodeURIComponent(params.get('secretMessage') || '');
 
-        window.birthdayData = { toName, fromName, message };
+        window.birthdayData = { toName, fromName, message, closingMessages, secretMessage };
 
         // --- SEO & Social Sharing Updates ---
         const pageTitle = `Happy Birthday ${toName}!`;
@@ -146,6 +148,19 @@
         const cakeGreeting = document.getElementById('cake-greeting');
         if (cakeGreeting) {
             cakeGreeting.innerHTML = `💖 Happy Birthday ${toName} 💖`;
+        }
+
+        document.getElementById('popup-main-title').textContent = `Happy Birthday ${toName}!`;
+        document.getElementById('popup-main-message').textContent = message;
+
+        const secretMessageElement = document.getElementById('secret-message-body');
+        const secretMessageContainer = document.getElementById('secret-message');
+        if (secretMessageElement && secretMessageContainer) {
+            if (window.birthdayData.secretMessage) {
+                secretMessageElement.textContent = window.birthdayData.secretMessage;
+            } else {
+                secretMessageContainer.style.display = 'none'; // Hide if no message
+            }
         }
     </script>
     <script src="main.js"></script>
