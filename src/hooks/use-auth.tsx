@@ -1,17 +1,27 @@
-
 // src/hooks/use-auth.tsx
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { onAuthStateChanged, User, signOut as firebaseSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, updatePassword } from 'firebase/auth';
+import { 
+    onAuthStateChanged, 
+    User, 
+    signOut as firebaseSignOut, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    updateProfile, 
+    updatePassword,
+    GoogleAuthProvider,
+    signInWithPopup
+} from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signUpWithEmail: (email:string, password:string) => Promise<any>;
+  signUpWithEmail: (name: string, email:string, password:string) => Promise<any>;
   signInWithEmail: (email:string, password:string) => Promise<any>;
+  signInWithGoogle: () => Promise<any>;
   signOut: () => Promise<void>;
   updateUserName: (name: string) => Promise<void>;
   updateUserPassword: (password: string) => Promise<void>;
@@ -33,9 +43,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  const signUpWithEmail = async (email:string, password:string) => {
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+        const result = await signInWithPopup(auth, provider);
+        router.push('/');
+        return result;
+    } catch(error) {
+        console.error("Error signing in with Google", error);
+        throw error;
+    }
+  }
+
+  const signUpWithEmail = async (name: string, email:string, password:string) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredential.user, { displayName: name });
+        setUser(auth.currentUser ? { ...auth.currentUser } : null);
         router.push('/');
         return userCredential;
     } catch(error) {
@@ -76,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   
   return (
-    <AuthContext.Provider value={{ user, loading, signUpWithEmail, signInWithEmail, signOut, updateUserName, updateUserPassword }}>
+    <AuthContext.Provider value={{ user, loading, signUpWithEmail, signInWithEmail, signInWithGoogle, signOut, updateUserName, updateUserPassword }}>
       {children}
     </AuthContext.Provider>
   );
