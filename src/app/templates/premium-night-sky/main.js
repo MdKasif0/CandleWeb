@@ -338,11 +338,15 @@ function showFirecrackers() {
         firecracker.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
         firecracker.style.animationDelay = `${Math.random() * 2}s`;
         firecrackerContainer.appendChild(firecracker);
-
-        setTimeout(() => {
-            firecracker.remove();
-        }, 2000); // Remove after 2 seconds
     }
+
+    // The longest animation is 2s delay + 2s duration = 4s.
+    // Remove the container after 4.5s to be safe.
+    setTimeout(() => {
+        if (firecrackerContainer) {
+            firecrackerContainer.remove();
+        }
+    }, 4500);
 }
 
 function showBalloons() {
@@ -1010,7 +1014,7 @@ document.getElementById('liked-button').addEventListener('click', function() {
     document.getElementById('final-popup').classList.remove('show');
     
     const secretMessageContainer = document.getElementById('secret-message');
-    if (window.birthdayData.secretMessage && secretMessageContainer) {
+    if (window.birthdayData.secretMessage && window.birthdayData.secretMessage.trim().length > 0 && secretMessageContainer) {
         secretMessageContainer.classList.add('show');
     
         setTimeout(() => {
