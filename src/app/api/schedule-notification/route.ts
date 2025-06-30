@@ -1,7 +1,6 @@
 
 'use server';
 
-import 'dotenv/config'; // Make sure environment variables are loaded for local dev
 import {NextResponse} from 'next/server';
 
 export async function POST(request: Request) {
@@ -11,15 +10,16 @@ export async function POST(request: Request) {
   const ONESIGNAL_API_KEY = process.env.ONESIGNAL_API_KEY;
 
   if (!ONESIGNAL_APP_ID || !ONESIGNAL_API_KEY) {
-    console.error("OneSignal credentials not found. Make sure they are set in your .env file for local development.");
+    console.error("OneSignal credentials not configured on the server. Ensure NEXT_PUBLIC_ONESIGNAL_APP_ID and ONESIGNAL_API_KEY are set in your deployment environment.");
     return NextResponse.json(
-      {error: 'OneSignal credentials not configured on the server.'},
+      {error: 'Notification service is not configured on the server.'},
       {status: 500}
     );
   }
 
-  // Ensure the URL is correctly formed.
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002').replace(/\/$/, '');
+  // Use the request URL to determine the base URL, providing a fallback for safety.
+  const requestUrl = new URL(request.url);
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || requestUrl.origin).replace(/\/$/, '');
   
   const notification = {
     app_id: ONESIGNAL_APP_ID,
@@ -45,11 +45,11 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    if (data.errors) {
-      console.error('OneSignal Error:', data.errors);
+    if (!response.ok || data.errors) {
+      console.error('OneSignal Error:', data.errors || `Status: ${response.status}`);
       return NextResponse.json(
-        {error: `Failed to schedule notification: ${data.errors[0]}`},
-        {status: 500}
+        {error: `Failed to schedule notification: ${data.errors ? data.errors[0] : 'Unknown error from OneSignal'}`},
+        {status: response.status}
       );
     }
 
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error scheduling notification:', error);
     return NextResponse.json(
-      {error: 'An unexpected error occurred.'},
+      {error: 'An unexpected error occurred while contacting the notification service.'},
       {status: 500}
     );
   }
