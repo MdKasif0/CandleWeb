@@ -93,15 +93,14 @@ export default function TemplatesPage() {
                                 toName: 'Someone',
                                 fromName: 'Your Friend',
                                 message: 'Wishing you a day filled with happiness and a year filled with joy. Happy birthday!',
+                                closingMessages: "Wishing you all the best!\nMay all your dreams come true!\nCheers to you!",
+                                secretMessage: "Here's to another amazing year! 🤫"
                             });
 
                             let previewUrl;
-                            if (template.id === 'premium-night-sky') {
-                                previewUrl = `/premium-night-sky/index.html?${previewParams.toString()}`;
-                            } else if (template.id === 'celestial-wishes') {
-                                previewUrl = `/celestial-wishes/celestial-wishes.html?${previewParams.toString()}`;
-                            }
-                            else {
+                            if (template.id === 'premium-night-sky' || template.id === 'celestial-wishes') {
+                                previewUrl = `/templates/${template.id}/index.html?${previewParams.toString()}`;
+                            } else {
                                 previewParams.append('template', template.id);
                                 previewUrl = `/wish/preview?${previewParams.toString()}`;
                             }

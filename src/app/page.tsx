@@ -39,16 +39,19 @@ interface Wish {
 
 const popularTemplates = [
     {
+        id: 'night-sky',
         name: 'Night Sky',
         imageUrl: '/night-sky-cover.png',
         dataAiHint: 'night sky cake'
     },
     {
+        id: 'premium-night-sky',
         name: 'Premium Night Sky',
         imageUrl: '/premium-night-sky-cover.png',
         dataAiHint: 'fireworks celebration'
     },
     {
+        id: 'celestial-wishes',
         name: 'Celestial Wishes',
         imageUrl: '/celestial-wishes-cover.png',
         dataAiHint: 'celestial gift'
@@ -164,7 +167,7 @@ export default function DashboardPage() {
                     <h2 className="text-xl font-bold text-primary mb-4">Popular Templates</h2>
                     <div className="grid grid-cols-3 gap-3">
                         {popularTemplates.map(template => (
-                            <Link href="/templates" key={template.name}>
+                            <Link href={`/templates?template=${template.id}`} key={template.name}>
                                 <Card className="aspect-[4/3] rounded-xl overflow-hidden relative group border-0">
                                     <Image src={template.imageUrl} alt={template.name} fill className="object-cover transition-transform duration-300 group-hover:scale-110" data-ai-hint={template.dataAiHint} />
                                     <div className="absolute inset-0 bg-black/40 flex items-end p-2 justify-center text-center">
