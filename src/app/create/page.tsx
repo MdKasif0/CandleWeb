@@ -62,6 +62,7 @@ function CreateWishForm() {
   const [generatedLink, setGeneratedLink] = useState('');
   const [template, setTemplate] = useState('night-sky');
   const [scheduleDate, setScheduleDate] = useState<Date>();
+  const [scheduleTime, setScheduleTime] = useState('09:00');
   const [isQrDialogOpen, setIsQrDialogOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -239,11 +240,24 @@ function CreateWishForm() {
         });
         return;
     }
+    if (!scheduleTime) {
+      toast({
+          variant: 'destructive',
+          title: 'No time selected',
+          description: 'Please select a time to schedule the wish.'
+      });
+      return;
+    }
+
+    const [hours, minutes] = scheduleTime.split(':').map(Number);
+    const combinedDate = new Date(scheduleDate);
+    combinedDate.setHours(hours, minutes, 0, 0);
+
     toast({
         title: 'Wish Scheduled!',
-        description: `Your wish will be sent on ${format(scheduleDate, 'PPP')}.`
+        description: `Your wish will be sent on ${format(combinedDate, 'PPP p')}.`
     });
-  }
+  };
   
   const isPremium = template === 'premium-night-sky';
   const isCelestial = template === 'celestial-wishes';
@@ -444,28 +458,37 @@ function CreateWishForm() {
 
             <div className="text-left mb-4">
                 <label className="font-semibold text-amber-300 mb-2 block">Schedule Send</label>
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant={"outline"}
-                            className={cn(
-                                "w-full justify-start text-left font-normal bg-black/30 rounded-lg p-3 border border-white/20 hover:bg-black/50 text-white",
-                                !scheduleDate && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {scheduleDate ? format(scheduleDate, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 dark bg-black/80 backdrop-blur-md border-purple-400/50">
-                        <Calendar
-                            mode="single"
-                            selected={scheduleDate}
-                            onSelect={setScheduleDate}
-                            initialFocus
-                        />
-                    </PopoverContent>
-                </Popover>
+                 <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant={"outline"}
+                                className={cn(
+                                    "w-full justify-start text-left font-normal bg-black/30 rounded-lg p-3 border border-white/20 hover:bg-black/50 text-white h-12",
+                                    !scheduleDate && "text-muted-foreground"
+                                )}
+                            >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {scheduleDate ? format(scheduleDate, "PPP") : <span>Pick a date</span>}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 dark bg-black/80 backdrop-blur-md border-purple-400/50">
+                            <Calendar
+                                mode="single"
+                                selected={scheduleDate}
+                                onSelect={setScheduleDate}
+                                initialFocus
+                            />
+                        </PopoverContent>
+                    </Popover>
+                    <Input
+                        type="time"
+                        value={scheduleTime}
+                        onChange={(e) => setScheduleTime(e.target.value)}
+                        className="bg-black/30 rounded-lg border border-white/20 text-white h-12"
+                        style={{ colorScheme: 'dark' }}
+                    />
+                </div>
             </div>
             
             <Button onClick={handleSchedule} className="w-full rounded-full py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-base mb-8 shadow-lg shadow-purple-500/20 hover:opacity-90 transition-opacity">
