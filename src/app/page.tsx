@@ -38,9 +38,21 @@ interface Wish {
 }
 
 const popularTemplates = [
-    { name: 'Gold Luxe', imageUrl: 'https://placehold.co/400x300.png', dataAiHint: 'gold luxury' },
-    { name: 'Balloons', imageUrl: 'https://placehold.co/400x300.png', dataAiHint: 'balloons party' },
-    { name: 'Retro Pop', imageUrl: 'https://placehold.co/400x300.png', dataAiHint: 'retro popart' },
+    {
+        name: 'Night Sky',
+        imageUrl: '/night-sky-cover.png',
+        dataAiHint: 'night sky cake'
+    },
+    {
+        name: 'Premium Night Sky',
+        imageUrl: '/premium-night-sky-cover.png',
+        dataAiHint: 'fireworks celebration'
+    },
+    {
+        name: 'Celestial Wishes',
+        imageUrl: '/celestial-wishes-cover.png',
+        dataAiHint: 'celestial gift'
+    },
 ];
 
 export default function DashboardPage() {
@@ -154,7 +166,7 @@ export default function DashboardPage() {
                         {popularTemplates.map(template => (
                             <Link href="/templates" key={template.name}>
                                 <Card className="aspect-[4/3] rounded-xl overflow-hidden relative group border-0">
-                                    <Image src={template.imageUrl} alt={template.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-110" data-ai-hint={template.dataAiHint} />
+                                    <Image src={template.imageUrl} alt={template.name} fill className="object-cover transition-transform duration-300 group-hover:scale-110" data-ai-hint={template.dataAiHint} />
                                     <div className="absolute inset-0 bg-black/40 flex items-end p-2 justify-center text-center">
                                         <h3 className="font-bold text-white text-base leading-tight">{template.name}</h3>
                                     </div>
