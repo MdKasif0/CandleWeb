@@ -125,6 +125,12 @@ export default function MyWishesPage() {
         );
     }
     
+    const templateImages: { [key: string]: string } = {
+        'night-sky': '/night-sky-cover.png',
+        'premium-night-sky': '/premium-night-sky-cover.png',
+        'celestial-wishes': '/celestial-wishes-cover.png',
+    };
+
     return (
         <div className="bg-background text-foreground min-h-screen font-sans">
              <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
@@ -138,17 +144,17 @@ export default function MyWishesPage() {
                         <div className="space-y-3">
                             {wishes.map((wish) => {
                                 const isValidDate = wish.createdAt && !isNaN(new Date(wish.createdAt).getTime());
+                                const imageUrl = templateImages[wish.template] || 'https://placehold.co/80x80.png';
                                 return (
                                  <Card key={wish.id} className="bg-foreground/5 p-3 border-transparent">
                                     <CardContent className="flex items-center justify-between p-0">
                                         <div className="flex items-center gap-4">
                                             <Image
-                                                src={`https://placehold.co/80x80/000000/FFF?text=${wish.toName.charAt(0)}`}
+                                                src={imageUrl}
                                                 alt={wish.toName}
                                                 width={56}
                                                 height={56}
                                                 className="w-14 h-14 object-cover rounded-lg"
-                                                data-ai-hint="bokeh candles"
                                             />
                                             <div className="flex-grow">
                                                 <h3 className="font-semibold text-white text-lg">{wish.toName}</h3>
