@@ -60,6 +60,7 @@ function CreateWishForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSharePage, setShowSharePage] = useState(false);
   const [generatedLink, setGeneratedLink] = useState('');
+  const [submittedWish, setSubmittedWish] = useState<any>(null);
   const [template, setTemplate] = useState('night-sky');
   const [scheduleDate, setScheduleDate] = useState<Date>();
   const [scheduleTime, setScheduleTime] = useState('09:00');
@@ -175,6 +176,7 @@ function CreateWishForm() {
         
         const relativeUrl = `/wish/${fullWishData.id}`;
         
+        setSubmittedWish(fullWishData);
         setGeneratedLink(relativeUrl);
         setShowSharePage(true);
         form.reset();
@@ -210,7 +212,7 @@ function CreateWishForm() {
   }
 
   const handleShare = async () => {
-    const toName = form.getValues('toName') || 'a friend';
+    const toName = submittedWish?.toName || 'a friend';
     const text = `Check out this special birthday wish I made for ${toName} on CandleWeb!`;
     const title = `A birthday wish from CandleWeb`;
 
@@ -248,15 +250,46 @@ function CreateWishForm() {
       });
       return;
     }
+    if (!submittedWish) {
+        toast({ variant: 'destructive', title: 'Error', description: 'Could not find wish data to schedule.' });
+        return;
+    }
 
     const [hours, minutes] = scheduleTime.split(':').map(Number);
     const combinedDate = new Date(scheduleDate);
     combinedDate.setHours(hours, minutes, 0, 0);
 
-    toast({
-        title: 'Wish Scheduled!',
-        description: `Your wish will be sent on ${format(combinedDate, 'PPP p')}.`
-    });
+    try {
+        const scheduledWishes = JSON.parse(localStorage.getItem('scheduledWishes') || '[]');
+        const newScheduledWish = {
+            id: submittedWish.id,
+            scheduleAt: combinedDate.toISOString(),
+            toName: submittedWish.toName,
+        };
+        
+        // Add to scheduled list
+        const updatedScheduledWishes = [...scheduledWishes, newScheduledWish];
+        localStorage.setItem('scheduledWishes', JSON.stringify(updatedScheduledWishes));
+
+        // Update the status of the wish in the main list
+        const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
+        const wishIndex = existingWishes.findIndex((w: any) => w.id === submittedWish.id);
+        if (wishIndex > -1) {
+            existingWishes[wishIndex].status = 'Scheduled';
+            localStorage.setItem('userWishes', JSON.stringify(existingWishes));
+        }
+
+        toast({
+            title: 'Wish Scheduled!',
+            description: `Your wish for ${submittedWish.toName} is scheduled for ${format(combinedDate, 'PPP p')}. You'll get a notification to send it.`
+        });
+        
+        router.push('/'); // Go back to dashboard after scheduling.
+
+    } catch (error) {
+        console.error("Could not schedule wish", error);
+        toast({ variant: 'destructive', title: 'Scheduling Failed', description: 'There was an error saving the schedule.' });
+    }
   };
   
   const isPremium = template === 'premium-night-sky';

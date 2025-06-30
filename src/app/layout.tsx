@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/hooks/use-auth";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
@@ -69,6 +70,21 @@ export default function RootLayout({
             <Toaster />
             </ThemeProvider>
         </AuthProvider>
+        <Script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" strategy="afterInteractive" />
+        <Script id="onesignal-init" strategy="afterInteractive">
+          {`
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            OneSignalDeferred.push(async function(OneSignal) {
+              await OneSignal.init({
+                appId: "e3d89eda-87d6-4a61-b41f-5996bdeb03e9",
+                safari_web_id: "web.onesignal.auto.27be598e-7a22-4ed6-a01a-10378439b214",
+                notifyButton: {
+                  enable: true,
+                },
+              });
+            });
+          `}
+        </Script>
       </body>
     </html>
   );

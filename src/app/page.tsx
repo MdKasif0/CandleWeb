@@ -146,7 +146,9 @@ export default function DashboardPage() {
                                         </div>
                                          <Badge className={cn(
                                             "capitalize border-none",
-                                            wish.status === 'Published' ? "bg-yellow-900/50 text-yellow-300" : "bg-purple-900/50 text-purple-300"
+                                            wish.status === 'Published' ? "bg-yellow-900/50 text-yellow-300" :
+                                            wish.status === 'Scheduled' ? "bg-blue-900/50 text-blue-300" :
+                                            "bg-purple-900/50 text-purple-300"
                                         )}>{wish.status}</Badge>
                                     </CardContent>
                                 </Card>
