@@ -4,15 +4,15 @@
   "description": "Create and share personalized birthday websites.",
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "public/candleweb-icon.png",
       "sizes": "any",
-      "type": "image/svg+xml",
+      "type": "image",
       "purpose": "any"
     },
     {
-        "src": "/icon.svg",
+        "src": "public/candleweb-icon.png",
         "sizes": "any",
-        "type": "image/svg+xml",
+        "type": "image",
         "purpose": "maskable"
     }
   ],
