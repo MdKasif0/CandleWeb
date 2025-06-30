@@ -110,7 +110,7 @@ function CreateWishForm() {
       
       form.setValue('message', result.message, { shouldValidate: true });
 
-      if (form.getValues('template') === 'premium-night-sky') {
+      if (form.getValues('template') === 'premium-night-sky' || form.getValues('template') === 'celestial-wishes') {
         form.setValue('closingMessages', result.closingMessages.join('\n'), { shouldValidate: true });
         form.setValue('secretMessage', result.secretMessage, { shouldValidate: true });
       }
@@ -135,19 +135,29 @@ function CreateWishForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-        const newWish = {
+        const fullWishData = {
             id: `wish_${Date.now()}`,
+            createdAt: new Date().toISOString(),
             toName: values.toName,
             fromName: values.fromName,
             message: values.message,
             template: values.template,
-            status: 'Published'
+            status: 'Published',
+            closingMessages: values.closingMessages,
+            secretMessage: values.secretMessage,
         };
+
+        const { closingMessages, secretMessage, ...wishMetadata } = fullWishData;
 
         try {
             const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
-            const updatedWishes = [newWish, ...existingWishes];
+            const updatedWishes = [wishMetadata, ...existingWishes];
             localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
+
+            // Store large data separately
+            const additionalData = { closingMessages, secretMessage };
+            localStorage.setItem(`wish_data_${fullWishData.id}`, JSON.stringify(additionalData));
+
         } catch (error) {
             console.error("Could not save wish to local storage", error);
             toast({
@@ -157,28 +167,8 @@ function CreateWishForm() {
             })
             return;
         }
-
-        const params = new URLSearchParams();
-        params.append('toName', values.toName);
-        params.append('fromName', values.fromName);
-        params.append('message', values.message);
-
-        let relativeUrl;
-        if (values.template === 'premium-night-sky') {
-            if (values.closingMessages) {
-              params.append('closingMessages', values.closingMessages);
-            }
-            if (values.secretMessage) {
-              params.append('secretMessage', values.secretMessage);
-            }
-            relativeUrl = `/premium-night-sky/index.html?${params.toString()}`;
-        } else if (values.template === 'celestial-wishes') {
-            relativeUrl = `/celestial-wishes/celestial-wishes.html?${params.toString()}`;
-        }
-        else {
-            params.append('template', values.template);
-            relativeUrl = `/wish/${newWish.id}?${params.toString()}`;
-        }
+        
+        const relativeUrl = `/wish/${fullWishData.id}`;
         
         setGeneratedLink(relativeUrl);
         setShowShareDialog(true);
@@ -236,7 +226,7 @@ function CreateWishForm() {
         isCelestial ? 'bg-gradient-to-br from-indigo-100 via-rose-100 to-amber-100 text-gray-800' :
         'bg-gradient-to-br from-gray-900 via-slate-900 to-black text-white'
     )}>
-        {isPremium && (
+        {(isPremium || template === 'night-sky') && (
             <div className="absolute inset-0 z-0 opacity-30" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
         )}
       <div className="w-full max-w-md relative z-10">
@@ -325,7 +315,7 @@ function CreateWishForm() {
               )}
             />
 
-            {template === 'premium-night-sky' && (
+            {(template === 'premium-night-sky' || template === 'celestial-wishes') && (
               <>
                 <FormField
                   control={form.control}

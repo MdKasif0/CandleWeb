@@ -24,11 +24,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Copy, MoreHorizontal, Sparkles, Trash2, Loader2, ExternalLink } from 'lucide-react';
+import { Copy, MoreHorizontal, Trash2, Loader2, ExternalLink, ChevronLeft } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useRequireAuth } from '@/hooks/use-auth';
-import { UserNav } from '@/components/user-nav';
 import { BottomNavBar } from '@/components/bottom-nav-bar';
 import { cn } from '@/lib/utils';
 
@@ -44,7 +43,7 @@ interface Wish {
     createdAt: string;
 }
 
-export default function DashboardPage() {
+export default function MyWishesPage() {
     const auth = useRequireAuth();
     const [wishes, setWishes] = useState<Wish[]>([]);
     const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -126,70 +125,21 @@ export default function DashboardPage() {
         );
     }
     
-    const VIcon = () => (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="text-primary"
-      >
-        <path
-          d="M6.7901 3.39001L12.0001 13L17.2101 3.39001H21.0001L12.0001 21L3.0001 3.39001H6.7901Z"
-          fill="currentColor"
-        />
-      </svg>
-    );
-
     return (
         <div className="bg-background text-foreground min-h-screen font-sans">
             <div className="p-4 md:p-6 max-w-2xl mx-auto pb-24">
-                {/* Header */}
-                <header className="flex items-center justify-between mb-8">
-                    <VIcon />
-                    <div className="flex items-center gap-2 md:gap-4">
-                        <Link href="/upgrade" passHref>
-                          <Button className="bg-primary text-primary-foreground font-semibold rounded-full px-4 py-1.5 text-sm h-auto shadow-lg shadow-primary/20">
-                              Upgrade
-                          </Button>
-                        </Link>
-                        <UserNav />
-                    </div>
-                </header>
-
-                {/* Greeting */}
-                <section className="mb-8">
-                    <h1 className="text-3xl font-bold mb-1">Welcome, {auth.user.displayName || auth.user.email}!</h1>
-                    <p className="text-muted-foreground">Explore your CandleWebs</p>
-                </section>
-
-                {/* Action Card */}
-                <section className="mb-8">
-                    <Link href="/templates" passHref>
-                        <Card className="p-6 bg-gradient-to-br from-purple-600 to-indigo-700 text-white transition-all cursor-pointer group hover:shadow-xl hover:shadow-indigo-500/20 hover:-translate-y-1 duration-300 min-h-36 flex items-center">
-                            <CardContent className="flex items-center gap-4 p-0">
-                                <Sparkles className="h-12 w-12" />
-                                <h2 className="text-2xl font-semibold">Choose a Template and Create with AI</h2>
-                            </CardContent>
-                        </Card>
+                <div className="relative mb-8 flex items-center justify-center py-4">
+                    <Link href="/" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-foreground">
+                        <ChevronLeft className="h-5 w-5" />
+                        <span className="ml-1">Back</span>
                     </Link>
-                </section>
+                    <h1 className="text-2xl font-bold">My CandleWebs</h1>
+                </div>
 
-                {/* Recent Wishes List */}
                 <section>
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-2xl font-bold">Your Recent Wishes</h2>
-                        {wishes.length > 2 && (
-                            <Link href="/my-wishes" className={buttonVariants({ variant: 'link', className: 'text-primary' })}>
-                                View all
-                            </Link>
-                        )}
-                    </div>
-
                     {wishes.length > 0 ? (
                         <div className="space-y-3">
-                            {wishes.slice(0, 2).map((wish) => (
+                            {wishes.map((wish) => (
                                 <Card key={wish.id} className="bg-card p-3 border-border/50 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10">
                                     <CardContent className="flex items-center justify-between p-0">
                                         <div className="flex items-center gap-4">
