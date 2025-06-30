@@ -144,6 +144,24 @@ function CreateWishForm() {
     }
   };
 
+  const getOneSignalSubscriptionId = (): Promise<string | null> => {
+    return new Promise((resolve) => {
+      if (typeof window === "undefined" || !window.OneSignal) {
+        console.error("OneSignal SDK not loaded.");
+        resolve(null);
+        return;
+      }
+
+      window.OneSignal.push(function() {
+        window.OneSignal.User.getSubscriptionId().then(function(subscriptionId: string | null) {
+          resolve(subscriptionId);
+        }).catch(function(error: any) {
+          console.error('Error getting subscription ID:', error);
+          resolve(null);
+        });
+      });
+    });
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -257,7 +275,7 @@ function CreateWishForm() {
     setIsScheduling(true);
 
     try {
-        const playerId = await window.OneSignal.getUserId();
+        const playerId = await getOneSignalSubscriptionId();
         if (!playerId) {
             toast({
                 variant: 'destructive',
