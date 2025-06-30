@@ -1,22 +1,20 @@
 {
-  "name": "CandleWeb: Birthday Wishes Generator",
+  "name": "CandleWeb: Personalized Birthday Websites",
   "short_name": "CandleWeb",
-  "description": "Create and share personalized birthday websites.",
+  "description": "Create and share beautiful, personalized AI-powered 'Happy Birthday' websites in minutes. A unique way to celebrate friends and loved ones.",
   "icons": [
     {
-      "src": "public/candleweb-icon.png",
-      "sizes": "any",
-      "type": "image",
-      "purpose": "any"
+      "src": "/candleweb-icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
     },
     {
-        "src": "public/candleweb-icon.png",
-        "sizes": "any",
-        "type": "image",
-        "purpose": "maskable"
+      "src": "/candleweb-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
-  "theme_color": "#a87ff0",
+  "theme_color": "#1a113c",
   "background_color": "#0c0c2e",
   "start_url": "/",
   "display": "standalone",

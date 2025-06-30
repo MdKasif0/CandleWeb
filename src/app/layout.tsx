@@ -11,17 +11,22 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://candleweb.netlify.app"),
   applicationName: "CandleWeb",
   title: {
-    default: "CandleWeb - Personalized Birthday Websites",
+    default: "CandleWeb: Personalized Birthday Websites",
     template: "%s | CandleWeb",
   },
   description: "Create and share beautiful, personalized AI-powered 'Happy Birthday' websites in minutes. A unique way to celebrate friends and loved ones.",
   manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/candleweb-icon.png",
+    shortcut: "/candleweb-icon.png",
+    apple: "/candleweb-icon.png",
+  },
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#fafafa" },
     { media: "(prefers-color-scheme: dark)", color: "#0c0c2e" },
   ],
   openGraph: {
-    title: "CandleWeb - Personalized Birthday Websites",
+    title: "CandleWeb: Personalized Birthday Websites",
     description: "Create and share beautiful, personalized AI-powered 'Happy Birthday' websites in minutes.",
     url: "https://candleweb.netlify.app",
     siteName: 'CandleWeb',
@@ -38,7 +43,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "CandleWeb - Personalized Birthday Websites",
+    title: "CandleWeb: Personalized Birthday Websites",
     description: "Create and share beautiful, personalized AI-powered 'Happy Birthday' websites in minutes.",
     images: ['/candleweb-cover.png'],
   },
