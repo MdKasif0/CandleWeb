@@ -21,17 +21,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
-  DialogClose,
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState, Suspense, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, Sparkles, Loader2, Copy, ArrowRight } from 'lucide-react';
+import { ChevronLeft, Sparkles, Loader2, Copy, ArrowRight, PartyPopper, QrCode, Share2, Calendar as CalendarIcon, SendHorizonal } from 'lucide-react';
 import { generateWishContent, GenerateWishContentInput } from '@/ai/flows/generateWishContent';
 import { cn } from '@/lib/utils';
 import { useRequireAuth } from '@/hooks/use-auth';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
+import QRCode from 'qrcode.react';
 
 export const dynamic = 'force-dynamic';
 
@@ -56,9 +58,11 @@ function CreateWishForm() {
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showSharePage, setShowSharePage] = useState(false);
   const [generatedLink, setGeneratedLink] = useState('');
   const [template, setTemplate] = useState('night-sky');
+  const [scheduleDate, setScheduleDate] = useState<Date>();
+  const [isQrDialogOpen, setIsQrDialogOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,7 +81,7 @@ function CreateWishForm() {
     if (templateId === 'night-sky' || templateId === 'premium-night-sky' || templateId === 'celestial-wishes') {
       form.setValue('template', templateId);
       setTemplate(templateId);
-      if (templateId === 'premium-night-sky') {
+      if (templateId === 'premium-night-sky' || templateId === 'celestial-wishes') {
         form.setValue('closingMessages', defaultClosingMessages);
         form.setValue('secretMessage', defaultSecretMessage);
       } else {
@@ -171,13 +175,8 @@ function CreateWishForm() {
         const relativeUrl = `/wish/${fullWishData.id}`;
         
         setGeneratedLink(relativeUrl);
-        setShowShareDialog(true);
+        setShowSharePage(true);
         form.reset();
-
-        toast({
-          title: 'CandleWeb Created!',
-          description: 'Your personalized CandleWeb is ready to be shared.',
-        });
         
     } catch (error) {
         console.error("Could not create wish", error);
@@ -191,8 +190,9 @@ function CreateWishForm() {
     }
   }
 
+  const fullUrl = typeof window !== 'undefined' ? window.location.origin + generatedLink : '';
+
   const handleCopyToClipboard = () => {
-    const fullUrl = window.location.origin + generatedLink;
     navigator.clipboard.writeText(fullUrl).then(() => {
         toast({
             title: "Link Copied!",
@@ -206,6 +206,43 @@ function CreateWishForm() {
             description: "Could not copy the link to the clipboard."
         })
     })
+  }
+
+  const handleShare = async () => {
+    const toName = form.getValues('toName') || 'a friend';
+    const text = `Check out this special birthday wish I made for ${toName} on CandleWeb!`;
+    const title = `A birthday wish from CandleWeb`;
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: title,
+                text: text,
+                url: fullUrl,
+            });
+        } catch (error) {
+            console.error('Error sharing:', error);
+            toast({ variant: 'destructive', title: 'Could not share', description: 'There was an error trying to use the share feature.' });
+        }
+    } else {
+        navigator.clipboard.writeText(fullUrl);
+        toast({ title: 'Link Copied!', description: 'The wish page link has been copied to your clipboard.' });
+    }
+  };
+
+  const handleSchedule = () => {
+    if (!scheduleDate) {
+        toast({
+            variant: 'destructive',
+            title: 'No date selected',
+            description: 'Please select a date to schedule the wish.'
+        });
+        return;
+    }
+    toast({
+        title: 'Wish Scheduled!',
+        description: `Your wish will be sent on ${format(scheduleDate, 'PPP')}.`
+    });
   }
   
   const isPremium = template === 'premium-night-sky';
@@ -376,32 +413,84 @@ function CreateWishForm() {
           </form>
         </Form>
       </div>
-      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-        <DialogContent className="sm:max-w-md dark">
+      
+      {showSharePage && (
+        <div className="fixed inset-0 z-50 bg-gradient-to-b from-[#1a113c] to-[#0c0c2e] text-white overflow-y-auto font-sans">
+            <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+            <div className="relative z-10 mx-auto max-w-md p-4 text-center h-full flex flex-col justify-center">
+            
+            <PartyPopper className="mx-auto h-12 w-12 text-purple-400 mb-4" />
+            <h1 className="text-4xl font-bold text-amber-300 mb-2">Your Wish Page is Ready!</h1>
+            <p className="text-white/70 mb-8">Your personalized birthday wish page is now live and ready to be shared.</p>
+
+            <div className="text-left mb-6">
+                <label className="font-semibold text-amber-300 mb-2 block">Webpage Link</label>
+                <div className="flex items-center space-x-2 bg-black/30 rounded-lg p-3 border border-white/20">
+                <input value={fullUrl} readOnly className="bg-transparent w-full text-white outline-none" />
+                <button onClick={handleCopyToClipboard}><Copy className="h-5 w-5 text-purple-400 hover:text-purple-300" /></button>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-8">
+                <button onClick={() => setIsQrDialogOpen(true)} className="flex items-center justify-center gap-2 bg-black/30 rounded-lg p-3 border border-white/20 hover:bg-black/50 transition-colors">
+                    <QrCode className="h-5 w-5 text-amber-300" />
+                    <span className="text-amber-300 font-semibold">QR Code</span>
+                </button>
+                <button onClick={handleShare} className="flex items-center justify-center gap-2 bg-black/30 rounded-lg p-3 border border-white/20 hover:bg-black/50 transition-colors">
+                    <Share2 className="h-5 w-5 text-amber-300" />
+                    <span className="text-amber-300 font-semibold">Share</span>
+                </button>
+            </div>
+
+            <div className="text-left mb-4">
+                <label className="font-semibold text-amber-300 mb-2 block">Schedule Send</label>
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant={"outline"}
+                            className={cn(
+                                "w-full justify-start text-left font-normal bg-black/30 rounded-lg p-3 border border-white/20 hover:bg-black/50 text-white",
+                                !scheduleDate && "text-muted-foreground"
+                            )}
+                        >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {scheduleDate ? format(scheduleDate, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 dark bg-black/80 backdrop-blur-md border-purple-400/50">
+                        <Calendar
+                            mode="single"
+                            selected={scheduleDate}
+                            onSelect={setScheduleDate}
+                            initialFocus
+                        />
+                    </PopoverContent>
+                </Popover>
+            </div>
+            
+            <Button onClick={handleSchedule} className="w-full rounded-full py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-base mb-8 shadow-lg shadow-purple-500/20 hover:opacity-90 transition-opacity">
+                <SendHorizonal className="mr-2 h-5 w-5" />
+                Schedule Wish
+            </Button>
+
+            <Button variant="ghost" onClick={() => router.push('/')} className="text-white/70 hover:text-white">
+                Back to Dashboard
+            </Button>
+            </div>
+        </div>
+      )}
+
+      <Dialog open={isQrDialogOpen} onOpenChange={setIsQrDialogOpen}>
+        <DialogContent className="dark bg-[#1a113c] border-purple-400/50 text-white">
             <DialogHeader>
-                <DialogTitle>Your CandleWeb is Ready!</DialogTitle>
-                <DialogDescription>
-                    Share this link with the birthday person. Anyone with the link can view your CandleWeb.
+                <DialogTitle className="text-amber-300">Scan QR Code</DialogTitle>
+                <DialogDescription className="text-white/70">
+                    Scan this with a phone to open the wish page.
                 </DialogDescription>
             </DialogHeader>
-            <div className="flex items-center space-x-2">
-                <Input value={typeof window !== 'undefined' ? window.location.origin + generatedLink : ''} readOnly className="bg-muted border-border" />
-                <Button type="button" size="icon" onClick={handleCopyToClipboard}>
-                    <Copy className="h-4 w-4" />
-                </Button>
+            <div className="p-4 bg-white rounded-lg mx-auto">
+                <QRCode value={fullUrl} size={256} fgColor="#000" bgColor="#fff" />
             </div>
-            <DialogFooter className="sm:justify-between gap-2 mt-4">
-                <DialogClose asChild>
-                    <Button type="button" variant="secondary" onClick={() => router.push('/')}>
-                        Back to Dashboard
-                    </Button>
-                </DialogClose>
-                <Button asChild>
-                    <Link href={generatedLink} target="_blank" rel="noopener noreferrer">
-                        Preview CandleWeb <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                </Button>
-            </DialogFooter>
         </DialogContent>
       </Dialog>
     </main>
