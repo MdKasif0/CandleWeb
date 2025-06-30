@@ -37,6 +37,12 @@ import QRCode from 'qrcode.react';
 
 export const dynamic = 'force-dynamic';
 
+declare global {
+  interface Window {
+    OneSignal: any;
+  }
+}
+
 const formSchema = z.object({
   toName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   fromName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -58,6 +64,7 @@ function CreateWishForm() {
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isScheduling, setIsScheduling] = useState(false);
   const [showSharePage, setShowSharePage] = useState(false);
   const [generatedLink, setGeneratedLink] = useState('');
   const [submittedWish, setSubmittedWish] = useState<any>(null);
@@ -233,43 +240,53 @@ function CreateWishForm() {
     }
   };
 
-  const handleSchedule = () => {
+  const handleSchedule = async () => {
     if (!scheduleDate) {
-        toast({
-            variant: 'destructive',
-            title: 'No date selected',
-            description: 'Please select a date to schedule the wish.'
-        });
+        toast({ variant: 'destructive', title: 'No date selected', description: 'Please select a date to schedule the wish.'});
         return;
     }
     if (!scheduleTime) {
-      toast({
-          variant: 'destructive',
-          title: 'No time selected',
-          description: 'Please select a time to schedule the wish.'
-      });
+      toast({ variant: 'destructive', title: 'No time selected', description: 'Please select a time to schedule the wish.'});
       return;
     }
     if (!submittedWish) {
         toast({ variant: 'destructive', title: 'Error', description: 'Could not find wish data to schedule.' });
         return;
     }
-
-    const [hours, minutes] = scheduleTime.split(':').map(Number);
-    const combinedDate = new Date(scheduleDate);
-    combinedDate.setHours(hours, minutes, 0, 0);
+    
+    setIsScheduling(true);
 
     try {
-        const scheduledWishes = JSON.parse(localStorage.getItem('scheduledWishes') || '[]');
-        const newScheduledWish = {
-            id: submittedWish.id,
-            scheduleAt: combinedDate.toISOString(),
-            toName: submittedWish.toName,
-        };
-        
-        // Add to scheduled list
-        const updatedScheduledWishes = [...scheduledWishes, newScheduledWish];
-        localStorage.setItem('scheduledWishes', JSON.stringify(updatedScheduledWishes));
+        const playerId = await window.OneSignal.getUserId();
+        if (!playerId) {
+            toast({
+                variant: 'destructive',
+                title: 'Could not get notification ID',
+                description: 'Please ensure you have enabled notifications for this site.'
+            });
+            setIsScheduling(false);
+            return;
+        }
+
+        const [hours, minutes] = scheduleTime.split(':').map(Number);
+        const combinedDate = new Date(scheduleDate);
+        combinedDate.setHours(hours, minutes, 0, 0);
+
+        const response = await fetch('/api/schedule-notification', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                scheduleAt: combinedDate.toISOString(),
+                toName: submittedWish.toName,
+                wishId: submittedWish.id,
+                playerId: playerId,
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to schedule notification.');
+        }
 
         // Update the status of the wish in the main list
         const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
@@ -281,14 +298,16 @@ function CreateWishForm() {
 
         toast({
             title: 'Wish Scheduled!',
-            description: `Your wish for ${submittedWish.toName} is scheduled for ${format(combinedDate, 'PPP p')}. You'll get a notification to send it.`
+            description: `Your wish for ${submittedWish.toName} is scheduled for ${format(combinedDate, 'PPP p')}. A notification will be sent.`
         });
         
         router.push('/'); // Go back to dashboard after scheduling.
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Could not schedule wish", error);
-        toast({ variant: 'destructive', title: 'Scheduling Failed', description: 'There was an error saving the schedule.' });
+        toast({ variant: 'destructive', title: 'Scheduling Failed', description: error.message });
+    } finally {
+        setIsScheduling(false);
     }
   };
   
@@ -524,8 +543,8 @@ function CreateWishForm() {
                 </div>
             </div>
             
-            <Button onClick={handleSchedule} className="w-full rounded-full py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-base mb-8 shadow-lg shadow-purple-500/20 hover:opacity-90 transition-opacity">
-                <SendHorizonal className="mr-2 h-5 w-5" />
+            <Button onClick={handleSchedule} disabled={isScheduling} className="w-full rounded-full py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-base mb-8 shadow-lg shadow-purple-500/20 hover:opacity-90 transition-opacity">
+                 {isScheduling ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <SendHorizonal className="mr-2 h-5 w-5" />}
                 Schedule Wish
             </Button>
 
