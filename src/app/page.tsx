@@ -106,7 +106,9 @@ export default function DashboardPage() {
 
                     {wishes.length > 0 ? (
                         <div className="space-y-3">
-                            {wishes.slice(0, 2).map((wish) => (
+                            {wishes.slice(0, 2).map((wish) => {
+                                const isValidDate = wish.createdAt && !isNaN(new Date(wish.createdAt).getTime());
+                                return (
                                 <Card key={wish.id} className="bg-foreground/5 p-3 border-transparent transition-all hover:bg-foreground/10">
                                     <CardContent className="flex items-center justify-between p-0 gap-4">
                                         <Image
@@ -119,7 +121,7 @@ export default function DashboardPage() {
                                         />
                                         <div className="flex-grow">
                                             <h3 className="font-semibold text-white text-lg">{wish.toName}</h3>
-                                            <p className="text-sm text-muted-foreground">{format(new Date(wish.createdAt), "MMM d, yyyy")}</p>
+                                            <p className="text-sm text-muted-foreground">{isValidDate ? format(new Date(wish.createdAt), "MMM d, yyyy") : 'Date not available'}</p>
                                         </div>
                                          <Badge className={cn(
                                             "capitalize border-none",
@@ -127,7 +129,7 @@ export default function DashboardPage() {
                                         )}>{wish.status}</Badge>
                                     </CardContent>
                                 </Card>
-                            ))}
+                            )})}
                         </div>
                     ) : (
                          <Card className="bg-foreground/5 p-6 border-transparent text-center">
