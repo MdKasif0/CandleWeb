@@ -11,7 +11,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRequireAuth, useAuth } from '@/hooks/use-auth';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { ChevronRight, Edit2, KeyRound, Loader2, LogOut, Mail, Palette, Share2, Shield, User as UserIcon, FileText, Upload, Eye, EyeOff } from 'lucide-react';
+import { ChevronRight, Edit2, KeyRound, Loader2, LogOut, Mail, Palette, Share2, Shield, User as UserIcon, FileText, Upload, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { BottomNavBar } from '@/components/bottom-nav-bar';
 import {
@@ -127,7 +127,7 @@ export default function AccountPage() {
                     <p className="text-muted-foreground">{user.email}</p>
                 </div>
                 
-                <Card className="mb-8 bg-gradient-to-r from-primary/80 to-primary text-primary-foreground shadow-xl shadow-primary/20">
+                <Card className="mb-4 bg-gradient-to-r from-primary/80 to-primary text-primary-foreground shadow-xl shadow-primary/20">
                     <CardContent className="p-6 flex items-center justify-between">
                         <div>
                             <h3 className="text-lg font-semibold">Invite Friends</h3>
@@ -138,6 +138,20 @@ export default function AccountPage() {
                         </Button>
                     </CardContent>
                 </Card>
+
+                <Link href="/upgrade" className="block mb-8 group">
+                    <div className="rounded-2xl bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 p-0.5 shadow-lg shadow-purple-500/20 group-hover:shadow-xl group-hover:shadow-pink-500/20 transition-all duration-300">
+                        <div className="bg-[#191428] rounded-[14px] p-6 flex items-center justify-between">
+                             <div>
+                                <h3 className="text-lg font-semibold text-white">Upgrade to Pro</h3>
+                                <p className="text-sm text-white/70 max-w-xs">Unlock premium templates & features.</p>
+                            </div>
+                            <div className="bg-gradient-to-br from-purple-500 to-pink-500 p-2 rounded-lg h-12 w-12 flex items-center justify-center">
+                                <Sparkles className="text-white h-6 w-6" />
+                            </div>
+                        </div>
+                    </div>
+                </Link>
 
                 <div className="space-y-2">
                     <h3 className="px-4 text-sm font-medium text-muted-foreground">Account Settings</h3>

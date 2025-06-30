@@ -70,11 +70,6 @@ export default function TemplatesPage() {
                 <header className="flex items-center justify-between mb-8">
                     <VIcon />
                     <div className="flex items-center gap-2 md:gap-4">
-                        <Link href="/upgrade" passHref>
-                          <Button className="bg-accent text-accent-foreground font-semibold rounded-full px-4 py-1.5 text-sm h-auto shadow-lg shadow-accent/20">
-                              Upgrade
-                          </Button>
-                        </Link>
                         <UserNav />
                     </div>
                 </header>
