@@ -1,5 +1,7 @@
+
 'use server';
 
+import 'dotenv/config'; // Make sure environment variables are loaded for local dev
 import {NextResponse} from 'next/server';
 
 export async function POST(request: Request) {
@@ -9,8 +11,9 @@ export async function POST(request: Request) {
   const ONESIGNAL_API_KEY = process.env.ONESIGNAL_API_KEY;
 
   if (!ONESIGNAL_APP_ID || !ONESIGNAL_API_KEY) {
+    console.error("OneSignal credentials not found. Make sure they are set in your .env file for local development.");
     return NextResponse.json(
-      {error: 'OneSignal credentials not configured.'},
+      {error: 'OneSignal credentials not configured on the server.'},
       {status: 500}
     );
   }
