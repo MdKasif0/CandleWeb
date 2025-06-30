@@ -75,19 +75,16 @@ export default function RootLayout({
         <Script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" strategy="afterInteractive" />
         <Script id="onesignal-init" strategy="afterInteractive">
           {`
-            // Only initialize OneSignal on the production domain to avoid errors in development
-            if (window.location.hostname === 'candleweb.netlify.app') {
-              window.OneSignalDeferred = window.OneSignalDeferred || [];
-              OneSignalDeferred.push(async function(OneSignal) {
-                await OneSignal.init({
-                  appId: "${process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID}",
-                  safari_web_id: "web.onesignal.auto.27be598e-7a22-4ed6-a01a-10378439b214",
-                  notifyButton: {
-                    enable: true,
-                  },
-                });
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            OneSignalDeferred.push(async function(OneSignal) {
+              await OneSignal.init({
+                appId: "${process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID}",
+                safari_web_id: "web.onesignal.auto.27be598e-7a22-4ed6-a01a-10378439b214",
+                notifyButton: {
+                  enable: true,
+                },
               });
-            }
+            });
           `}
         </Script>
       </body>
