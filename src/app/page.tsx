@@ -8,13 +8,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -24,7 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Copy, MoreHorizontal, Sparkles, Trash2, Loader2, ExternalLink } from 'lucide-react';
+import { Loader2, Cake } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useRequireAuth } from '@/hooks/use-auth';
@@ -44,12 +37,15 @@ interface Wish {
     createdAt: string;
 }
 
+const popularTemplates = [
+    { name: 'Gold Luxe', imageUrl: 'https://placehold.co/400x300.png', dataAiHint: 'gold luxury' },
+    { name: 'Balloons', imageUrl: 'https://placehold.co/400x300.png', dataAiHint: 'balloons party' },
+    { name: 'Retro Pop', imageUrl: 'https://placehold.co/400x300.png', dataAiHint: 'retro popart' },
+];
+
 export default function DashboardPage() {
     const auth = useRequireAuth();
     const [wishes, setWishes] = useState<Wish[]>([]);
-    const [isAlertOpen, setIsAlertOpen] = useState(false);
-    const [wishToDelete, setWishToDelete] = useState<Wish | null>(null);
-    const { toast } = useToast();
 
     useEffect(() => {
         try {
@@ -60,63 +56,6 @@ export default function DashboardPage() {
             setWishes([]);
         }
     }, []);
-
-    const handleCopyLink = (wish: Wish) => {
-        if (typeof window === 'undefined') return;
-        const relativeUrl = `/wish/${wish.id}`;
-        const fullUrl = window.location.origin + relativeUrl;
-
-        navigator.clipboard.writeText(fullUrl).then(() => {
-            toast({
-                title: "Link Copied!",
-                description: "The wish link has been copied to your clipboard."
-            });
-        }).catch(err => {
-            console.error("Failed to copy link", err);
-            toast({
-                variant: "destructive",
-                title: "Copy Failed",
-                description: "Could not copy the link."
-            });
-        });
-    };
-
-    const handleDeleteClick = (wish: Wish) => {
-        setWishToDelete(wish);
-        setIsAlertOpen(true);
-    };
-
-    const handleConfirmDelete = () => {
-        if (!wishToDelete) return;
-
-        try {
-            // Update metadata in localStorage
-            const storedWishes: Wish[] = JSON.parse(localStorage.getItem('userWishes') || '[]');
-            const updatedWishes = storedWishes.filter(w => w.id !== wishToDelete.id);
-            localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
-            
-            // Remove associated data
-            localStorage.removeItem(`wish_data_${wishToDelete.id}`);
-
-            // Update component state
-            setWishes(updatedWishes);
-
-            toast({
-                title: "Wish Deleted",
-                description: `The wish for ${wishToDelete.toName} has been removed.`,
-            });
-        } catch (error) {
-            console.error("Could not delete wish from local storage", error);
-            toast({
-                variant: "destructive",
-                title: "Could not delete wish",
-                description: "There was an error deleting your wish. Please try again."
-            });
-        } finally {
-            setIsAlertOpen(false);
-            setWishToDelete(null);
-        }
-    };
     
     if (auth.loading || !auth.user) {
         return (
@@ -126,154 +65,97 @@ export default function DashboardPage() {
         );
     }
     
-    const VIcon = () => (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="text-primary"
-      >
-        <path
-          d="M6.7901 3.39001L12.0001 13L17.2101 3.39001H21.0001L12.0001 21L3.0001 3.39001H6.7901Z"
-          fill="currentColor"
-        />
-      </svg>
-    );
-
     return (
-        <div className="bg-background text-foreground min-h-screen font-sans">
-            <div className="p-4 md:p-6 max-w-2xl mx-auto pb-24">
+        <div className="bg-background text-foreground min-h-screen font-sans relative overflow-hidden">
+            <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+             <div className="relative z-10 p-4 md:p-6 max-w-2xl mx-auto pb-24">
                 {/* Header */}
                 <header className="flex items-center justify-between mb-8">
-                    <VIcon />
-                    <div className="flex items-center gap-2 md:gap-4">
-                        <Link href="/upgrade" passHref>
-                          <Button className="bg-primary text-primary-foreground font-semibold rounded-full px-4 py-1.5 text-sm h-auto shadow-lg shadow-primary/20">
-                              Upgrade
-                          </Button>
-                        </Link>
-                        <UserNav />
-                    </div>
+                    <span className="font-serif text-2xl text-white italic">Candle Web</span>
+                    <UserNav />
                 </header>
 
                 {/* Greeting */}
                 <section className="mb-8">
-                    <h1 className="text-3xl font-bold mb-1">Welcome, {auth.user.displayName || auth.user.email}!</h1>
-                    <p className="text-muted-foreground">Explore your CandleWebs</p>
+                    <h1 className="text-4xl font-bold mb-2 text-white">Hey {auth.user.displayName?.split(' ')[0] || 'friend'}, ready to craft some birthday magic?</h1>
+                    <p className="text-muted-foreground text-lg">Let's create a wish page that makes their day unforgettable.</p>
                 </section>
 
                 {/* Action Card */}
-                <section className="mb-8">
-                    <Link href="/templates" passHref>
-                        <Card className="p-6 bg-gradient-to-br from-purple-600 to-indigo-700 text-white transition-all cursor-pointer group hover:shadow-xl hover:shadow-indigo-500/20 hover:-translate-y-1 duration-300 min-h-36 flex items-center">
-                            <CardContent className="flex items-center gap-4 p-0">
-                                <Sparkles className="h-12 w-12" />
-                                <h2 className="text-2xl font-semibold">Choose a Template and Create with AI</h2>
-                            </CardContent>
-                        </Card>
+                <section className="mb-10">
+                    <Link href="/templates" className="block">
+                        <div className="rounded-2xl bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 p-0.5 shadow-lg shadow-purple-500/20 hover:shadow-xl hover:shadow-pink-500/20 transition-all duration-300">
+                            <div className="bg-[#191428] rounded-[14px] p-4 flex items-center gap-4">
+                                <div className="bg-gradient-to-br from-purple-500 to-pink-500 p-2 rounded-lg">
+                                    <Cake className="w-8 h-8 text-white" />
+                                </div>
+                                <div className="flex-grow">
+                                    <p className="font-bold text-white text-lg">Create New Wish</p>
+                                    <p className="text-sm text-white/70">Start a New Wish Page</p>
+                                </div>
+                            </div>
+                        </div>
                     </Link>
                 </section>
 
                 {/* Recent Wishes List */}
-                <section>
+                <section className="mb-10">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-2xl font-bold">Your Recent Wishes</h2>
-                        {wishes.length > 2 && (
-                            <Link href="/my-wishes" className={buttonVariants({ variant: 'link', className: 'text-primary' })}>
-                                View all
-                            </Link>
-                        )}
+                        <h2 className="text-xl font-bold text-primary">Your Recent Wishes</h2>
                     </div>
 
                     {wishes.length > 0 ? (
                         <div className="space-y-3">
                             {wishes.slice(0, 2).map((wish) => (
-                                <Card key={wish.id} className="bg-card p-3 border-border/50 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10">
-                                    <CardContent className="flex items-center justify-between p-0">
-                                        <div className="flex items-center gap-4">
-                                            <Image
-                                                src={`https://placehold.co/80x80/000000/FFF?text=${wish.toName.charAt(0)}`}
-                                                alt={wish.toName}
-                                                width={64}
-                                                height={64}
-                                                className="w-16 h-16 object-cover rounded-lg"
-                                                data-ai-hint="bokeh candles"
-                                            />
-                                            <div>
-                                                <h3 className="font-semibold text-card-foreground text-lg">{wish.toName}</h3>
-                                                <p className="text-sm text-muted-foreground">{format(new Date(wish.createdAt), "MMM d, yyyy")}</p>
-                                            </div>
+                                <Card key={wish.id} className="bg-foreground/5 p-3 border-transparent transition-all hover:bg-foreground/10">
+                                    <CardContent className="flex items-center justify-between p-0 gap-4">
+                                        <Image
+                                            src={`https://placehold.co/80x80/000000/FFF?text=${wish.toName.charAt(0)}`}
+                                            alt={wish.toName}
+                                            width={56}
+                                            height={56}
+                                            className="w-14 h-14 object-cover rounded-lg"
+                                            data-ai-hint="bokeh candles"
+                                        />
+                                        <div className="flex-grow">
+                                            <h3 className="font-semibold text-white text-lg">{wish.toName}</h3>
+                                            <p className="text-sm text-muted-foreground">{format(new Date(wish.createdAt), "MMM d, yyyy")}</p>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                             <Badge className={cn(
-                                                "capitalize",
-                                                wish.status === 'Published' ? "bg-yellow-400/80 text-yellow-950 border-yellow-400/30" : "bg-purple-600/80 text-purple-50 border-purple-600/30"
-                                            )}>{wish.status}</Badge>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="text-muted-foreground w-8 h-8">
-                                                        <MoreHorizontal className="h-5 w-5" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem onSelect={() => window.open(`/wish/${wish.id}`, '_blank')}>
-                                                        <ExternalLink className="mr-2 h-4 w-4" />
-                                                        <span>Preview</span>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem onSelect={() => handleCopyLink(wish)}>
-                                                        <Copy className="mr-2 h-4 w-4" />
-                                                        <span>Copy Link</span>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem
-                                                        className="text-destructive"
-                                                        onSelect={() => handleDeleteClick(wish)}
-                                                    >
-                                                        <Trash2 className="mr-2 h-4 w-4" />
-                                                        <span>Delete</span>
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </div>
+                                         <Badge className={cn(
+                                            "capitalize border-none",
+                                            wish.status === 'Published' ? "bg-yellow-900/50 text-yellow-300" : "bg-purple-900/50 text-purple-300"
+                                        )}>{wish.status}</Badge>
                                     </CardContent>
                                 </Card>
                             ))}
                         </div>
                     ) : (
-                         <Card className="bg-card p-6 border-border/50 text-center">
+                         <Card className="bg-foreground/5 p-6 border-transparent text-center">
                             <CardContent className="p-0 flex flex-col items-center">
-                                <h3 className="font-semibold text-card-foreground mb-2">No CandleWebs Built Yet</h3>
-                                <p className="text-sm text-muted-foreground mb-4">Get started by choosing a template and creating your first CandleWeb!</p>
-                                <Link href="/templates" passHref>
-                                    <Button>Create a CandleWeb</Button>
-                                </Link>
+                                <h3 className="font-semibold text-white mb-2">No CandleWebs Built Yet</h3>
+                                <p className="text-sm text-muted-foreground">You can start by creating a new wish.</p>
                             </CardContent>
                         </Card>
                     )}
                 </section>
+
+                {/* Popular Templates */}
+                <section>
+                    <h2 className="text-xl font-bold text-primary mb-4">Popular Templates</h2>
+                    <div className="grid grid-cols-3 gap-3">
+                        {popularTemplates.map(template => (
+                            <Link href="/templates" key={template.name}>
+                                <Card className="aspect-[4/3] rounded-xl overflow-hidden relative group border-0">
+                                    <Image src={template.imageUrl} alt={template.name} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-110" data-ai-hint={template.dataAiHint} />
+                                    <div className="absolute inset-0 bg-black/40 flex items-end p-2 justify-center text-center">
+                                        <h3 className="font-bold text-white text-base leading-tight">{template.name}</h3>
+                                    </div>
+                                </Card>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
             </div>
-            
-            <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the birthday wish for {wishToDelete?.toName}.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel onClick={() => setWishToDelete(null)}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={handleConfirmDelete}
-                            className={buttonVariants({ variant: "destructive" })}
-                        >
-                            Delete
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
             
             <BottomNavBar />
         </div>

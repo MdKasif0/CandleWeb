@@ -24,7 +24,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Copy, MoreHorizontal, Trash2, Loader2, ExternalLink, ChevronLeft } from 'lucide-react';
+import { Copy, MoreHorizontal, Trash2, Loader2, ExternalLink } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useRequireAuth } from '@/hooks/use-auth';
@@ -127,39 +127,36 @@ export default function MyWishesPage() {
     
     return (
         <div className="bg-background text-foreground min-h-screen font-sans">
-            <div className="p-4 md:p-6 max-w-2xl mx-auto pb-24">
+             <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+            <div className="relative z-10 p-4 md:p-6 max-w-2xl mx-auto pb-24">
                 <div className="relative mb-8 flex items-center justify-center py-4">
-                    <Link href="/" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-foreground">
-                        <ChevronLeft className="h-5 w-5" />
-                        <span className="ml-1">Back</span>
-                    </Link>
-                    <h1 className="text-2xl font-bold">My CandleWebs</h1>
+                    <h1 className="text-2xl font-bold text-white">My CandleWebs</h1>
                 </div>
 
                 <section>
                     {wishes.length > 0 ? (
                         <div className="space-y-3">
                             {wishes.map((wish) => (
-                                <Card key={wish.id} className="bg-card p-3 border-border/50 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10">
+                                 <Card key={wish.id} className="bg-foreground/5 p-3 border-transparent">
                                     <CardContent className="flex items-center justify-between p-0">
                                         <div className="flex items-center gap-4">
                                             <Image
                                                 src={`https://placehold.co/80x80/000000/FFF?text=${wish.toName.charAt(0)}`}
                                                 alt={wish.toName}
-                                                width={64}
-                                                height={64}
-                                                className="w-16 h-16 object-cover rounded-lg"
+                                                width={56}
+                                                height={56}
+                                                className="w-14 h-14 object-cover rounded-lg"
                                                 data-ai-hint="bokeh candles"
                                             />
-                                            <div>
-                                                <h3 className="font-semibold text-card-foreground text-lg">{wish.toName}</h3>
+                                            <div className="flex-grow">
+                                                <h3 className="font-semibold text-white text-lg">{wish.toName}</h3>
                                                 <p className="text-sm text-muted-foreground">{format(new Date(wish.createdAt), "MMM d, yyyy")}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
                                              <Badge className={cn(
-                                                "capitalize",
-                                                wish.status === 'Published' ? "bg-yellow-400/80 text-yellow-950 border-yellow-400/30" : "bg-purple-600/80 text-purple-50 border-purple-600/30"
+                                                "capitalize border-none",
+                                                wish.status === 'Published' ? "bg-yellow-900/50 text-yellow-300" : "bg-purple-900/50 text-purple-300"
                                             )}>{wish.status}</Badge>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
@@ -178,7 +175,7 @@ export default function MyWishesPage() {
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
-                                                        className="text-destructive"
+                                                        className="text-red-400 focus:text-red-400 focus:bg-red-500/10"
                                                         onSelect={() => handleDeleteClick(wish)}
                                                     >
                                                         <Trash2 className="mr-2 h-4 w-4" />
@@ -192,9 +189,9 @@ export default function MyWishesPage() {
                             ))}
                         </div>
                     ) : (
-                         <Card className="bg-card p-6 border-border/50 text-center">
+                         <Card className="bg-foreground/5 p-6 border-transparent text-center">
                             <CardContent className="p-0 flex flex-col items-center">
-                                <h3 className="font-semibold text-card-foreground mb-2">No CandleWebs Built Yet</h3>
+                                <h3 className="font-semibold text-white mb-2">No CandleWebs Built Yet</h3>
                                 <p className="text-sm text-muted-foreground mb-4">Get started by choosing a template and creating your first CandleWeb!</p>
                                 <Link href="/templates" passHref>
                                     <Button>Create a CandleWeb</Button>
