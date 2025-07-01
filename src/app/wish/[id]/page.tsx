@@ -14,6 +14,12 @@ interface WishData {
   template: string;
   closingMessages?: string;
   secretMessage?: string;
+  blowCandlesInstruction?: string;
+  wishYouTheBestMessage?: string;
+  letsBlowCandlesTitle?: string;
+  thanksForWatchingTitle?: string;
+  didYouLikeItMessage?: string;
+  endMessage?: string;
 }
 
 function WishDisplay() {
@@ -39,6 +45,12 @@ function WishDisplay() {
                         template: mainData.template || 'night-sky',
                         closingMessages: additionalData.closingMessages || '',
                         secretMessage: additionalData.secretMessage || '',
+                        blowCandlesInstruction: additionalData.blowCandlesInstruction || '',
+                        wishYouTheBestMessage: additionalData.wishYouTheBestMessage || '',
+                        letsBlowCandlesTitle: additionalData.letsBlowCandlesTitle || '',
+                        thanksForWatchingTitle: additionalData.thanksForWatchingTitle || '',
+                        didYouLikeItMessage: additionalData.didYouLikeItMessage || '',
+                        endMessage: additionalData.endMessage || '',
                     };
 
                     setWishData(fullData);
@@ -78,7 +90,13 @@ function WishDisplay() {
         fromName: wishData.fromName,
         message: wishData.message,
         closingMessages: wishData.closingMessages || '',
-        secretMessage: wishData.secretMessage || ''
+        secretMessage: wishData.secretMessage || '',
+        blowCandlesInstruction: wishData.blowCandlesInstruction || "'Blow the candles'",
+        wishYouTheBestMessage: wishData.wishYouTheBestMessage || "💝 Wish you the best 💝",
+        letsBlowCandlesTitle: wishData.letsBlowCandlesTitle || "Let's blow out the candles.",
+        thanksForWatchingTitle: wishData.thanksForWatchingTitle || "Thanks for watching!",
+        didYouLikeItMessage: wishData.didYouLikeItMessage || "Did you like it?",
+        endMessage: wishData.endMessage || "The End",
     });
 
     switch (wishData.template) {

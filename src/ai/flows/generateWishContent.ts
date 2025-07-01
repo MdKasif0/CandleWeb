@@ -21,6 +21,12 @@ const GenerateWishContentOutputSchema = z.object({
   message: z.string().describe('The main, heartfelt, and slightly humorous birthday message (3-4 sentences).'),
   closingMessages: z.array(z.string()).describe('A list of 3-4 short, celebratory one-line closing messages.'),
   secretMessage: z.string().describe('A short, fun, and slightly mysterious secret message for the end of the experience.'),
+  blowCandlesInstruction: z.string().describe("A short, one-line instruction to blow out the candles (e.g., 'Make a wish and blow the candles')."),
+  wishYouTheBestMessage: z.string().describe("A very short, celebratory message that appears below the main cake greeting (e.g., 'Wishing you the best!')."),
+  letsBlowCandlesTitle: z.string().describe("A short title for the candle blowing pop-up (e.g., \"Ready to make a wish?\")."),
+  thanksForWatchingTitle: z.string().describe("A short title for the final pop-up (e.g., 'Thanks for watching!')."),
+  didYouLikeItMessage: z.string().describe("A short question for the final pop-up asking for feedback (e.g., 'Hope you liked it!')."),
+  endMessage: z.string().describe("A very short message to signify the end (e.g., 'The End').")
 });
 export type GenerateWishContentOutput = z.infer<typeof GenerateWishContentOutputSchema>;
 
@@ -35,10 +41,16 @@ const generateWishContentPrompt = ai.definePrompt({
   prompt: `You are a creative and witty message writer specializing in birthday wishes.
   The message is from '{{fromName}}' to '{{toName}}'.
 
-  Please generate the following content:
+  Please generate the following content. Keep all one-line messages very short and celebratory.
   1.  A short, heartfelt, and slightly humorous birthday message (3-4 sentences). Do not include "From {{fromName}}" at the end, just the message itself.
   2.  A list of 3-4 short, encouraging, and celebratory one-line closing messages.
-  3.  A short, playful, and slightly mysterious "secret message" for the very end.`,
+  3.  A short, playful, and slightly mysterious "secret message" for the very end.
+  4.  A short instruction to blow out the candles (e.g., 'Make a wish and blow the candles').
+  5.  A very short, celebratory message that appears below the main cake greeting (e.g., 'Wishing you the best!').
+  6.  A short title for the candle blowing pop-up (e.g., "Ready to make a wish?").
+  7.  A short title for the final pop-up (e.g., "Thanks for watching!").
+  8.  A short question for the final pop-up asking for feedback (e.g., "Hope you liked it!").
+  9.  A very short message to signify the end (e.g., "The End").`,
 });
 
 const generateWishContentFlow = ai.defineFlow(

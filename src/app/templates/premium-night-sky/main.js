@@ -968,19 +968,10 @@ function showMessages() {
 
     const userClosingMessages = window.birthdayData.closingMessages
         ? window.birthdayData.closingMessages.split('\n').filter(line => line.trim() !== '')
-        : [
-            "Wishing you all the best!",
-            "May all your dreams come true!",
-            "May your whole life be healthy and peaceful"
-          ];
+        : [];
 
     const concludingMessages = [
-        "Did you Liked it?🤔",
-        "If Yes then click on 'Liked it' at last,",
-        "else rewatch it 😅",
-        "Sorry, because it wasn't perfectly build",
-        "as it is still in developing stage",
-        "The End",
+        window.birthdayData.endMessage,
         `💖 A special wish from ${window.birthdayData.fromName} 💖`
     ];
 

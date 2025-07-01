@@ -50,6 +50,12 @@ const formSchema = z.object({
   template: z.enum(['night-sky', 'premium-night-sky', 'celestial-wishes']),
   closingMessages: z.string().optional(),
   secretMessage: z.string().optional(),
+  blowCandlesInstruction: z.string().optional(),
+  wishYouTheBestMessage: z.string().optional(),
+  letsBlowCandlesTitle: z.string().optional(),
+  thanksForWatchingTitle: z.string().optional(),
+  didYouLikeItMessage: z.string().optional(),
+  endMessage: z.string().optional(),
 });
 
 const defaultClosingMessages = "Wishing you all the best!\nMay all your dreams come true!\nMay your whole life be healthy and peaceful";
@@ -82,6 +88,12 @@ function CreateWishForm() {
       template: 'night-sky',
       closingMessages: '',
       secretMessage: '',
+      blowCandlesInstruction: '',
+      wishYouTheBestMessage: '',
+      letsBlowCandlesTitle: '',
+      thanksForWatchingTitle: '',
+      didYouLikeItMessage: '',
+      endMessage: '',
     },
   });
 
@@ -126,6 +138,12 @@ function CreateWishForm() {
       if (form.getValues('template') === 'premium-night-sky' || form.getValues('template') === 'celestial-wishes') {
         form.setValue('closingMessages', result.closingMessages.join('\n'), { shouldValidate: true });
         form.setValue('secretMessage', result.secretMessage, { shouldValidate: true });
+        form.setValue('blowCandlesInstruction', result.blowCandlesInstruction, { shouldValidate: true });
+        form.setValue('wishYouTheBestMessage', result.wishYouTheBestMessage, { shouldValidate: true });
+        form.setValue('letsBlowCandlesTitle', result.letsBlowCandlesTitle, { shouldValidate: true });
+        form.setValue('thanksForWatchingTitle', result.thanksForWatchingTitle, { shouldValidate: true });
+        form.setValue('didYouLikeItMessage', result.didYouLikeItMessage, { shouldValidate: true });
+        form.setValue('endMessage', result.endMessage, { shouldValidate: true });
       }
 
       toast({
@@ -151,10 +169,10 @@ function CreateWishForm() {
         resolve(null);
         return;
       }
-
+      
       window.OneSignal.push(function() {
-        window.OneSignal.User.getSubscriptionId().then(function(subscriptionId: string | null) {
-          resolve(subscriptionId);
+        window.OneSignal.getUserId(function(userId: string | null) {
+          resolve(userId);
         }).catch(function(error: any) {
           console.error('Error getting subscription ID:', error);
           resolve(null);
@@ -176,9 +194,15 @@ function CreateWishForm() {
             status: 'Published',
             closingMessages: values.closingMessages,
             secretMessage: values.secretMessage,
+            blowCandlesInstruction: values.blowCandlesInstruction,
+            wishYouTheBestMessage: values.wishYouTheBestMessage,
+            letsBlowCandlesTitle: values.letsBlowCandlesTitle,
+            thanksForWatchingTitle: values.thanksForWatchingTitle,
+            didYouLikeItMessage: values.didYouLikeItMessage,
+            endMessage: values.endMessage,
         };
 
-        const { closingMessages, secretMessage, ...wishMetadata } = fullWishData;
+        const { closingMessages, secretMessage, blowCandlesInstruction, wishYouTheBestMessage, letsBlowCandlesTitle, thanksForWatchingTitle, didYouLikeItMessage, endMessage, ...wishMetadata } = fullWishData;
 
         try {
             const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
@@ -186,7 +210,7 @@ function CreateWishForm() {
             localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
 
             // Store large data separately
-            const additionalData = { closingMessages, secretMessage };
+            const additionalData = { closingMessages, secretMessage, blowCandlesInstruction, wishYouTheBestMessage, letsBlowCandlesTitle, thanksForWatchingTitle, didYouLikeItMessage, endMessage };
             localStorage.setItem(`wish_data_${fullWishData.id}`, JSON.stringify(additionalData));
 
         } catch (error) {

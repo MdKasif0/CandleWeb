@@ -59,7 +59,7 @@
         </div>
         <div class="text-center">
             <h5 class="cake-off" id="cake-greeting">💖 Happy Birthday 💖</h5>
-            <p class="cake-off">💝 Wish you the best 💝</p>
+            <p class="cake-off" id="wish-you-best-message">💝 Wish you the best 💝</p>
         </div>
     </div>
    <!-- Greetings screen -->
@@ -80,7 +80,7 @@
      <!-- Cake pop-up -->
     <div id="cake-popup" class="popup">
         <div class="popup-content">
-            <h2>Let's blow out the candles.</h2>
+            <h2 id="cake-popup-title">Let's blow out the candles.</h2>
             <div class="popup-buttons">
                 <button id="cake-cancel-button">Cancel</button>
                 <button id="cake-ok-button">OK</button>
@@ -93,8 +93,8 @@
 
     <div id="final-popup" class="popup">
         <div class="popup-content">
-            <h2>Thanks for watching!</h2>
-            <p>Did you like it?</p>
+            <h2 id="final-popup-title">Thanks for watching!</h2>
+            <p id="final-popup-message">Did you like it?</p>
             <div class="popup-buttons">
                 <button id="rewatch-button">Re-watch</button>
                 <button id="liked-button">Liked it</button>
@@ -116,8 +116,26 @@
         const message = params.get('message') || 'Wishing you a fantastic day filled with joy and happiness!';
         const closingMessages = decodeURIComponent(params.get('closingMessages') || '');
         const secretMessage = decodeURIComponent(params.get('secretMessage') || '');
+        const blowCandlesInstruction = decodeURIComponent(params.get('blowCandlesInstruction') || "'Blow the candles'");
+        const wishYouTheBestMessage = decodeURIComponent(params.get('wishYouTheBestMessage') || "💝 Wish you the best 💝");
+        const letsBlowCandlesTitle = decodeURIComponent(params.get('letsBlowCandlesTitle') || "Let's blow out the candles.");
+        const thanksForWatchingTitle = decodeURIComponent(params.get('thanksForWatchingTitle') || "Thanks for watching!");
+        const didYouLikeItMessage = decodeURIComponent(params.get('didYouLikeItMessage') || "Did you like it?");
+        const endMessage = decodeURIComponent(params.get('endMessage') || 'The End');
 
-        window.birthdayData = { toName, fromName, message, closingMessages, secretMessage };
+        window.birthdayData = { 
+            toName, 
+            fromName, 
+            message, 
+            closingMessages, 
+            secretMessage,
+            blowCandlesInstruction,
+            wishYouTheBestMessage,
+            letsBlowCandlesTitle,
+            thanksForWatchingTitle,
+            didYouLikeItMessage,
+            endMessage
+        };
 
         // --- SEO & Social Sharing Updates ---
         const pageTitle = `Happy Birthday ${toName}!`;
@@ -141,17 +159,17 @@
 
 
         // --- Update dynamic content ---
-        const greetingsTitle = document.getElementById('greetings-title');
-        if (greetingsTitle) {
-            greetingsTitle.textContent = `Happy Birthday ${toName}`;
-        }
-        const cakeGreeting = document.getElementById('cake-greeting');
-        if (cakeGreeting) {
-            cakeGreeting.innerHTML = `💖 Happy Birthday ${toName} 💖`;
-        }
-
+        document.getElementById('greetings-title').textContent = `Happy Birthday ${toName}`;
+        document.getElementById('cake-greeting').innerHTML = `💖 Happy Birthday ${toName} 💖`;
         document.getElementById('popup-main-title').textContent = `Happy Birthday ${toName}!`;
         document.getElementById('popup-main-message').textContent = message;
+
+        // Update new customizable fields
+        document.getElementById('instructions').textContent = window.birthdayData.blowCandlesInstruction;
+        document.getElementById('wish-you-best-message').textContent = window.birthdayData.wishYouTheBestMessage;
+        document.getElementById('cake-popup-title').textContent = window.birthdayData.letsBlowCandlesTitle;
+        document.getElementById('final-popup-title').textContent = window.birthdayData.thanksForWatchingTitle;
+        document.getElementById('final-popup-message').textContent = window.birthdayData.didYouLikeItMessage;
 
         const secretMessageElement = document.getElementById('secret-message-body');
         const secretMessageContainer = document.getElementById('secret-message');
