@@ -105,7 +105,7 @@ export default function DashboardPage() {
                 {/* Action Card */}
                 <section className="mb-10">
                     <Link href="/templates" className="block group">
-                        <div className="rounded-2xl bg-gradient-to-r from-fuchsia-800 via-purple-900 to-indigo-950 p-4 flex items-center gap-4 border border-fuchsia-500/50 shadow-[0_0_20px_rgba(192,132,252,0.2)] transition-all duration-300 group-hover:border-fuchsia-400 group-hover:shadow-[0_0_30px_rgba(192,132,252,0.4)]">
+                        <div className="rounded-2xl bg-gradient-to-r from-purple-900 via-indigo-950 to-slate-950 p-4 flex items-center gap-4 border border-fuchsia-600 shadow-[0_0_20px_rgba(192,38,211,0.3)] transition-all duration-300 group-hover:border-fuchsia-500 group-hover:shadow-[0_0_30px_rgba(192,38,211,0.5)]">
                             <Image
                                 src="/cup-cake.png"
                                 alt="Create new wish icon"
