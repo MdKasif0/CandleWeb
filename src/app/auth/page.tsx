@@ -66,23 +66,24 @@ export default function AuthPage() {
   }, [user, router]);
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-background dark:bg-black p-4">
-      <div className="w-full max-w-sm">
+    <div className="flex min-h-screen w-full items-center justify-center bg-background p-4 relative font-sans overflow-hidden">
+       <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+      <div className="w-full max-w-sm relative z-10">
         <div className="flex flex-col items-center text-center mb-8">
           <Link href="/welcome" className="flex items-center gap-2 mb-4">
             <VIcon />
-            <span className="text-2xl font-bold">CandleWeb</span>
+            <span className="text-2xl font-bold text-white">CandleWeb</span>
           </Link>
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-2xl font-bold text-white">
             {activeTab === 'login' ? 'Welcome Back' : 'Create an Account'}
           </h1>
-          <p className="text-muted-foreground mt-2 text-sm">
+          <p className="text-white/70 mt-2 text-sm">
             {activeTab === 'login' ? 'Log in to continue your journey.' : 'Join us to create magical birthday wishes.'}
           </p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-muted/80 rounded-full mb-6 p-1 h-auto">
+          <TabsList className="grid w-full grid-cols-2 bg-foreground/10 rounded-full mb-6 p-1 h-auto border border-white/10">
             <TabsTrigger value="login" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md">Login</TabsTrigger>
             <TabsTrigger value="signup" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md">Sign Up</TabsTrigger>
           </TabsList>

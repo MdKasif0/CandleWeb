@@ -114,16 +114,17 @@ export default function AccountPage() {
     const userInitial = user.displayName ? user.displayName.charAt(0).toUpperCase() : (user.email ? user.email.charAt(0).toUpperCase() : 'U');
 
     return (
-        <div className="bg-background text-foreground min-h-screen">
-            <div className="p-4 md:p-6 max-w-2xl mx-auto pb-24">
-                <h1 className="text-3xl font-bold mb-6">My Account</h1>
+        <div className="bg-background text-foreground min-h-screen font-sans relative overflow-hidden">
+            <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+            <div className="relative z-10 p-4 md:p-6 max-w-2xl mx-auto pb-24">
+                <h1 className="text-3xl font-bold mb-6 text-white">My Account</h1>
 
                 <div className="flex flex-col items-center text-center mb-8">
                     <Avatar className="w-24 h-24 border-4 border-primary/20 shadow-lg">
                         <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'User'} />
                         <AvatarFallback className="text-4xl">{userInitial}</AvatarFallback>
                     </Avatar>
-                    <h2 className="text-2xl font-bold mt-4">{user.displayName || 'CandleWeb User'}</h2>
+                    <h2 className="text-2xl font-bold mt-4 text-white">{user.displayName || 'CandleWeb User'}</h2>
                     <p className="text-muted-foreground">{user.email}</p>
                 </div>
                 
@@ -154,32 +155,32 @@ export default function AccountPage() {
                 </Link>
 
                 <div className="space-y-2">
-                    <h3 className="px-4 text-sm font-medium text-muted-foreground">Account Settings</h3>
-                    <div className="bg-card rounded-lg border">
+                    <h3 className="px-4 text-sm font-medium text-primary">Account Settings</h3>
+                    <div className="bg-foreground/5 rounded-lg border border-white/10">
                         <SettingsItem icon={UserIcon} text="Change Name" onClick={() => setIsNameDialogOpen(true)} />
                         <SettingsItem icon={KeyRound} text="Change Password" onClick={() => setIsPasswordDialogOpen(true)} />
                     </div>
 
-                    <h3 className="px-4 pt-4 text-sm font-medium text-muted-foreground">Preferences</h3>
-                     <div className="bg-card rounded-lg border">
+                    <h3 className="px-4 pt-4 text-sm font-medium text-primary">Preferences</h3>
+                     <div className="bg-foreground/5 rounded-lg border border-white/10">
                        <div className="flex items-center p-4">
                             <div className="flex items-center gap-4">
                                 <Palette className="h-5 w-5 text-muted-foreground" />
-                                <span className="flex-1">Theme</span>
+                                <span className="flex-1 text-white">Theme</span>
                             </div>
                             <ThemeToggle />
                         </div>
                     </div>
                     
-                    <h3 className="px-4 pt-4 text-sm font-medium text-muted-foreground">Support & Legal</h3>
-                    <div className="bg-card rounded-lg border">
+                    <h3 className="px-4 pt-4 text-sm font-medium text-primary">Support & Legal</h3>
+                    <div className="bg-foreground/5 rounded-lg border border-white/10">
                         <SettingsItem icon={FileText} text="Terms of Use" href="/terms-of-use" />
                         <SettingsItem icon={Shield} text="Privacy Policy" href="/privacy-policy" />
                         <SettingsItem icon={Mail} text="Contact" href="mailto:mdkasifuddin123@gmail.com" />
                     </div>
 
                     <div className="pt-6">
-                        <Button variant="outline" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10" onClick={signOut}>
+                        <Button variant="outline" className="w-full justify-start text-red-400 hover:text-red-400 hover:bg-red-500/10 border-red-500/20" onClick={signOut}>
                             <LogOut className="mr-2 h-5 w-5" />
                             Log Out
                         </Button>
@@ -257,13 +258,13 @@ export default function AccountPage() {
 }
 
 const SettingsItem = ({ icon: Icon, text, onClick, href }: { icon: React.ElementType, text: string, onClick?: () => void, href?: string }) => {
-    const commonClassName = "flex items-center justify-between p-4 cursor-pointer hover:bg-secondary/50 transition-colors w-full group text-left first:rounded-t-lg last:rounded-b-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:z-10 relative";
+    const commonClassName = "flex items-center justify-between p-4 cursor-pointer hover:bg-foreground/10 transition-colors w-full group text-left first:rounded-t-lg last:rounded-b-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:z-10 relative";
 
     const content = (
         <>
             <div className="flex items-center gap-4">
                 <Icon className="h-5 w-5 text-muted-foreground" />
-                <span>{text}</span>
+                <span className="text-white">{text}</span>
             </div>
             <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
         </>

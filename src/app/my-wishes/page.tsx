@@ -132,7 +132,7 @@ export default function MyWishesPage() {
     };
 
     return (
-        <div className="bg-background text-foreground min-h-screen font-sans">
+        <div className="bg-background text-foreground min-h-screen font-sans relative overflow-hidden">
              <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
             <div className="relative z-10 p-4 md:p-6 max-w-2xl mx-auto pb-24">
                 <div className="relative mb-8 flex items-center justify-center py-4">
@@ -200,11 +200,24 @@ export default function MyWishesPage() {
                         </div>
                     ) : (
                          <Card className="bg-foreground/5 p-6 border-transparent text-center">
-                            <CardContent className="p-0 flex flex-col items-center">
-                                <h3 className="font-semibold text-white mb-2">No CandleWebs Built Yet</h3>
-                                <p className="text-sm text-muted-foreground mb-4">Get started by choosing a template and creating your first CandleWeb!</p>
-                                <Link href="/templates" passHref>
-                                    <Button>Create a CandleWeb</Button>
+                            <CardContent className="p-0 flex flex-col items-center gap-4">
+                                <h3 className="font-semibold text-white text-xl">No CandleWebs Built Yet</h3>
+                                <p className="text-sm text-muted-foreground">Get started by choosing a template and creating your first CandleWeb!</p>
+                                <Link href="/templates" className="block group w-full">
+                                    <div className="rounded-2xl bg-gradient-to-r from-purple-900 via-indigo-950 to-slate-950 p-4 flex items-center gap-4 border border-fuchsia-600 shadow-[0_0_20px_rgba(192,38,211,0.3)] transition-all duration-300 group-hover:border-fuchsia-500 group-hover:shadow-[0_0_30px_rgba(192,38,211,0.5)]">
+                                        <Image
+                                            src="/cup-cake.png"
+                                            alt="Create new wish icon"
+                                            width={48}
+                                            height={48}
+                                            className="flex-shrink-0"
+                                            data-ai-hint="cupcake celebration"
+                                        />
+                                        <div className="flex-grow text-left">
+                                            <p className="font-bold text-neutral-100 text-lg">Create a CandleWeb</p>
+                                            <p className="text-sm text-neutral-300">Choose a template to get started</p>
+                                        </div>
+                                    </div>
                                 </Link>
                             </CardContent>
                         </Card>

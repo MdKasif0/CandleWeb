@@ -71,28 +71,28 @@ const monthlyPlans = [
 ];
 
 const PlanCard = ({ plan }: { plan: typeof yearlyPlans[0] }) => (
-    <Card className="bg-card border-border relative overflow-hidden shadow-lg shadow-primary/10 transition-all hover:shadow-primary/20 hover:-translate-y-1 duration-300">
+    <Card className="bg-foreground/5 border-white/10 relative overflow-hidden shadow-lg shadow-primary/10 transition-all hover:shadow-primary/20 hover:-translate-y-1 duration-300">
         {plan.save && (
-             <div className="absolute top-3 right-[-34px] transform rotate-45 bg-accent/20 text-accent text-center text-xs font-semibold py-1 w-28 shadow-md">
+             <div className="absolute top-3 right-[-34px] transform rotate-45 bg-primary/20 text-primary text-center text-xs font-semibold py-1 w-28 shadow-md">
                 Save {plan.save}
             </div>
         )}
         <CardContent className="p-6">
-            <Badge variant="secondary" className="mb-4 uppercase">{plan.name}</Badge>
-            <div className="mb-4">
+            <Badge variant="outline" className="mb-4 uppercase bg-primary/20 text-primary border-primary/30">{plan.name}</Badge>
+            <div className="mb-4 text-white">
                 <span className="text-4xl font-bold">${plan.price}</span>
                 <span className="text-muted-foreground"> / per month</span>
             </div>
             <p className="text-muted-foreground mb-6 text-sm h-10">{plan.description}</p>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-3 text-sm text-white/80">
                 {plan.features.map((feature, index) => (
                     <li key={index} className="flex items-center gap-3">
-                        <Check className="h-5 w-5 text-accent" />
+                        <Check className="h-5 w-5 text-primary" />
                         <span>{feature}</span>
                     </li>
                 ))}
             </ul>
-             <Button className="w-full mt-8 rounded-full bg-accent text-accent-foreground py-6 text-lg font-semibold shadow-lg shadow-accent/20 transition-opacity hover:opacity-90">
+             <Button className="w-full mt-8 rounded-full bg-primary text-primary-foreground py-6 text-lg font-semibold shadow-lg shadow-primary/20 transition-opacity hover:opacity-90">
                 Choose Plan
             </Button>
         </CardContent>
@@ -111,20 +111,21 @@ export default function UpgradePage() {
     }
     
     return (
-        <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground">
-            <div className="w-full max-w-4xl">
+        <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground relative overflow-hidden">
+             <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+            <div className="w-full max-w-4xl relative z-10">
                 <div className="relative mb-8 flex items-center justify-center py-4">
-                    <Link href="/" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-foreground">
+                    <Link href="/" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-white">
                         <ChevronLeft className="h-5 w-5" />
                         <span className="ml-1">Back</span>
                     </Link>
-                    <h1 className="text-2xl font-bold">Upgrade Plan</h1>
+                    <h1 className="text-2xl font-bold text-white">Upgrade Plan</h1>
                 </div>
                 
                 <Tabs defaultValue="pro" className="w-full">
-                    <TabsList className="grid w-full max-w-xs mx-auto grid-cols-2 bg-muted rounded-full mb-6 p-1 h-auto">
-                        <TabsTrigger value="pro" className="rounded-full data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">Pro</TabsTrigger>
-                        <TabsTrigger value="basic" className="rounded-full data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">Basic</TabsTrigger>
+                    <TabsList className="grid w-full max-w-xs mx-auto grid-cols-2 bg-foreground/10 border border-white/10 rounded-full mb-6 p-1 h-auto">
+                        <TabsTrigger value="pro" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Pro</TabsTrigger>
+                        <TabsTrigger value="basic" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Basic</TabsTrigger>
                     </TabsList>
                     <TabsContent value="pro">
                         <div className="space-y-6 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
