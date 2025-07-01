@@ -71,8 +71,18 @@ export default function TemplatesPage() {
                                 toName: 'Someone',
                                 fromName: 'Your Friend',
                                 message: 'Wishing you a day filled with happiness and a year filled with joy. Happy birthday!',
+                                // Premium fields
                                 closingMessages: "Wishing you all the best!\nMay all your dreams come true!\nCheers to you!",
-                                secretMessage: "Here's to another amazing year! 🤫"
+                                secretMessage: "Here's to another amazing year! 🤫",
+                                blowCandlesInstruction: "Make a wish and blow the candles",
+                                wishYouTheBestMessage: "Wishing you the best!",
+                                letsBlowCandlesTitle: "Ready to make a wish?",
+                                thanksForWatchingTitle: "Thanks for watching!",
+                                didYouLikeItMessage: "Hope you liked it!",
+                                endMessage: "The End",
+                                // Celestial Wishes fields
+                                specialGiftMessage: 'May every moment of your special day be filled with the same joy and happiness you bring to others!',
+                                saveKeepsakeMessage: 'Save this memory forever.'
                             });
 
                             let previewUrl;

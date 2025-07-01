@@ -1,3 +1,99 @@
+// --- START: Data Loading Logic ---
+window.birthdayData = {};
+
+function loadWishData() {
+    const params = new URLSearchParams(window.location.search);
+    const wishId = params.get('id');
+
+    if (wishId) {
+        // Production Mode: Load from localStorage
+        try {
+            const wishList = JSON.parse(localStorage.getItem('userWishes') || '[]');
+            const mainData = wishList.find(w => w.id === wishId);
+            
+            if (!mainData) {
+                console.error("Wish data not found in localStorage.");
+                window.birthdayData = getPreviewData(params);
+            } else {
+                window.birthdayData = { ...mainData };
+            }
+        } catch (error) {
+            console.error("Failed to load or parse wish data from localStorage", error);
+            window.birthdayData = getPreviewData(params); // Fallback
+        }
+    } else {
+        // Preview Mode: Load from URL parameters
+        window.birthdayData = getPreviewData(params);
+    }
+    
+    // Once data is loaded, update the DOM elements that depend on it.
+    updateDynamicContent();
+}
+
+function getPreviewData(params) {
+    return {
+        toName: params.get('toName') || 'Friend',
+        fromName: params.get('fromName') || 'A Friend',
+        message: params.get('message') || 'Wishing you a fantastic day filled with joy and happiness!',
+        closingMessages: params.get('closingMessages') || 'All the best!\nCheers!',
+        secretMessage: params.get('secretMessage') || "Here's to another amazing year!",
+        blowCandlesInstruction: params.get('blowCandlesInstruction') || "'Blow the candles'",
+        wishYouTheBestMessage: params.get('wishYouTheBestMessage') || "💝 Wish you the best 💝",
+        letsBlowCandlesTitle: params.get('letsBlowCandlesTitle') || "Let's blow out the candles.",
+        thanksForWatchingTitle: params.get('thanksForWatchingTitle') || "Thanks for watching!",
+        didYouLikeItMessage: params.get('didYouLikeItMessage') || "Did you like it?",
+        endMessage: params.get('endMessage') || 'The End',
+    };
+}
+
+function updateDynamicContent() {
+    const pageTitle = `Happy Birthday ${window.birthdayData.toName}!`;
+    const pageDescription = `A special birthday message for ${window.birthdayData.toName} from ${window.birthdayData.fromName}. Create your own at CandleWeb!`;
+    const pageUrl = window.location.href;
+
+    document.title = pageTitle;
+    const metas = [
+        { selector: 'meta[name="description"]', content: pageDescription },
+        { selector: 'meta[property="og:title"]', content: pageTitle },
+        { selector: 'meta[property="og:description"]', content: pageDescription },
+        { selector: 'meta[property="og:url"]', content: pageUrl },
+        { selector: 'meta[property="og:image:alt"]', content: `A birthday wish for ${window.birthdayData.toName}` },
+        { selector: 'meta[property="twitter:title"]', content: pageTitle },
+        { selector: 'meta[property="twitter:description"]', content: pageDescription },
+        { selector: 'meta[property="twitter:url"]', content: pageUrl },
+        { selector: 'meta[property="twitter:image:alt"]', content: `A birthday wish for ${window.birthdayData.toName}` },
+    ];
+    metas.forEach(meta => {
+        const el = document.querySelector(meta.selector);
+        if (el) el.setAttribute('content', meta.content);
+    });
+
+    document.getElementById('greetings-title').textContent = `Happy Birthday ${window.birthdayData.toName}`;
+    document.getElementById('cake-greeting').innerHTML = `💖 Happy Birthday ${window.birthdayData.toName} 💖`;
+    document.getElementById('popup-main-title').textContent = `Happy Birthday ${window.birthdayData.toName}!`;
+    document.getElementById('popup-main-message').textContent = window.birthdayData.message;
+    document.getElementById('instructions').textContent = window.birthdayData.blowCandlesInstruction;
+    document.getElementById('wish-you-best-message').textContent = window.birthdayData.wishYouTheBestMessage;
+    document.getElementById('cake-popup-title').textContent = window.birthdayData.letsBlowCandlesTitle;
+    document.getElementById('final-popup-title').textContent = window.birthdayData.thanksForWatchingTitle;
+    document.getElementById('final-popup-message').textContent = window.birthdayData.didYouLikeItMessage;
+
+    const secretMessageElement = document.getElementById('secret-message-body');
+    const secretMessageContainer = document.getElementById('secret-message');
+    if (secretMessageElement && secretMessageContainer) {
+        if (window.birthdayData.secretMessage && window.birthdayData.secretMessage.trim().length > 0) {
+            secretMessageElement.textContent = window.birthdayData.secretMessage;
+        } else {
+            secretMessageContainer.style.display = 'none';
+        }
+    }
+    
+    if (opts && opts.strings) {
+       opts.strings = ['HAPPY', 'BIRTHDAY', window.birthdayData.toName.toUpperCase()];
+    }
+}
+// --- END: Data Loading Logic ---
+
 
 function initNightSky() {
 
@@ -367,7 +463,7 @@ function showBalloons() {
 // Fireworks functionality
 let w, h, ctx;
 const opts = {
-    strings: ['HAPPY', 'BIRTHDAY', window.birthdayData.toName.toUpperCase()],
+    strings: ['HAPPY', 'BIRTHDAY', 'FRIEND'],
     charSize: 30,
     charSpacing: 35,
     lineHeight: 40,
@@ -741,6 +837,7 @@ let showCakePopupTimeout; // Variable to store the timeout ID
 
 
 window.onload = function() {
+    loadWishData();
     initNightSky();
 
     window.AudioContext = window.AudioContext || window.webkitAudioContext;

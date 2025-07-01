@@ -8,29 +8,48 @@ function loadWishData() {
     const params = new URLSearchParams(window.location.search);
     const wishId = params.get('id');
 
-    if (!wishId) {
-        console.error("No Wish ID provided.");
-        return;
-    }
+    if (wishId) {
+        // --- Production Mode: Load from localStorage ---
+        try {
+            const wishList = JSON.parse(localStorage.getItem('userWishes') || '[]');
+            const mainData = wishList.find(w => w.id === wishId);
+            
+            const additionalDataString = localStorage.getItem(`wish_data_${wishId}`);
+            const additionalData = additionalDataString ? JSON.parse(additionalDataString) : {};
 
-    try {
-        const wishList = JSON.parse(localStorage.getItem('userWishes') || '[]');
-        const mainData = wishList.find(w => w.id === wishId);
-        
-        const additionalDataString = localStorage.getItem(`wish_data_${wishId}`);
-        const additionalData = additionalDataString ? JSON.parse(additionalDataString) : {};
+            if (!mainData) {
+                console.error("Wish data not found in localStorage.");
+                // Provide fallback data to prevent crash
+                wishData = getPreviewData(params);
+                return;
+            }
+            
+            wishData = { ...mainData, ...additionalData };
 
-        if (!mainData) {
-            console.error("Wish data not found in localStorage.");
-            return;
+        } catch (error) {
+            console.error("Failed to load or parse wish data from localStorage", error);
+            wishData = getPreviewData(params); // Fallback
         }
-        
-        // Combine all data into a single object
-        wishData = { ...mainData, ...additionalData };
-
-    } catch (error) {
-        console.error("Failed to load or parse wish data from localStorage", error);
+    } else {
+        // --- Preview Mode: Load from URL parameters ---
+        wishData = getPreviewData(params);
     }
+}
+
+function getPreviewData(params) {
+    return {
+        toName: params.get('toName') || 'Someone',
+        fromName: params.get('fromName') || 'A Friend',
+        message: params.get('message') || 'Wishing you a day filled with happiness and a year filled with joy. Happy birthday!',
+        closingMessages: params.get('closingMessages') || "Wishing you all the best!\nMay all your dreams come true!\nCheers to you!",
+        secretMessage: params.get('secretMessage') || "Here's to another amazing year! 🤫",
+        profilePhoto: '', // Not available in preview
+        beautifulMemories: [], // Not available in preview
+        specialGiftMessage: params.get('specialGiftMessage') || 'May every moment of your special day be filled with the same joy and happiness you bring to others!',
+        friendsMessages: [], // Not available in preview
+        saveKeepsakeMessage: params.get('saveKeepsakeMessage') || 'Save this memory forever.',
+        endMessage: params.get('endMessage') || 'The End',
+    };
 }
 
 
@@ -58,6 +77,9 @@ function populateContent() {
     const profilePhotoEl = document.getElementById('profilePhoto');
     if (profilePhoto) {
         profilePhotoEl.style.backgroundImage = `url(${profilePhoto})`;
+        profilePhotoEl.style.backgroundSize = 'cover';
+        profilePhotoEl.style.backgroundPosition = 'center';
+
     }
 
     // Main Message
@@ -74,11 +96,11 @@ function populateContent() {
     const gallerySection = document.getElementById('gallerySection');
     if (beautifulMemories && beautifulMemories.length > 0) {
         galleryContainer.innerHTML = ''; // Clear placeholder
-        beautifulMemories.forEach(src => {
+        beautifulMemories.forEach(memory => {
             const item = document.createElement('div');
             item.className = 'gallery-item';
             const img = document.createElement('img');
-            img.src = src;
+            img.src = memory.src;
             img.alt = 'Beautiful Memory';
             item.appendChild(img);
             galleryContainer.appendChild(item);
