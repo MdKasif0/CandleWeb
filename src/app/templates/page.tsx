@@ -12,22 +12,6 @@ import { BottomNavBar } from '@/components/bottom-nav-bar';
 
 export const dynamic = 'force-dynamic';
 
-const VIcon = () => (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="text-primary"
-    >
-      <path
-        d="M6.7901 3.39001L12.0001 13L17.2101 3.39001H21.0001L12.0001 21L3.0001 3.39001H6.7901Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-
 const mockTemplates = [
     {
         id: 'night-sky',
@@ -64,20 +48,19 @@ export default function TemplatesPage() {
     }
     
     return (
-        <div className="bg-background text-foreground min-h-screen font-sans">
-            <div className="p-4 md:p-6 max-w-4xl mx-auto pb-24">
+        <div className="bg-background text-foreground min-h-screen font-sans relative">
+            <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+            <div className="relative z-10 p-4 md:p-6 max-w-4xl mx-auto pb-24">
                 {/* Header */}
                 <header className="flex items-center justify-between mb-8">
-                    <VIcon />
-                    <div className="flex items-center gap-2 md:gap-4">
-                        <UserNav />
-                    </div>
+                    <span className="font-serif text-2xl text-white italic">Candle Web</span>
+                    <UserNav />
                 </header>
 
                 {/* Page Title */}
                 <section className="mb-8">
-                    <h1 className="text-3xl font-bold mb-1">Templates</h1>
-                    <p className="text-muted-foreground">Easy to customise, no code required</p>
+                    <h1 className="text-3xl font-bold mb-1 text-white">Select a Template</h1>
+                    <p className="text-muted-foreground">Easy to customise, no code required. Pick one to get started.</p>
                 </section>
                 
                 {/* Template List */}
@@ -101,9 +84,9 @@ export default function TemplatesPage() {
                             }
                             
                             return (
-                                <Card key={template.id} className="bg-card border-border/50 shadow-lg overflow-hidden group transition-all hover:shadow-primary/20 hover:-translate-y-1 duration-300">
+                                <Card key={template.id} className="bg-foreground/5 border border-white/10 shadow-lg overflow-hidden group transition-all hover:shadow-primary/20 hover:-translate-y-1 duration-300">
                                     <CardContent className="p-4">
-                                        <div className="aspect-video w-full rounded-md overflow-hidden mb-4 border border-border/50">
+                                        <div className="aspect-video w-full rounded-md overflow-hidden mb-4 border border-white/20">
                                             <Image
                                                 src={template.imageUrl}
                                                 alt={template.name}
@@ -113,15 +96,15 @@ export default function TemplatesPage() {
                                                 data-ai-hint={template.dataAiHint}
                                             />
                                         </div>
-                                        <h2 className="text-lg font-semibold text-card-foreground">{template.name}</h2>
+                                        <h2 className="text-lg font-semibold text-white">{template.name}</h2>
                                         <p className="text-sm text-muted-foreground">{template.description}</p>
                                     </CardContent>
-                                    <CardFooter className="bg-card/50 px-4 py-3 flex gap-2">
+                                    <CardFooter className="bg-black/20 px-4 py-3 flex gap-2">
                                         <Link href={previewUrl} passHref className="w-full" target="_blank">
-                                            <Button variant="outline" className="w-full bg-transparent border-input hover:bg-secondary rounded-full">Preview</Button>
+                                            <Button variant="outline" className="w-full bg-white/10 border-white/20 hover:bg-white/20 text-white rounded-full">Preview</Button>
                                         </Link>
                                         <Link href={`/create?template=${template.id}`} passHref className="w-full">
-                                            <Button className="w-full bg-accent text-accent-foreground font-semibold shadow-md shadow-accent/10 rounded-full">Use Template</Button>
+                                            <Button className="w-full bg-primary text-primary-foreground font-semibold shadow-md shadow-primary/10 rounded-full">Use Template</Button>
                                         </Link>
                                     </CardFooter>
                                 </Card>
@@ -131,10 +114,10 @@ export default function TemplatesPage() {
                 </section>
                 
                 <div className="mt-12 text-center">
-                    <div className="inline-flex items-center justify-center rounded-full bg-secondary p-3 mb-4">
-                        <Sparkles className="h-6 w-6 text-accent" />
+                    <div className="inline-flex items-center justify-center rounded-full bg-foreground/10 p-3 mb-4 border border-white/10">
+                        <Sparkles className="h-6 w-6 text-primary" />
                     </div>
-                    <h3 className="text-lg font-semibold text-foreground">More templates coming soon!</h3>
+                    <h3 className="text-lg font-semibold text-white">More templates coming soon!</h3>
                     <p className="text-muted-foreground mt-1 text-sm">We're working hard to bring you more amazing designs. Stay tuned!</p>
                 </div>
 
