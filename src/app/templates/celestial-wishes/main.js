@@ -94,6 +94,8 @@ function populateContent() {
     const profilePhotoEl = document.getElementById('profilePhoto');
     if (profilePhoto && profilePhotoEl) {
         profilePhotoEl.style.backgroundImage = `url(${profilePhoto})`;
+        profilePhotoEl.style.backgroundSize = 'cover';
+        profilePhotoEl.style.backgroundPosition = 'center';
     }
 
     // Main Message
@@ -116,7 +118,7 @@ function populateContent() {
                 const item = document.createElement('div');
                 item.className = 'gallery-item';
                 const img = document.createElement('img');
-                img.src = memory.src;
+                img.src = memory.src; // Expects an array of objects with a 'src' property
                 img.alt = 'Beautiful Memory';
                 item.appendChild(img);
                 galleryContainer.appendChild(item);
@@ -272,7 +274,9 @@ function openGift() {
             if (mainContent) mainContent.classList.add('visible');
             const typedElement = document.getElementById('typedMessage');
             const cursor = document.getElementById('cursor');
-            startTypingAnimation(wishData.message, typedElement, cursor);
+            if (typedElement && cursor) {
+               startTypingAnimation(wishData.message, typedElement, cursor);
+            }
         }, 1500); 
     }, 3000); 
 }
@@ -296,9 +300,13 @@ function startQuoteRotation() {
     const quoteElements = document.querySelectorAll('#quotesContainer .quote');
     if(quoteElements.length === 0) return;
     setInterval(() => {
-        quoteElements[currentQuote].classList.remove('active');
+        if (quoteElements[currentQuote]) {
+            quoteElements[currentQuote].classList.remove('active');
+        }
         currentQuote = (currentQuote + 1) % quoteElements.length;
-        quoteElements[currentQuote].classList.add('active');
+        if (quoteElements[currentQuote]) {
+            quoteElements[currentQuote].classList.add('active');
+        }
     }, 4000);
 }
 
@@ -471,5 +479,3 @@ if (!document.getElementById('sparkle-keyframes')) {
     `;
     document.head.appendChild(styleEl);
 }
-
-    

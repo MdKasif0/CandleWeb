@@ -36,8 +36,6 @@ import { format } from 'date-fns';
 import QRCode from 'qrcode.react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
-import { storage } from '@/lib/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export const dynamic = 'force-dynamic';
 
@@ -216,34 +214,29 @@ function CreateWishForm() {
   };
 
   const handleImageUpload = async (file: File, field: 'profilePhoto' | 'beautifulMemories', index?: number) => {
-        if (!file) return;
-        if (!auth.user) {
-            toast({ variant: 'destructive', title: 'Authentication Error', description: 'You must be logged in to upload images.' });
-            return;
+    if (!file) return;
+
+    const uniqueId = field === 'profilePhoto' ? 'profilePhoto' : `memory-${index ?? Date.now()}`;
+    setUploading(prev => ({ ...prev, [uniqueId]: true }));
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const dataUrl = e.target?.result as string;
+        if (field === 'profilePhoto') {
+            form.setValue('profilePhoto', dataUrl, { shouldValidate: true });
+        } else if (field === 'beautifulMemories') {
+            appendMemory({ src: dataUrl });
         }
-
-        const uniqueId = field === 'profilePhoto' ? 'profilePhoto' : `memory-${index ?? Date.now()}`;
-        setUploading(prev => ({ ...prev, [uniqueId]: true }));
-
-        const storageRef = ref(storage, `wishes/${auth.user.uid}/${Date.now()}-${file.name}`);
-
-        try {
-            const snapshot = await uploadBytes(storageRef, file);
-            const downloadURL = await getDownloadURL(snapshot.ref);
-
-            if (field === 'profilePhoto') {
-                form.setValue('profilePhoto', downloadURL, { shouldValidate: true });
-            } else if (field === 'beautifulMemories') {
-                appendMemory({ src: downloadURL });
-            }
-            toast({ title: 'Image Uploaded!' });
-        } catch (error) {
-            console.error('Error uploading image to Firebase Storage', error);
-            toast({ variant: 'destructive', title: 'Image Upload Failed', description: 'Could not upload the image. Please try again.' });
-        } finally {
-            setUploading(prev => ({ ...prev, [uniqueId]: false }));
-        }
+        toast({ title: 'Image Ready!' });
+        setUploading(prev => ({ ...prev, [uniqueId]: false }));
     };
+    reader.onerror = (error) => {
+        console.error('Error reading file', error);
+        toast({ variant: 'destructive', title: 'Image Read Failed', description: 'Could not process the image file.' });
+        setUploading(prev => ({ ...prev, [uniqueId]: false }));
+    };
+    reader.readAsDataURL(file);
+  };
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -260,13 +253,21 @@ function CreateWishForm() {
             const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
             const updatedWishes = [fullWishData, ...existingWishes];
             localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
-        } catch (error) {
+        } catch (error: any) {
             console.error("Could not save wish to local storage", error);
-            toast({
-                variant: "destructive",
-                title: "Could not save wish",
-                description: "There was an error saving your wish. Your browser's storage might be full."
-            })
+            if (error.name === 'QuotaExceededError') {
+                 toast({
+                    variant: "destructive",
+                    title: "Storage Limit Reached",
+                    description: "Your browser's storage is full. Please try removing some images or creating a new wish."
+                })
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Could not save wish",
+                    description: "An unexpected error occurred while saving."
+                })
+            }
             setIsSubmitting(false);
             return;
         }
@@ -740,5 +741,3 @@ export default function CreateWishPage() {
         </Suspense>
     );
 }
-
-    
