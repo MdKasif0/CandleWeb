@@ -26,7 +26,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState, Suspense, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, Sparkles, Loader2, Copy, ArrowRight, PartyPopper, QrCode, Share2, Calendar as CalendarIcon, SendHorizonal, Plus, Trash2, Image as ImageIcon, MessageSquare } from 'lucide-react';
+import { ChevronLeft, Sparkles, Loader2, Copy, QrCode, Share2, Calendar as CalendarIcon, SendHorizonal, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { generateWishContent, GenerateWishContentInput } from '@/ai/flows/generateWishContent';
 import { cn } from '@/lib/utils';
 import { useRequireAuth } from '@/hooks/use-auth';
@@ -243,7 +243,7 @@ function CreateWishForm() {
             ...values
         };
 
-        const { beautifulMemories, friendsMessages, ...wishMetadata } = fullWishData;
+        const { beautifulMemories, friendsMessages, profilePhoto, ...wishMetadata } = fullWishData;
 
         try {
             const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
@@ -252,6 +252,7 @@ function CreateWishForm() {
 
             // Store large data separately
             const additionalData = { 
+                profilePhoto: values.profilePhoto,
                 beautifulMemories: values.beautifulMemories,
                 friendsMessages 
             };
@@ -410,14 +411,13 @@ function CreateWishForm() {
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground">
-        <div className="absolute inset-0 z-0 opacity-10 dark:opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
       <div className="w-full max-w-md relative z-10 pb-24">
-        <div className="relative mb-8 flex items-center py-4">
+        <div className="relative mb-6 flex items-center justify-center py-4">
           <Link href="/templates" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-foreground">
             <ChevronLeft className="h-5 w-5" />
-            <span className="ml-1">Back</span>
+            <span className="ml-1 text-sm">Back to templates</span>
           </Link>
-          <h1 className="w-full text-center text-2xl font-bold">Create your CandleWeb</h1>
+          <h1 className="w-full text-center text-2xl font-bold">Create Wish</h1>
         </div>
         
         <div className="mb-6">
@@ -444,9 +444,9 @@ function CreateWishForm() {
               name="toName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Birthday Person's Name</FormLabel>
+                  <FormLabel>To (Recipient's Name)</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Jane Doe" {...field} className="rounded-full" />
+                    <Input placeholder="e.g., Jane Doe" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -457,9 +457,9 @@ function CreateWishForm() {
               name="fromName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Your Name</FormLabel>
+                  <FormLabel>From (Your Name)</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., John Smith" {...field} className="rounded-full" />
+                    <Input placeholder="e.g., John Smith" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -474,7 +474,7 @@ function CreateWishForm() {
                     <FormLabel>Your Personal Message</FormLabel>
                   </div>
                   <FormControl>
-                    <Textarea placeholder="Write your heartfelt birthday message here..." className="resize-none rounded-2xl min-h-[120px]" {...field} />
+                    <Textarea placeholder="Write your heartfelt birthday message here..." className="resize-none min-h-[120px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -493,7 +493,7 @@ function CreateWishForm() {
                         <Textarea
                           placeholder={"Wishing you all the best!\nMay all your dreams come true!"}
                           {...field}
-                          className="resize-none rounded-2xl min-h-[100px]"
+                          className="resize-none min-h-[100px]"
                         />
                       </FormControl>
                       <FormMessage />
@@ -510,7 +510,6 @@ function CreateWishForm() {
                         <Input
                           placeholder="A little secret just for you..."
                           {...field}
-                          className="rounded-full"
                         />
                       </FormControl>
                       <FormMessage />
@@ -614,79 +613,79 @@ function CreateWishForm() {
                 {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
                 Generate CandleWeb
               </Button>
-               <p className="mt-4 text-center text-sm text-muted-foreground">45.8k CandleWebs created</p>
             </div>
           </form>
         </Form>
       </div>
       
       {showSharePage && (
-        <div className="fixed inset-0 z-50 bg-background text-foreground overflow-y-auto font-sans">
-            <div className="absolute inset-0 z-0 opacity-10 dark:opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+        <div className="fixed inset-0 z-50 bg-background/90 backdrop-blur-sm text-foreground overflow-y-auto font-sans">
             <div className="relative z-10 mx-auto max-w-md p-4 text-center h-full flex flex-col justify-center">
             
-            <PartyPopper className="mx-auto h-12 w-12 text-primary mb-4" />
-            <h1 className="text-4xl font-bold text-primary mb-2">Your Wish Page is Ready!</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Your Wish Page is Ready!</h1>
             <p className="text-muted-foreground mb-8">Your personalized birthday wish page is now live and ready to be shared.</p>
 
             <div className="text-left mb-6">
-                <label className="font-semibold text-primary mb-2 block">Webpage Link</label>
+                <Label className="font-semibold text-foreground mb-2 block">Webpage Link</Label>
                 <div className="flex items-center space-x-2 bg-muted rounded-lg p-3 border">
-                <input value={fullUrl} readOnly className="bg-transparent w-full text-foreground outline-none" />
-                <button onClick={handleCopyToClipboard}><Copy className="h-5 w-5 text-primary hover:text-primary/80" /></button>
+                <input value={fullUrl} readOnly className="bg-transparent w-full text-foreground outline-none text-sm" />
+                <Button onClick={handleCopyToClipboard} variant="ghost" size="icon"><Copy className="h-5 w-5 text-muted-foreground" /></Button>
                 </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-8">
-                <button onClick={() => setIsQrDialogOpen(true)} className="flex items-center justify-center gap-2 bg-muted rounded-lg p-3 border hover:bg-accent transition-colors">
-                    <QrCode className="h-5 w-5 text-primary" />
-                    <span className="text-primary font-semibold">QR Code</span>
-                </button>
-                <button onClick={handleShare} className="flex items-center justify-center gap-2 bg-muted rounded-lg p-3 border hover:bg-accent transition-colors">
-                    <Share2 className="h-5 w-5 text-primary" />
-                    <span className="text-primary font-semibold">Share</span>
-                </button>
+                <Button onClick={() => setIsQrDialogOpen(true)} variant="outline" className="w-full h-12">
+                    <QrCode className="mr-2 h-5 w-5" />
+                    <span>QR Code</span>
+                </Button>
+                <Button onClick={handleShare} variant="outline" className="w-full h-12">
+                    <Share2 className="mr-2 h-5 w-5" />
+                    <span>Share</span>
+                </Button>
             </div>
 
-            <div className="text-left mb-4">
-                <label className="font-semibold text-primary mb-2 block">Schedule Send</label>
-                 <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button
-                                variant={"outline"}
-                                className={cn(
-                                    "w-full justify-start text-left font-normal h-12",
-                                    !scheduleDate && "text-muted-foreground"
-                                )}
-                            >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {scheduleDate ? format(scheduleDate, "PPP") : <span>Pick a date</span>}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                            <Calendar
-                                mode="single"
-                                selected={scheduleDate}
-                                onSelect={setScheduleDate}
-                                initialFocus
-                            />
-                        </PopoverContent>
-                    </Popover>
-                    <Input
-                        type="time"
-                        value={scheduleTime}
-                        onChange={(e) => setScheduleTime(e.target.value)}
-                        className="h-12"
-                    />
-                </div>
-            </div>
+            <Card className="text-left mb-6">
+                <CardHeader>
+                    <CardTitle className="text-lg">Schedule Send</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                        "w-full justify-start text-left font-normal h-12",
+                                        !scheduleDate && "text-muted-foreground"
+                                    )}
+                                >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {scheduleDate ? format(scheduleDate, "PPP") : <span>Pick a date</span>}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                    mode="single"
+                                    selected={scheduleDate}
+                                    onSelect={setScheduleDate}
+                                    initialFocus
+                                />
+                            </PopoverContent>
+                        </Popover>
+                        <Input
+                            type="time"
+                            value={scheduleTime}
+                            onChange={(e) => setScheduleTime(e.target.value)}
+                            className="h-12"
+                        />
+                    </div>
+                     <Button onClick={handleSchedule} disabled={isScheduling} className="w-full mt-4 h-12 text-base">
+                        {isScheduling ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <SendHorizonal className="mr-2 h-5 w-5" />}
+                        Schedule Wish
+                    </Button>
+                </CardContent>
+            </Card>
             
-            <Button onClick={handleSchedule} disabled={isScheduling} className="w-full rounded-full py-3 bg-primary text-primary-foreground font-bold text-base mb-8 shadow-lg shadow-primary/20 hover:opacity-90 transition-opacity">
-                 {isScheduling ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <SendHorizonal className="mr-2 h-5 w-5" />}
-                Schedule Wish
-            </Button>
-
             <Button variant="ghost" onClick={() => router.push('/')} className="text-muted-foreground hover:text-foreground">
                 Back to Dashboard
             </Button>
@@ -722,4 +721,5 @@ export default function CreateWishPage() {
         </Suspense>
     );
 }
- 
+
+    
