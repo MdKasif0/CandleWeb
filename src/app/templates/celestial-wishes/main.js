@@ -1,3 +1,4 @@
+
 // --- Global State ---
 let currentQuote = 0;
 let quotes = [];
@@ -13,19 +14,14 @@ function loadWishData() {
         try {
             const wishList = JSON.parse(localStorage.getItem('userWishes') || '[]');
             const mainData = wishList.find(w => w.id === wishId);
-            
-            const additionalDataString = localStorage.getItem(`wish_data_${wishId}`);
-            const additionalData = additionalDataString ? JSON.parse(additionalDataString) : {};
 
             if (!mainData) {
                 console.error("Wish data not found in localStorage.");
                 // Provide fallback data to prevent crash
                 wishData = getPreviewData(params);
-                return;
+            } else {
+                wishData = mainData;
             }
-            
-            wishData = { ...mainData, ...additionalData };
-
         } catch (error) {
             console.error("Failed to load or parse wish data from localStorage", error);
             wishData = getPreviewData(params); // Fallback
@@ -37,6 +33,24 @@ function loadWishData() {
 }
 
 function getPreviewData(params) {
+    const beautifulMemoriesParam = params.get('beautifulMemories');
+    const friendsMessagesParam = params.get('friendsMessages');
+
+    let beautifulMemories = [];
+    try {
+        if (beautifulMemoriesParam) {
+            beautifulMemories = JSON.parse(decodeURIComponent(beautifulMemoriesParam));
+        }
+    } catch(e) { console.error("Could not parse beautifulMemories", e); }
+
+    let friendsMessages = [];
+     try {
+        if (friendsMessagesParam) {
+            friendsMessages = JSON.parse(decodeURIComponent(friendsMessagesParam));
+        }
+    } catch(e) { console.error("Could not parse friendsMessages", e); }
+
+
     return {
         toName: params.get('toName') || 'Someone',
         fromName: params.get('fromName') || 'A Friend',
@@ -44,9 +58,9 @@ function getPreviewData(params) {
         closingMessages: params.get('closingMessages') || "Wishing you all the best!\nMay all your dreams come true!\nCheers to you!",
         secretMessage: params.get('secretMessage') || "Here's to another amazing year! 🤫",
         profilePhoto: params.get('profilePhoto') || '',
-        beautifulMemories: JSON.parse(params.get('beautifulMemories') || '[]'),
+        beautifulMemories: beautifulMemories,
         specialGiftMessage: params.get('specialGiftMessage') || 'May every moment of your special day be filled with the same joy and happiness you bring to others!',
-        friendsMessages: JSON.parse(params.get('friendsMessages') || '[]'),
+        friendsMessages: friendsMessages,
         saveKeepsakeMessage: params.get('saveKeepsakeMessage') || 'Save this memory forever.',
         endMessage: params.get('endMessage') || 'The End',
     };
@@ -80,8 +94,6 @@ function populateContent() {
     const profilePhotoEl = document.getElementById('profilePhoto');
     if (profilePhoto && profilePhotoEl) {
         profilePhotoEl.style.backgroundImage = `url(${profilePhoto})`;
-        profilePhotoEl.style.backgroundSize = 'cover';
-        profilePhotoEl.style.backgroundPosition = 'center';
     }
 
     // Main Message
@@ -118,22 +130,32 @@ function populateContent() {
 
     // Birthday Wishes (Quotes)
     const quotesContainer = document.getElementById('quotesContainer');
+    const quotesSection = document.getElementById('quotes');
     quotes = (closingMessages || "").split('\n').filter(q => q.trim() !== '');
-    if (quotes.length > 0 && quotesContainer) {
-        quotesContainer.innerHTML = '';
-        quotes.forEach((q, index) => {
-            const quoteEl = document.createElement('div');
-            quoteEl.className = `quote ${index === 0 ? 'active' : ''}`;
-            quoteEl.textContent = `"${q}" ✨`;
-            quotesContainer.appendChild(quoteEl);
-        });
-        startQuoteRotation();
+    if (quotesSection) {
+        if (quotes.length > 0 && quotesContainer) {
+            quotesContainer.innerHTML = '';
+            quotes.forEach((q, index) => {
+                const quoteEl = document.createElement('div');
+                quoteEl.className = `quote ${index === 0 ? 'active' : ''}`;
+                quoteEl.textContent = `"${q}" ✨`;
+                quotesContainer.appendChild(quoteEl);
+            });
+            startQuoteRotation();
+            quotesSection.style.display = 'block';
+        } else {
+            quotesSection.style.display = 'none';
+        }
     }
     
     // Special Gift
     const specialGiftMessageEl = document.getElementById('specialGiftMessage');
-    if (specialGiftMessageEl) {
+    const giftSection = document.getElementById('gift');
+    if (specialGiftMessage && specialGiftMessageEl && giftSection) {
         specialGiftMessageEl.textContent = specialGiftMessage;
+        giftSection.style.display = 'block';
+    } else if (giftSection) {
+        giftSection.style.display = 'none';
     }
 
     // Friends Messages
@@ -184,7 +206,7 @@ function populateContent() {
 
     // Keepsake Button
     const downloadBtnEl = document.getElementById('downloadBtn');
-    if (downloadBtnEl) {
+    if (downloadBtnEl && saveKeepsakeMessage) {
         downloadBtnEl.textContent = `💾 ${saveKeepsakeMessage}`;
     }
 }
@@ -200,10 +222,10 @@ function updateSEOTags(toName, fromName) {
         { selector: 'meta[property="og:description"]', content: pageDescription },
         { selector: 'meta[property="og:url"]', content: pageUrl },
         { selector: 'meta[property="og:image:alt"]', content: `A birthday wish for ${toName}` },
-        { selector: 'meta[property="twitter:title"]', content: pageTitle },
-        { selector: 'meta[property="twitter:description"]', content: pageDescription },
-        { selector: 'meta[property="twitter:url"]', content: pageUrl },
-        { selector: 'meta[property="twitter:image:alt"]', content: `A birthday wish for ${toName}` },
+        { selector: 'meta[name="twitter:title"]', content: pageTitle },
+        { selector: 'meta[name="twitter:description"]', content: pageDescription },
+        { selector: 'meta[name="twitter:url"]', content: pageUrl },
+        { selector: 'meta[name="twitter:image:alt"]', content: `A birthday wish for ${toName}` },
     ];
     metas.forEach(meta => {
         const el = document.querySelector(meta.selector);
@@ -271,7 +293,7 @@ function startTypingAnimation(text, element, cursor) {
 }
 
 function startQuoteRotation() {
-    const quoteElements = document.querySelectorAll('.quote');
+    const quoteElements = document.querySelectorAll('#quotesContainer .quote');
     if(quoteElements.length === 0) return;
     setInterval(() => {
         quoteElements[currentQuote].classList.remove('active');
@@ -330,6 +352,7 @@ function triggerConfetti() {
     }
 
     function animateConfetti() {
+        if (particles.length === 0) return;
         requestAnimationFrame(animateConfetti);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach((p, index) => {
@@ -369,7 +392,7 @@ function setupEventListeners() {
     const downloadBtn = document.getElementById('downloadBtn');
     if (downloadBtn) {
         downloadBtn.addEventListener('click', function() {
-            const { toName, saveKeepsakeMessage } = wishData;
+            const { toName = 'Friend', saveKeepsakeMessage = 'A special memory' } = wishData;
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = 800;
@@ -386,10 +409,10 @@ function setupEventListeners() {
             ctx.fillText(`Happy Birthday, ${toName}!`, 400, 200);
             ctx.fillStyle = '#666';
             ctx.font = '24px Poppins, sans-serif';
-            ctx.fillText(saveKeepsakeMessage || 'Wishing you joy, love, and happiness', 400, 300);
+            ctx.fillText(saveKeepsakeMessage, 400, 300);
             ctx.fillText('on your special day!', 400, 340);
             const link = document.createElement('a');
-            link.download = `birthday-keepsake-for-${toName}.png`;
+            link.download = `birthday-keepsake-for-${toName.replace(/ /g, '_')}.png`;
             link.href = canvas.toDataURL();
             link.click();
         });
@@ -406,25 +429,47 @@ function setupIntersectionObserver() {
     }, { threshold: 0.1 });
     
     document.querySelectorAll('.section').forEach(section => {
-        observer.observe(section);
+        if(section) observer.observe(section);
     });
 }
 
 document.addEventListener('mousemove', function(e) {
-    const sparkle = document.createElement('div');
-    sparkle.style.position = 'fixed';
-    sparkle.style.left = e.clientX + 'px';
-    sparkle.style.top = e.clientY + 'px';
-    sparkle.style.pointerEvents = 'none';
-    sparkle.style.zIndex = '1000';
-    sparkle.style.width = '6px';
-    sparkle.style.height = '6px';
-    sparkle.style.background = 'var(--gold)';
-    sparkle.style.borderRadius = '50%';
-    sparkle.style.animation = 'sparkleFloat 2s ease-in-out forwards';
-    document.body.appendChild(sparkle);
-    
-    setTimeout(() => {
-        sparkle.remove();
-    }, 2000);
+    if (Math.random() > 0.95) { // Throttle sparkle creation
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle-trail';
+        sparkle.style.left = e.clientX + 'px';
+        sparkle.style.top = e.clientY + 'px';
+        document.body.appendChild(sparkle);
+        
+        setTimeout(() => {
+            sparkle.remove();
+        }, 2000);
+    }
 });
+
+// Add keyframe for mousemove sparkle if not present in a separate style tag
+if (!document.getElementById('sparkle-keyframes')) {
+    const styleEl = document.createElement('style');
+    styleEl.id = 'sparkle-keyframes';
+    styleEl.innerHTML = `
+        .sparkle-trail {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            width: 6px;
+            height: 6px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: sparkleFloat 2s ease-in-out forwards;
+        }
+
+        @keyframes sparkleFloat {
+            0% { transform: translateY(0) scale(0); opacity: 0; }
+            50% { transform: translateY(-30px) scale(1); opacity: 1; }
+            100% { transform: translateY(-60px) scale(0); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(styleEl);
+}
+
+    

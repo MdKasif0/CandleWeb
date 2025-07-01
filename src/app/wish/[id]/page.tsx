@@ -2,7 +2,6 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import type { Metadata } from 'next';
 import { useParams } from 'next/navigation';
 import NightSkyTemplate from '@/app/templates/night-sky/NightSkyTemplate';
 import { Loader2 } from 'lucide-react';
@@ -22,7 +21,7 @@ interface WishData {
   didYouLikeItMessage?: string;
   endMessage?: string;
   profilePhoto?: string;
-  beautifulMemories?: string[];
+  beautifulMemories?: { src: string }[];
   specialGiftMessage?: string;
   friendsMessages?: { name: string; message: string }[];
   saveKeepsakeMessage?: string;
@@ -37,15 +36,10 @@ function WishDisplay() {
     useEffect(() => {
         if (typeof window !== 'undefined' && id) {
             try {
-                const wishList: any[] = JSON.parse(localStorage.getItem('userWishes') || '[]');
-                const mainData = wishList.find(wish => wish.id === id);
+                const wishList: WishData[] = JSON.parse(localStorage.getItem('userWishes') || '[]');
+                const fullData = wishList.find(wish => wish.id === id);
 
-                if (mainData) {
-                    const additionalDataString = localStorage.getItem(`wish_data_${id}`);
-                    const additionalData = additionalDataString ? JSON.parse(additionalDataString) : {};
-                    
-                    const fullData: WishData = { ...mainData, ...additionalData };
-
+                if (fullData) {
                     setWishData(fullData);
                     document.title = `A Birthday Wish for ${fullData.toName}!`;
                 }
@@ -79,7 +73,12 @@ function WishDisplay() {
             const url = `/templates/${wishData.template}/index.html?id=${wishData.id}`;
             window.location.href = url;
         }
-        return null; // Redirecting...
+        return (
+            <div className="flex min-h-screen w-full items-center justify-center bg-background">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="ml-4">Redirecting to your wish...</p>
+            </div>
+        );
     }
 
     return <NightSkyTemplate toName={wishData.toName} fromName={wishData.fromName} message={wishData.message} />;
@@ -96,3 +95,5 @@ export default function WishPage() {
         </Suspense>
     );
 }
+
+    

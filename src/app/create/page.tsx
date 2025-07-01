@@ -29,13 +29,15 @@ import Link from 'next/link';
 import { ChevronLeft, Sparkles, Loader2, Copy, QrCode, Share2, Calendar as CalendarIcon, SendHorizonal, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { generateWishContent, GenerateWishContentInput } from '@/ai/flows/generateWishContent';
 import { cn } from '@/lib/utils';
-import { useRequireAuth } from '@/hooks/use-auth';
+import { useRequireAuth, useAuth } from '@/hooks/use-auth';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import QRCode from 'qrcode.react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
+import { storage } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export const dynamic = 'force-dynamic';
 
@@ -94,6 +96,8 @@ function CreateWishForm() {
   const [scheduleDate, setScheduleDate] = useState<Date>();
   const [scheduleTime, setScheduleTime] = useState('09:00');
   const [isQrDialogOpen, setIsQrDialogOpen] = useState(false);
+  const [uploading, setUploading] = useState<Record<string, boolean>>({});
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -211,27 +215,36 @@ function CreateWishForm() {
     });
   };
 
-    const handleImageUpload = (file: File, field: 'profilePhoto' | 'beautifulMemories', index?: number) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            const base64 = reader.result as string;
+  const handleImageUpload = async (file: File, field: 'profilePhoto' | 'beautifulMemories', index?: number) => {
+        if (!file) return;
+        if (!auth.user) {
+            toast({ variant: 'destructive', title: 'Authentication Error', description: 'You must be logged in to upload images.' });
+            return;
+        }
+
+        const uniqueId = field === 'profilePhoto' ? 'profilePhoto' : `memory-${index ?? Date.now()}`;
+        setUploading(prev => ({ ...prev, [uniqueId]: true }));
+
+        const storageRef = ref(storage, `wishes/${auth.user.uid}/${Date.now()}-${file.name}`);
+
+        try {
+            const snapshot = await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
             if (field === 'profilePhoto') {
-                form.setValue('profilePhoto', base64, { shouldValidate: true });
-            } else if (field === 'beautifulMemories' && index !== undefined) {
-                 const currentMemories = form.getValues('beautifulMemories') || [];
-                 const updatedMemories = [...currentMemories];
-                 updatedMemories[index] = { src: base64 };
-                 form.setValue('beautifulMemories', updatedMemories, { shouldValidate: true });
+                form.setValue('profilePhoto', downloadURL, { shouldValidate: true });
             } else if (field === 'beautifulMemories') {
-                appendMemory({ src: base64 });
+                appendMemory({ src: downloadURL });
             }
-        };
-        reader.onerror = (error) => {
-            console.error('Error converting file to base64', error);
-            toast({ variant: 'destructive', title: 'Image Upload Failed' });
-        };
+            toast({ title: 'Image Uploaded!' });
+        } catch (error) {
+            console.error('Error uploading image to Firebase Storage', error);
+            toast({ variant: 'destructive', title: 'Image Upload Failed', description: 'Could not upload the image. Please try again.' });
+        } finally {
+            setUploading(prev => ({ ...prev, [uniqueId]: false }));
+        }
     };
+
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -242,29 +255,19 @@ function CreateWishForm() {
             status: 'Published',
             ...values
         };
-
-        const { beautifulMemories, friendsMessages, profilePhoto, ...wishMetadata } = fullWishData;
-
+        
         try {
             const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
-            const updatedWishes = [wishMetadata, ...existingWishes];
+            const updatedWishes = [fullWishData, ...existingWishes];
             localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
-
-            // Store large data separately
-            const additionalData = { 
-                profilePhoto: values.profilePhoto,
-                beautifulMemories: values.beautifulMemories,
-                friendsMessages 
-            };
-            localStorage.setItem(`wish_data_${fullWishData.id}`, JSON.stringify(additionalData));
-
         } catch (error) {
             console.error("Could not save wish to local storage", error);
             toast({
                 variant: "destructive",
                 title: "Could not save wish",
-                description: "There was an error saving your wish. Please try again."
+                description: "There was an error saving your wish. Your browser's storage might be full."
             })
+            setIsSubmitting(false);
             return;
         }
         
@@ -280,7 +283,7 @@ function CreateWishForm() {
         toast({
             variant: "destructive",
             title: "Could not create wish",
-            description: "There was an error creating your wish. Please try again."
+            description: "An unexpected error occurred. Please try again."
         })
     } finally {
         setIsSubmitting(false);
@@ -526,14 +529,24 @@ function CreateWishForm() {
                         <FormLabel>Birthday Person's Photo</FormLabel>
                         <FormControl>
                             <div className="flex items-center gap-4">
-                                {field.value ? (
+                                {uploading['profilePhoto'] ? (
+                                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                                        <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
+                                    </div>
+                                ) : field.value ? (
                                     <Image src={field.value} alt="Profile preview" width={64} height={64} className="rounded-full w-16 h-16 object-cover" />
                                 ) : (
                                     <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
                                         <ImageIcon className="w-8 h-8 text-muted-foreground" />
                                     </div>
                                 )}
-                                <Input type="file" accept="image/*" className='flex-1' onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'profilePhoto')} />
+                                 <Input 
+                                    type="file" 
+                                    accept="image/*" 
+                                    className='flex-1' 
+                                    onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'profilePhoto')} 
+                                    disabled={uploading['profilePhoto']}
+                                />
                             </div>
                         </FormControl>
                         <FormMessage />
@@ -561,7 +574,13 @@ function CreateWishForm() {
                     <CardContent className='space-y-2'>
                         {memoryFields.map((field, index) => (
                              <div key={field.id} className="flex items-center gap-2">
-                                <Image src={field.src} alt={`Memory ${index + 1}`} width={40} height={40} className="w-10 h-10 rounded-md object-cover" />
+                                {uploading[`memory-${index}`] ? (
+                                    <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center">
+                                        <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                                    </div>
+                                ) : (
+                                    <Image src={field.src} alt={`Memory ${index + 1}`} width={40} height={40} className="w-10 h-10 rounded-md object-cover" />
+                                )}
                                 <span className='text-sm text-muted-foreground truncate flex-1'>Memory #{index+1}</span>
                                 <Button type="button" variant="ghost" size="icon" onClick={() => removeMemory(index)}>
                                     <Trash2 className="h-4 w-4 text-destructive" />
@@ -592,7 +611,7 @@ function CreateWishForm() {
                                 )}/>
                                  <Button type="button" variant="ghost" size="icon" className="absolute top-1 right-1" onClick={() => removeFriend(index)}>
                                     <Trash2 className="h-4 w-4 text-destructive" />
-                                </Button>
+                                 </Button>
                             </div>
                         ))}
                          {friendFields.length === 0 && <p className="text-sm text-center text-muted-foreground py-4">No friend messages added.</p>}
@@ -609,7 +628,7 @@ function CreateWishForm() {
             )}
             
             <div className="pt-4">
-              <Button type="submit" disabled={isSubmitting || isGenerating} className="w-full rounded-full py-6 text-lg font-semibold shadow-lg shadow-primary/20 transition-opacity hover:opacity-90">
+              <Button type="submit" disabled={isSubmitting || isGenerating || Object.values(uploading).some(Boolean)} className="w-full rounded-full py-6 text-lg font-semibold shadow-lg shadow-primary/20 transition-opacity hover:opacity-90">
                 {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
                 Generate CandleWeb
               </Button>
@@ -644,11 +663,11 @@ function CreateWishForm() {
                 </Button>
             </div>
 
-            <Card className="text-left mb-6">
+            <Card className="text-left mb-6 bg-card">
                 <CardHeader>
                     <CardTitle className="text-lg">Schedule Send</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className='p-4'>
                     <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
                         <Popover>
                             <PopoverTrigger asChild>

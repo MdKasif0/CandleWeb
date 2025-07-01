@@ -94,8 +94,8 @@ export default function MyWishesPage() {
             const updatedWishes = storedWishes.filter(w => w.id !== wishToDelete.id);
             localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
             
-            // Remove associated data
-            localStorage.removeItem(`wish_data_${wishToDelete.id}`);
+            // Note: This does not delete images from Firebase Storage.
+            // A more robust solution would involve a backend function.
 
             // Update component state
             setWishes(updatedWishes);
@@ -133,7 +133,7 @@ export default function MyWishesPage() {
 
     return (
         <div className="bg-background text-foreground min-h-screen font-sans relative overflow-hidden">
-             <div className="absolute inset-0 z-0 opacity-20 dark:opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+             <div className="absolute inset-0 z-0 opacity-10 dark:opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
             <div className="relative z-10 p-4 md:p-6 max-w-2xl mx-auto pb-24">
                 <div className="relative mb-8 flex items-center justify-center py-4">
                     <h1 className="text-2xl font-bold text-foreground">My CandleWebs</h1>
@@ -144,7 +144,7 @@ export default function MyWishesPage() {
                         <div className="space-y-3">
                             {wishes.map((wish) => {
                                 const isValidDate = wish.createdAt && !isNaN(new Date(wish.createdAt).getTime());
-                                const imageUrl = templateImages[wish.template] || 'https://placehold.co/80x80.png';
+                                const imageUrl = templateImages[wish.template] || 'https://placehold.co/56x56.png';
                                 return (
                                  <Card key={wish.id} className="bg-card p-3 border">
                                     <CardContent className="flex items-center justify-between p-0">
@@ -200,8 +200,6 @@ export default function MyWishesPage() {
                         </div>
                     ) : (
                         <div className="text-center mt-10">
-                            <h3 className="font-semibold text-foreground text-xl">No CandleWebs Built Yet</h3>
-                            <p className="text-sm text-muted-foreground mb-6">Get started by creating your first CandleWeb!</p>
                              <Link href="/templates" className="block group max-w-md mx-auto">
                                 <div className="rounded-2xl bg-gradient-to-r from-purple-900 via-indigo-950 to-slate-950 p-4 flex items-center gap-4 border border-fuchsia-600 shadow-[0_0_20px_rgba(192,38,211,0.3)] transition-all duration-300 group-hover:border-fuchsia-500 group-hover:shadow-[0_0_30px_rgba(192,38,211,0.5)]">
                                     <Image
@@ -247,3 +245,5 @@ export default function MyWishesPage() {
         </div>
     );
 }
+
+    
