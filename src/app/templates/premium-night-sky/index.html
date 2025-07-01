@@ -114,14 +114,14 @@
         const toName = params.get('toName') || 'Friend';
         const fromName = params.get('fromName') || 'A Friend';
         const message = params.get('message') || 'Wishing you a fantastic day filled with joy and happiness!';
-        const closingMessages = decodeURIComponent(params.get('closingMessages') || '');
-        const secretMessage = decodeURIComponent(params.get('secretMessage') || '');
-        const blowCandlesInstruction = decodeURIComponent(params.get('blowCandlesInstruction') || "'Blow the candles'");
-        const wishYouTheBestMessage = decodeURIComponent(params.get('wishYouTheBestMessage') || "💝 Wish you the best 💝");
-        const letsBlowCandlesTitle = decodeURIComponent(params.get('letsBlowCandlesTitle') || "Let's blow out the candles.");
-        const thanksForWatchingTitle = decodeURIComponent(params.get('thanksForWatchingTitle') || "Thanks for watching!");
-        const didYouLikeItMessage = decodeURIComponent(params.get('didYouLikeItMessage') || "Did you like it?");
-        const endMessage = decodeURIComponent(params.get('endMessage') || 'The End');
+        const closingMessages = params.get('closingMessages') || '';
+        const secretMessage = params.get('secretMessage') || '';
+        const blowCandlesInstruction = params.get('blowCandlesInstruction') || "'Blow the candles'";
+        const wishYouTheBestMessage = params.get('wishYouTheBestMessage') || "💝 Wish you the best 💝";
+        const letsBlowCandlesTitle = params.get('letsBlowCandlesTitle') || "Let's blow out the candles.";
+        const thanksForWatchingTitle = params.get('thanksForWatchingTitle') || "Thanks for watching!";
+        const didYouLikeItMessage = params.get('didYouLikeItMessage') || "Did you like it?";
+        const endMessage = params.get('endMessage') || 'The End';
 
         window.birthdayData = { 
             toName, 
