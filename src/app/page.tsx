@@ -117,8 +117,8 @@ export default function DashboardPage() {
 
                 {/* Greeting */}
                 <section className="mb-8">
-                    <h1 className="text-4xl font-bold mb-2 text-white">Hey {auth.user.displayName?.split(' ')[0] || 'friend'}, ready to craft some birthday magic?</h1>
-                    <p className="text-muted-foreground text-lg">Let's create a wish page that makes their day unforgettable.</p>
+                    <h1 className="text-3xl font-bold mb-2 text-white">Hey {auth.user.displayName?.split(' ')[0] || 'friend'}, ready to craft some birthday magic?</h1>
+                    <p className="text-muted-foreground text-base">Let's create a wish page that makes their day unforgettable.</p>
                 </section>
 
                 {/* Action Card */}
