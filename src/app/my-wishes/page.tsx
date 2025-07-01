@@ -133,10 +133,10 @@ export default function MyWishesPage() {
 
     return (
         <div className="bg-background text-foreground min-h-screen font-sans relative overflow-hidden">
-             <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+             <div className="absolute inset-0 z-0 opacity-20 dark:opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
             <div className="relative z-10 p-4 md:p-6 max-w-2xl mx-auto pb-24">
                 <div className="relative mb-8 flex items-center justify-center py-4">
-                    <h1 className="text-2xl font-bold text-white">My CandleWebs</h1>
+                    <h1 className="text-2xl font-bold text-foreground">My CandleWebs</h1>
                 </div>
 
                 <section>
@@ -146,7 +146,7 @@ export default function MyWishesPage() {
                                 const isValidDate = wish.createdAt && !isNaN(new Date(wish.createdAt).getTime());
                                 const imageUrl = templateImages[wish.template] || 'https://placehold.co/80x80.png';
                                 return (
-                                 <Card key={wish.id} className="bg-foreground/5 p-3 border-transparent">
+                                 <Card key={wish.id} className="bg-card p-3 border">
                                     <CardContent className="flex items-center justify-between p-0">
                                         <div className="flex items-center gap-4">
                                             <Image
@@ -157,16 +157,16 @@ export default function MyWishesPage() {
                                                 className="w-14 h-14 object-cover rounded-lg"
                                             />
                                             <div className="flex-grow">
-                                                <h3 className="font-semibold text-white text-lg">{wish.toName}</h3>
+                                                <h3 className="font-semibold text-card-foreground text-lg">{wish.toName}</h3>
                                                 <p className="text-sm text-muted-foreground">{isValidDate ? format(new Date(wish.createdAt), "MMM d, yyyy") : 'Date not available'}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <Badge className={cn(
                                                 "capitalize border-none",
-                                                wish.status === 'Published' ? "bg-yellow-900/50 text-yellow-300" :
-                                                wish.status === 'Scheduled' ? "bg-blue-900/50 text-blue-300" :
-                                                "bg-purple-900/50 text-purple-300"
+                                                wish.status === 'Published' ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300" :
+                                                wish.status === 'Scheduled' ? "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300" :
+                                                "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300"
                                             )}>{wish.status}</Badge>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
@@ -185,7 +185,7 @@ export default function MyWishesPage() {
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
-                                                        className="text-red-400 focus:text-red-400 focus:bg-red-500/10"
+                                                        className="text-destructive focus:text-destructive focus:bg-destructive/10"
                                                         onSelect={() => handleDeleteClick(wish)}
                                                     >
                                                         <Trash2 className="mr-2 h-4 w-4" />
@@ -200,7 +200,7 @@ export default function MyWishesPage() {
                         </div>
                     ) : (
                         <div className="text-center mt-10">
-                            <h3 className="font-semibold text-white text-xl">No CandleWebs Built Yet</h3>
+                            <h3 className="font-semibold text-foreground text-xl">No CandleWebs Built Yet</h3>
                             <p className="text-sm text-muted-foreground mb-6">Get started by creating your first CandleWeb!</p>
                              <Link href="/templates" className="block group max-w-md mx-auto">
                                 <div className="rounded-2xl bg-gradient-to-r from-purple-900 via-indigo-950 to-slate-950 p-4 flex items-center gap-4 border border-fuchsia-600 shadow-[0_0_20px_rgba(192,38,211,0.3)] transition-all duration-300 group-hover:border-fuchsia-500 group-hover:shadow-[0_0_30px_rgba(192,38,211,0.5)]">

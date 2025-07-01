@@ -88,17 +88,17 @@ export default function DashboardPage() {
 
     return (
         <div className="bg-background text-foreground min-h-screen font-sans relative overflow-hidden">
-            <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+            <div className="absolute inset-0 z-0 opacity-20 dark:opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
              <div className="relative z-10 p-4 md:p-6 max-w-2xl mx-auto pb-24">
                 {/* Header */}
                 <header className="flex items-center justify-between mb-8">
-                    <span className="font-serif text-2xl text-white italic">Candle Web</span>
+                    <span className="font-serif text-2xl text-foreground italic">Candle Web</span>
                     <UserNav />
                 </header>
 
                 {/* Greeting */}
                 <section className="mb-8">
-                    <h1 className="text-2xl font-bold mb-2 text-white">Hey {auth.user.displayName?.split(' ')[0] || 'friend'}, ready to craft some birthday magic?</h1>
+                    <h1 className="text-2xl font-bold mb-2 text-foreground">Hey {auth.user.displayName?.split(' ')[0] || 'friend'}, ready to craft some birthday magic?</h1>
                     <p className="text-muted-foreground text-sm">Let's create a wish page that makes their day unforgettable.</p>
                 </section>
 
@@ -134,7 +134,7 @@ export default function DashboardPage() {
                                 const isValidDate = wish.createdAt && !isNaN(new Date(wish.createdAt).getTime());
                                 const imageUrl = templateImages[wish.template] || 'https://placehold.co/80x80.png';
                                 return (
-                                <Card key={wish.id} className="bg-foreground/5 p-3 border-transparent transition-all hover:bg-foreground/10">
+                                <Card key={wish.id} className="bg-card p-3 border transition-all hover:bg-muted/50">
                                     <CardContent className="flex items-center justify-between p-0 gap-4">
                                         <Image
                                             src={imageUrl}
@@ -144,23 +144,23 @@ export default function DashboardPage() {
                                             className="w-14 h-14 object-cover rounded-lg"
                                         />
                                         <div className="flex-grow">
-                                            <h3 className="font-semibold text-white text-lg">{wish.toName}</h3>
+                                            <h3 className="font-semibold text-card-foreground text-lg">{wish.toName}</h3>
                                             <p className="text-sm text-muted-foreground">{isValidDate ? format(new Date(wish.createdAt), "MMM d, yyyy") : 'Date not available'}</p>
                                         </div>
                                          <Badge className={cn(
                                             "capitalize border-none",
-                                            wish.status === 'Published' ? "bg-yellow-900/50 text-yellow-300" :
-                                            wish.status === 'Scheduled' ? "bg-blue-900/50 text-blue-300" :
-                                            "bg-purple-900/50 text-purple-300"
+                                            wish.status === 'Published' ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300" :
+                                            wish.status === 'Scheduled' ? "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300" :
+                                            "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300"
                                         )}>{wish.status}</Badge>
                                     </CardContent>
                                 </Card>
                             )})}
                         </div>
                     ) : (
-                         <Card className="bg-foreground/5 p-6 border-transparent text-center">
+                         <Card className="bg-card p-6 border text-center">
                             <CardContent className="p-0 flex flex-col items-center">
-                                <h3 className="font-semibold text-white mb-2">No CandleWebs Built Yet</h3>
+                                <h3 className="font-semibold text-card-foreground mb-2">No CandleWebs Built Yet</h3>
                                 <p className="text-sm text-muted-foreground">You can start by creating a new wish.</p>
                             </CardContent>
                         </Card>

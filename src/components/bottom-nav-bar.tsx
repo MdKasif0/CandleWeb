@@ -19,7 +19,7 @@ export function BottomNavBar() {
   return (
     <footer className="md:hidden fixed bottom-0 left-0 right-0 h-24 bg-transparent pointer-events-none z-50">
       <div className="absolute bottom-4 left-4 right-4 pointer-events-auto">
-        <div className="mx-auto max-w-sm h-16 bg-black/30 backdrop-blur-md shadow-lg rounded-3xl flex justify-around items-center border border-white/10">
+        <div className="mx-auto max-w-sm h-16 bg-background/80 dark:bg-black/30 backdrop-blur-md shadow-lg rounded-3xl flex justify-around items-center border border-border dark:border-white/10">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
