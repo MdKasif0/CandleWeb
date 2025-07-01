@@ -43,10 +43,10 @@ function getPreviewData(params) {
         message: params.get('message') || 'Wishing you a day filled with happiness and a year filled with joy. Happy birthday!',
         closingMessages: params.get('closingMessages') || "Wishing you all the best!\nMay all your dreams come true!\nCheers to you!",
         secretMessage: params.get('secretMessage') || "Here's to another amazing year! 🤫",
-        profilePhoto: '', // Not available in preview
-        beautifulMemories: [], // Not available in preview
+        profilePhoto: params.get('profilePhoto') || '',
+        beautifulMemories: JSON.parse(params.get('beautifulMemories') || '[]'),
         specialGiftMessage: params.get('specialGiftMessage') || 'May every moment of your special day be filled with the same joy and happiness you bring to others!',
-        friendsMessages: [], // Not available in preview
+        friendsMessages: JSON.parse(params.get('friendsMessages') || '[]'),
         saveKeepsakeMessage: params.get('saveKeepsakeMessage') || 'Save this memory forever.',
         endMessage: params.get('endMessage') || 'The End',
     };
@@ -73,47 +73,53 @@ function populateContent() {
     updateSEOTags(toName, fromName);
 
     // Hero
-    document.getElementById('heroTitle').textContent = `Happy Birthday ${toName}!`;
+    const heroTitleEl = document.getElementById('heroTitle');
+    if (heroTitleEl) {
+        heroTitleEl.textContent = `Happy Birthday ${toName}!`;
+    }
     const profilePhotoEl = document.getElementById('profilePhoto');
-    if (profilePhoto) {
+    if (profilePhoto && profilePhotoEl) {
         profilePhotoEl.style.backgroundImage = `url(${profilePhoto})`;
         profilePhotoEl.style.backgroundSize = 'cover';
         profilePhotoEl.style.backgroundPosition = 'center';
-
     }
 
     // Main Message
     const typedElement = document.getElementById('typedMessage');
-    typedElement.innerHTML = ''; // Clear existing
-    const cursor = document.createElement('span');
-    cursor.className = 'cursor';
-    cursor.id = 'cursor';
-    typedElement.appendChild(cursor);
-    startTypingAnimation(message, typedElement, cursor);
+    const cursor = document.getElementById('cursor');
+    if (typedElement && cursor) {
+        typedElement.innerHTML = ''; // Clear existing
+        typedElement.appendChild(cursor);
+        startTypingAnimation(message, typedElement, cursor);
+    }
+
 
     // Beautiful Memories
     const galleryContainer = document.getElementById('galleryContainer');
     const gallerySection = document.getElementById('gallerySection');
-    if (beautifulMemories && beautifulMemories.length > 0) {
-        galleryContainer.innerHTML = ''; // Clear placeholder
-        beautifulMemories.forEach(memory => {
-            const item = document.createElement('div');
-            item.className = 'gallery-item';
-            const img = document.createElement('img');
-            img.src = memory.src;
-            img.alt = 'Beautiful Memory';
-            item.appendChild(img);
-            galleryContainer.appendChild(item);
-        });
-        gallerySection.style.display = 'block';
-    } else {
-        gallerySection.style.display = 'none'; // Hide section if no memories
+    if (gallerySection) {
+        if (beautifulMemories && beautifulMemories.length > 0 && galleryContainer) {
+            galleryContainer.innerHTML = ''; // Clear placeholder
+            beautifulMemories.forEach(memory => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                const img = document.createElement('img');
+                img.src = memory.src;
+                img.alt = 'Beautiful Memory';
+                item.appendChild(img);
+                galleryContainer.appendChild(item);
+            });
+            gallerySection.style.display = 'block';
+        } else {
+            gallerySection.style.display = 'none'; // Hide section if no memories
+        }
     }
+
 
     // Birthday Wishes (Quotes)
     const quotesContainer = document.getElementById('quotesContainer');
-    quotes = closingMessages.split('\n').filter(q => q.trim() !== '');
-    if (quotes.length > 0) {
+    quotes = (closingMessages || "").split('\n').filter(q => q.trim() !== '');
+    if (quotes.length > 0 && quotesContainer) {
         quotesContainer.innerHTML = '';
         quotes.forEach((q, index) => {
             const quoteEl = document.createElement('div');
@@ -125,45 +131,62 @@ function populateContent() {
     }
     
     // Special Gift
-    document.getElementById('specialGiftMessage').textContent = specialGiftMessage;
+    const specialGiftMessageEl = document.getElementById('specialGiftMessage');
+    if (specialGiftMessageEl) {
+        specialGiftMessageEl.textContent = specialGiftMessage;
+    }
 
     // Friends Messages
     const friendsGrid = document.getElementById('friendsGrid');
     const friendsSection = document.getElementById('friendsSection');
-    if (friendsMessages && friendsMessages.length > 0) {
-        friendsGrid.innerHTML = ''; // Clear placeholder
-        friendsMessages.forEach(friend => {
-            const card = document.createElement('div');
-            card.className = 'friend-card';
-            const nameEl = document.createElement('div');
-            nameEl.className = 'friend-name';
-            nameEl.textContent = friend.name;
-            const msgEl = document.createElement('div');
-            msgEl.className = 'friend-message';
-            msgEl.textContent = `"${friend.message}"`;
-            card.appendChild(nameEl);
-            card.appendChild(msgEl);
-            friendsGrid.appendChild(card);
-        });
-        friendsSection.style.display = 'block';
-    } else {
-        friendsSection.style.display = 'none'; // Hide section if no friends
+    if (friendsSection) {
+        if (friendsMessages && friendsMessages.length > 0 && friendsGrid) {
+            friendsGrid.innerHTML = ''; // Clear placeholder
+            friendsMessages.forEach(friend => {
+                const card = document.createElement('div');
+                card.className = 'friend-card';
+                const nameEl = document.createElement('div');
+                nameEl.className = 'friend-name';
+                nameEl.textContent = friend.name;
+                const msgEl = document.createElement('div');
+                msgEl.className = 'friend-message';
+                msgEl.textContent = `"${friend.message}"`;
+                card.appendChild(nameEl);
+                card.appendChild(msgEl);
+                friendsGrid.appendChild(card);
+            });
+            friendsSection.style.display = 'block';
+        } else {
+            friendsSection.style.display = 'none'; // Hide section if no friends
+        }
     }
 
+
     // Closing & Secret Message
-    document.getElementById('closingTitle').textContent = `${endMessage}!`;
-    document.getElementById('closingMessage').textContent = `A special wish from ${fromName} 💖`;
+    const closingTitleEl = document.getElementById('closingTitle');
+    if (closingTitleEl) {
+        closingTitleEl.textContent = `${endMessage}!`;
+    }
+    const closingMessageEl = document.getElementById('closingMessage');
+    if (closingMessageEl) {
+        closingMessageEl.textContent = `A special wish from ${fromName} 💖`;
+    }
     const secretMessageContainer = document.getElementById('secretMessageContainer');
     const secretMessageText = document.getElementById('secretMessageText');
-    if (secretMessage) {
-        secretMessageText.textContent = secretMessage;
-        secretMessageContainer.style.display = 'block';
-    } else {
-        secretMessageContainer.style.display = 'none';
+    if (secretMessageContainer && secretMessageText) {
+        if (secretMessage) {
+            secretMessageText.textContent = secretMessage;
+            secretMessageContainer.style.display = 'block';
+        } else {
+            secretMessageContainer.style.display = 'none';
+        }
     }
 
     // Keepsake Button
-    document.getElementById('downloadBtn').textContent = `💾 ${saveKeepsakeMessage}`;
+    const downloadBtnEl = document.getElementById('downloadBtn');
+    if (downloadBtnEl) {
+        downloadBtnEl.textContent = `💾 ${saveKeepsakeMessage}`;
+    }
 }
 
 function updateSEOTags(toName, fromName) {
@@ -202,7 +225,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function setupOpeningAnimation() {
     const giftContainer = document.getElementById('giftContainer');
-    giftContainer.addEventListener('click', openGift, { once: true });
+    if (giftContainer) {
+        giftContainer.addEventListener('click', openGift, { once: true });
+    }
 }
 
 function openGift() {
@@ -211,18 +236,18 @@ function openGift() {
     const loader = document.getElementById('loader');
     const mainContent = document.getElementById('mainContent');
 
-    giftContainer.classList.add('opening');
+    if (giftContainer) giftContainer.classList.add('opening');
     triggerConfetti();
 
     setTimeout(() => {
-        cakeContainer.classList.add('reveal');
+        if (cakeContainer) cakeContainer.classList.add('reveal');
     }, 600);
 
     setTimeout(() => {
-        loader.style.opacity = '0';
+        if (loader) loader.style.opacity = '0';
         setTimeout(() => {
-            loader.classList.add('hidden');
-            mainContent.classList.add('visible');
+            if (loader) loader.classList.add('hidden');
+            if (mainContent) mainContent.classList.add('visible');
             const typedElement = document.getElementById('typedMessage');
             const cursor = document.getElementById('cursor');
             startTypingAnimation(wishData.message, typedElement, cursor);
@@ -231,6 +256,7 @@ function openGift() {
 }
 
 function startTypingAnimation(text, element, cursor) {
+    if (!text || !element || !cursor) return;
     let index = 0;
     function typeCharacter() {
         if (index < text.length) {
@@ -256,6 +282,7 @@ function startQuoteRotation() {
 
 function createFloatingElements() {
     const container = document.getElementById('floatingElements');
+    if (!container) return;
     const balloons = ['🎈', '🎂', '🎁', '🌟', '✨', '🎉', '💝', '🎊'];
     for (let i = 0; i < 15; i++) {
         const balloon = document.createElement('div');
@@ -271,6 +298,7 @@ function createFloatingElements() {
 
 function initConfetti() {
     const canvas = document.getElementById('confetti-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     function resizeCanvas() {
         canvas.width = window.innerWidth;
@@ -325,38 +353,47 @@ function triggerConfetti() {
 }
 
 function setupEventListeners() {
-    document.getElementById('giftCard').addEventListener('click', function() {
-        this.classList.toggle('flipped');
-        triggerConfetti();
-    });
+    const giftCard = document.getElementById('giftCard');
+    if (giftCard) {
+        giftCard.addEventListener('click', function() {
+            this.classList.toggle('flipped');
+            triggerConfetti();
+        });
+    }
     
-    document.getElementById('replayBtn').addEventListener('click', () => location.reload());
+    const replayBtn = document.getElementById('replayBtn');
+    if (replayBtn) {
+        replayBtn.addEventListener('click', () => location.reload());
+    }
     
-    document.getElementById('downloadBtn').addEventListener('click', function() {
-        const { toName, saveKeepsakeMessage } = wishData;
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = 800;
-        canvas.height = 600;
-        const gradient = ctx.createLinearGradient(0, 0, 800, 600);
-        gradient.addColorStop(0, '#FFF8DC');
-        gradient.addColorStop(0.5, '#FFE4E6');
-        gradient.addColorStop(1, '#E6E6FA');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, 800, 600);
-        ctx.fillStyle = '#FFD700';
-        ctx.font = 'bold 48px Dancing Script, cursive';
-        ctx.textAlign = 'center';
-        ctx.fillText(`Happy Birthday, ${toName}!`, 400, 200);
-        ctx.fillStyle = '#666';
-        ctx.font = '24px Poppins, sans-serif';
-        ctx.fillText(saveKeepsakeMessage || 'Wishing you joy, love, and happiness', 400, 300);
-        ctx.fillText('on your special day!', 400, 340);
-        const link = document.createElement('a');
-        link.download = `birthday-keepsake-for-${toName}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-    });
+    const downloadBtn = document.getElementById('downloadBtn');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', function() {
+            const { toName, saveKeepsakeMessage } = wishData;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 800;
+            canvas.height = 600;
+            const gradient = ctx.createLinearGradient(0, 0, 800, 600);
+            gradient.addColorStop(0, '#FFF8DC');
+            gradient.addColorStop(0.5, '#FFE4E6');
+            gradient.addColorStop(1, '#E6E6FA');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 800, 600);
+            ctx.fillStyle = '#FFD700';
+            ctx.font = 'bold 48px Dancing Script, cursive';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Happy Birthday, ${toName}!`, 400, 200);
+            ctx.fillStyle = '#666';
+            ctx.font = '24px Poppins, sans-serif';
+            ctx.fillText(saveKeepsakeMessage || 'Wishing you joy, love, and happiness', 400, 300);
+            ctx.fillText('on your special day!', 400, 340);
+            const link = document.createElement('a');
+            link.download = `birthday-keepsake-for-${toName}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    }
 }
 
 function setupIntersectionObserver() {
