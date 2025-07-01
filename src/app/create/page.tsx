@@ -78,10 +78,6 @@ const formSchema = z.object({
   saveKeepsakeMessage: z.string().optional(),
 });
 
-const defaultClosingMessages = "Wishing you all the best!\nMay all your dreams come true!\nMay your whole life be healthy and peaceful";
-const defaultSecretMessage = "Here's to another amazing year! 🤫";
-
-
 function CreateWishForm() {
   const auth = useRequireAuth();
   const { toast } = useToast();
@@ -223,7 +219,10 @@ function CreateWishForm() {
             if (field === 'profilePhoto') {
                 form.setValue('profilePhoto', base64, { shouldValidate: true });
             } else if (field === 'beautifulMemories' && index !== undefined) {
-                // This logic is for replacing an existing memory, which we don't need if we just append
+                 const currentMemories = form.getValues('beautifulMemories') || [];
+                 const updatedMemories = [...currentMemories];
+                 updatedMemories[index] = { src: base64 };
+                 form.setValue('beautifulMemories', updatedMemories, { shouldValidate: true });
             } else if (field === 'beautifulMemories') {
                 appendMemory({ src: base64 });
             }
@@ -253,7 +252,7 @@ function CreateWishForm() {
 
             // Store large data separately
             const additionalData = { 
-                beautifulMemories: values.beautifulMemories?.map(mem => mem.src), 
+                beautifulMemories: values.beautifulMemories,
                 friendsMessages 
             };
             localStorage.setItem(`wish_data_${fullWishData.id}`, JSON.stringify(additionalData));
@@ -410,18 +409,11 @@ function CreateWishForm() {
   }
 
   return (
-    <main className={cn(
-        "flex min-h-screen flex-col items-center p-4 font-sans",
-        isPremium ? 'bg-gradient-to-b from-[#0c0c2c] to-[#1d1d4e] text-white' : 
-        isCelestial ? 'bg-gradient-to-br from-indigo-100 via-rose-100 to-amber-100 text-gray-800' :
-        'bg-gradient-to-br from-gray-900 via-slate-900 to-black text-white'
-    )}>
-        {(isPremium || template === 'night-sky') && (
-            <div className="absolute inset-0 z-0 opacity-30" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
-        )}
-      <div className="w-full max-w-md relative z-10">
+    <main className="flex min-h-screen flex-col items-center bg-background p-4 font-sans text-foreground">
+        <div className="absolute inset-0 z-0 opacity-10 dark:opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+      <div className="w-full max-w-md relative z-10 pb-24">
         <div className="relative mb-8 flex items-center py-4">
-          <Link href="/templates" className={cn("absolute left-0 flex items-center transition-colors", isCelestial ? "text-gray-600 hover:text-black" : "text-gray-400 hover:text-white")}>
+          <Link href="/templates" className="absolute left-0 flex items-center text-muted-foreground transition-colors hover:text-foreground">
             <ChevronLeft className="h-5 w-5" />
             <span className="ml-1">Back</span>
           </Link>
@@ -434,16 +426,12 @@ function CreateWishForm() {
                 variant="outline"
                 onClick={handleGenerateAllContent}
                 disabled={isGenerating}
-                className={cn(
-                    "w-full rounded-full py-5 text-base font-semibold transition-all group",
-                    isPremium || !isCelestial ? "bg-white/10 border-white/20 hover:bg-white/20 text-white" :
-                    "bg-white/60 border-rose-200 text-rose-600 hover:bg-white/80"
-                )}
+                className="w-full rounded-full py-5 text-base font-semibold transition-all group border-primary/30 text-primary hover:bg-primary/10 bg-primary/5"
             >
                 {isGenerating ? (
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 ) : (
-                    <Sparkles className="mr-2 h-5 w-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-yellow-300" />
+                    <Sparkles className="mr-2 h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
                 )}
                 Auto-fill with AI Magic
             </Button>
@@ -456,13 +444,9 @@ function CreateWishForm() {
               name="toName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className={cn(isCelestial && 'text-gray-700')}>Birthday Person's Name</FormLabel>
+                  <FormLabel>Birthday Person's Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Jane Doe" {...field} className={cn(
-                        "rounded-full",
-                        isPremium || !isCelestial ? "bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" : 
-                        "bg-white/60 border-rose-200 text-gray-800 placeholder:text-gray-500/80 focus:border-rose-400 focus:ring-rose-400"
-                    )} />
+                    <Input placeholder="e.g., Jane Doe" {...field} className="rounded-full" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -473,13 +457,9 @@ function CreateWishForm() {
               name="fromName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className={cn(isCelestial && 'text-gray-700')}>Your Name</FormLabel>
+                  <FormLabel>Your Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., John Smith" {...field} className={cn(
-                        "rounded-full",
-                        isPremium || !isCelestial ? "bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" : 
-                        "bg-white/60 border-rose-200 text-gray-800 placeholder:text-gray-500/80 focus:border-rose-400 focus:ring-rose-400"
-                    )} />
+                    <Input placeholder="e.g., John Smith" {...field} className="rounded-full" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -491,14 +471,10 @@ function CreateWishForm() {
               render={({ field }) => (
                 <FormItem>
                    <div className="flex items-center justify-between">
-                    <FormLabel className={cn(isCelestial && 'text-gray-700')}>Your Personal Message</FormLabel>
+                    <FormLabel>Your Personal Message</FormLabel>
                   </div>
                   <FormControl>
-                    <Textarea placeholder="Write your heartfelt birthday message here..." className={cn(
-                        "resize-none rounded-2xl min-h-[120px]",
-                        isPremium || !isCelestial ? "bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" : 
-                        "bg-white/60 border-rose-200 text-gray-800 placeholder:text-gray-500/80 focus:border-rose-400 focus:ring-rose-400"
-                    )} {...field} />
+                    <Textarea placeholder="Write your heartfelt birthday message here..." className="resize-none rounded-2xl min-h-[120px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -512,16 +488,12 @@ function CreateWishForm() {
                   name="closingMessages"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={cn(isCelestial && 'text-gray-700')}>Closing Messages (one per line)</FormLabel>
+                      <FormLabel>Closing Messages (one per line)</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder={"Wishing you all the best!\nMay all your dreams come true!"}
                           {...field}
-                          className={cn(
-                              "resize-none rounded-2xl min-h-[100px]",
-                              isPremium || !isCelestial ? "bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" : 
-                              "bg-white/60 border-rose-200 text-gray-800 placeholder:text-gray-500/80 focus:border-rose-400 focus:ring-rose-400"
-                          )}
+                          className="resize-none rounded-2xl min-h-[100px]"
                         />
                       </FormControl>
                       <FormMessage />
@@ -533,16 +505,12 @@ function CreateWishForm() {
                   name="secretMessage"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={cn(isCelestial && 'text-gray-700')}>Final Secret Message</FormLabel>
+                      <FormLabel>Final Secret Message</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="A little secret just for you..."
                           {...field}
-                          className={cn(
-                              "rounded-full",
-                              isPremium || !isCelestial ? "bg-black/20 border-white/20 placeholder:text-gray-400/80 focus:border-primary/50 focus:ring-primary/50" : 
-                              "bg-white/60 border-rose-200 text-gray-800 placeholder:text-gray-500/80 focus:border-rose-400 focus:ring-rose-400"
-                          )}
+                          className="rounded-full"
                         />
                       </FormControl>
                       <FormMessage />
@@ -562,8 +530,8 @@ function CreateWishForm() {
                                 {field.value ? (
                                     <Image src={field.value} alt="Profile preview" width={64} height={64} className="rounded-full w-16 h-16 object-cover" />
                                 ) : (
-                                    <div className="w-16 h-16 rounded-full bg-white/60 flex items-center justify-center">
-                                        <ImageIcon className="w-8 h-8 text-gray-500" />
+                                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                                        <ImageIcon className="w-8 h-8 text-muted-foreground" />
                                     </div>
                                 )}
                                 <Input type="file" accept="image/*" className='flex-1' onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'profilePhoto')} />
@@ -573,9 +541,9 @@ function CreateWishForm() {
                     </FormItem>
                 )} />
 
-                <Card className="bg-white/60 border-rose-200">
+                <Card>
                     <CardHeader>
-                        <CardTitle className="text-lg text-gray-800 flex justify-between items-center">
+                        <CardTitle className="text-lg flex justify-between items-center">
                             Beautiful Memories
                              <Button type='button' size="sm" onClick={() => {
                                 const input = document.createElement('input');
@@ -595,19 +563,19 @@ function CreateWishForm() {
                         {memoryFields.map((field, index) => (
                              <div key={field.id} className="flex items-center gap-2">
                                 <Image src={field.src} alt={`Memory ${index + 1}`} width={40} height={40} className="w-10 h-10 rounded-md object-cover" />
-                                <span className='text-sm text-gray-700 truncate flex-1'>Memory #{index+1}</span>
+                                <span className='text-sm text-muted-foreground truncate flex-1'>Memory #{index+1}</span>
                                 <Button type="button" variant="ghost" size="icon" onClick={() => removeMemory(index)}>
                                     <Trash2 className="h-4 w-4 text-destructive" />
                                 </Button>
                             </div>
                         ))}
-                         {memoryFields.length === 0 && <p className="text-sm text-center text-gray-500 py-4">No memories added yet.</p>}
+                         {memoryFields.length === 0 && <p className="text-sm text-center text-muted-foreground py-4">No memories added yet.</p>}
                     </CardContent>
                 </Card>
                 
-                <Card className="bg-white/60 border-rose-200">
+                <Card>
                     <CardHeader>
-                        <CardTitle className="text-lg text-gray-800 flex justify-between items-center">
+                        <CardTitle className="text-lg flex justify-between items-center">
                             Messages from Friends
                              <Button type='button' size="sm" onClick={() => appendFriend({ name: '', message: '' })}>
                                 <Plus className='mr-2 h-4 w-4' /> Add Friend
@@ -616,7 +584,7 @@ function CreateWishForm() {
                     </CardHeader>
                     <CardContent className='space-y-4'>
                         {friendFields.map((field, index) => (
-                             <div key={field.id} className="flex flex-col gap-2 p-3 rounded-lg bg-white/50 relative">
+                             <div key={field.id} className="flex flex-col gap-2 p-3 rounded-lg bg-muted/50 relative border">
                                 <FormField control={form.control} name={`friendsMessages.${index}.name`} render={({ field }) => (
                                     <FormItem><FormControl><Input placeholder="Friend's Name" {...field} /></FormControl><FormMessage /></FormItem>
                                 )}/>
@@ -628,7 +596,7 @@ function CreateWishForm() {
                                 </Button>
                             </div>
                         ))}
-                         {friendFields.length === 0 && <p className="text-sm text-center text-gray-500 py-4">No friend messages added.</p>}
+                         {friendFields.length === 0 && <p className="text-sm text-center text-muted-foreground py-4">No friend messages added.</p>}
                     </CardContent>
                 </Card>
                 
@@ -642,57 +610,53 @@ function CreateWishForm() {
             )}
             
             <div className="pt-4">
-              <Button type="submit" disabled={isSubmitting || isGenerating} className={cn(
-                  "w-full rounded-full py-6 text-lg font-semibold shadow-lg transition-opacity hover:opacity-90",
-                  isCelestial ? "bg-gradient-to-r from-rose-400 to-orange-300 text-white shadow-rose-500/20" :
-                  "bg-primary text-primary-foreground shadow-primary/20"
-              )}>
+              <Button type="submit" disabled={isSubmitting || isGenerating} className="w-full rounded-full py-6 text-lg font-semibold shadow-lg shadow-primary/20 transition-opacity hover:opacity-90">
                 {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
                 Generate CandleWeb
               </Button>
-               <p className={cn("mt-4 text-center text-sm", isCelestial ? "text-gray-600" : "text-gray-400")}>45.8k CandleWebs created</p>
+               <p className="mt-4 text-center text-sm text-muted-foreground">45.8k CandleWebs created</p>
             </div>
           </form>
         </Form>
       </div>
       
       {showSharePage && (
-        <div className="fixed inset-0 z-50 bg-gradient-to-b from-[#1a113c] to-[#0c0c2e] text-white overflow-y-auto font-sans">
-            <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
+        <div className="fixed inset-0 z-50 bg-background text-foreground overflow-y-auto font-sans">
+            <div className="absolute inset-0 z-0 opacity-10 dark:opacity-20" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} data-ai-hint="twinkling stars"></div>
             <div className="relative z-10 mx-auto max-w-md p-4 text-center h-full flex flex-col justify-center">
             
-            <PartyPopper className="mx-auto h-12 w-12 text-purple-400 mb-4" />
-            <h1 className="text-4xl font-bold text-amber-300 mb-2">Your Wish Page is Ready!</h1>
-            <p className="text-white/70 mb-8">Your personalized birthday wish page is now live and ready to be shared.</p>
+            <PartyPopper className="mx-auto h-12 w-12 text-primary mb-4" />
+            <h1 className="text-4xl font-bold text-primary mb-2">Your Wish Page is Ready!</h1>
+            <p className="text-muted-foreground mb-8">Your personalized birthday wish page is now live and ready to be shared.</p>
 
             <div className="text-left mb-6">
-                <label className="font-semibold text-amber-300 mb-2 block">Webpage Link</label>
-                <div className="flex items-center space-x-2 bg-black/30 rounded-lg p-3 border border-white/20">
-                <input value={fullUrl} readOnly className="bg-transparent w-full text-white outline-none" />
-                <button onClick={handleCopyToClipboard}><Copy className="h-5 w-5 text-purple-400 hover:text-purple-300" /></button>
+                <label className="font-semibold text-primary mb-2 block">Webpage Link</label>
+                <div className="flex items-center space-x-2 bg-muted rounded-lg p-3 border">
+                <input value={fullUrl} readOnly className="bg-transparent w-full text-foreground outline-none" />
+                <button onClick={handleCopyToClipboard}><Copy className="h-5 w-5 text-primary hover:text-primary/80" /></button>
                 </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-8">
-                <button onClick={() => setIsQrDialogOpen(true)} className="flex items-center justify-center gap-2 bg-black/30 rounded-lg p-3 border border-white/20 hover:bg-black/50 transition-colors">
-                    <QrCode className="h-5 w-5 text-amber-300" />
-                    <span className="text-amber-300 font-semibold">QR Code</span>
+                <button onClick={() => setIsQrDialogOpen(true)} className="flex items-center justify-center gap-2 bg-muted rounded-lg p-3 border hover:bg-accent transition-colors">
+                    <QrCode className="h-5 w-5 text-primary" />
+                    <span className="text-primary font-semibold">QR Code</span>
                 </button>
-                <button onClick={handleShare} className="flex items-center justify-center gap-2 bg-black/30 rounded-lg p-3 border border-white/20 hover:bg-black/50 transition-colors">
-                    <Share2 className="h-5 w-5 text-amber-300" />
-                    <span className="text-amber-300 font-semibold">Share</span>
+                <button onClick={handleShare} className="flex items-center justify-center gap-2 bg-muted rounded-lg p-3 border hover:bg-accent transition-colors">
+                    <Share2 className="h-5 w-5 text-primary" />
+                    <span className="text-primary font-semibold">Share</span>
                 </button>
             </div>
 
             <div className="text-left mb-4">
-                <label className="font-semibold text-amber-300 mb-2 block">Schedule Send</label>
+                <label className="font-semibold text-primary mb-2 block">Schedule Send</label>
                  <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
                     <Popover>
                         <PopoverTrigger asChild>
                             <Button
                                 variant={"outline"}
                                 className={cn(
-                                    "w-full justify-start text-left font-normal bg-black/30 rounded-lg p-3 border border-white/20 hover:bg-black/50 text-white h-12",
+                                    "w-full justify-start text-left font-normal h-12",
                                     !scheduleDate && "text-muted-foreground"
                                 )}
                             >
@@ -700,7 +664,7 @@ function CreateWishForm() {
                                 {scheduleDate ? format(scheduleDate, "PPP") : <span>Pick a date</span>}
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 dark bg-black/80 backdrop-blur-md border-purple-400/50">
+                        <PopoverContent className="w-auto p-0">
                             <Calendar
                                 mode="single"
                                 selected={scheduleDate}
@@ -713,18 +677,17 @@ function CreateWishForm() {
                         type="time"
                         value={scheduleTime}
                         onChange={(e) => setScheduleTime(e.target.value)}
-                        className="bg-black/30 rounded-lg border border-white/20 text-white h-12"
-                        style={{ colorScheme: 'dark' }}
+                        className="h-12"
                     />
                 </div>
             </div>
             
-            <Button onClick={handleSchedule} disabled={isScheduling} className="w-full rounded-full py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-base mb-8 shadow-lg shadow-purple-500/20 hover:opacity-90 transition-opacity">
+            <Button onClick={handleSchedule} disabled={isScheduling} className="w-full rounded-full py-3 bg-primary text-primary-foreground font-bold text-base mb-8 shadow-lg shadow-primary/20 hover:opacity-90 transition-opacity">
                  {isScheduling ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <SendHorizonal className="mr-2 h-5 w-5" />}
                 Schedule Wish
             </Button>
 
-            <Button variant="ghost" onClick={() => router.push('/')} className="text-white/70 hover:text-white">
+            <Button variant="ghost" onClick={() => router.push('/')} className="text-muted-foreground hover:text-foreground">
                 Back to Dashboard
             </Button>
             </div>
@@ -732,10 +695,10 @@ function CreateWishForm() {
       )}
 
       <Dialog open={isQrDialogOpen} onOpenChange={setIsQrDialogOpen}>
-        <DialogContent className="dark bg-[#1a113c] border-purple-400/50 text-white">
+        <DialogContent>
             <DialogHeader>
-                <DialogTitle className="text-amber-300">Scan QR Code</DialogTitle>
-                <DialogDescription className="text-white/70">
+                <DialogTitle>Scan QR Code</DialogTitle>
+                <DialogDescription>
                     Scan this with a phone to open the wish page.
                 </DialogDescription>
             </DialogHeader>
@@ -751,7 +714,7 @@ function CreateWishForm() {
 export default function CreateWishPage() {
     return (
         <Suspense fallback={
-            <div className="flex min-h-screen w-full items-center justify-center bg-black">
+            <div className="flex min-h-screen w-full items-center justify-center bg-background">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
         }>
@@ -759,3 +722,4 @@ export default function CreateWishPage() {
         </Suspense>
     );
 }
+ 
