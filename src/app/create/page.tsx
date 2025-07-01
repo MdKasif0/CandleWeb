@@ -50,6 +50,10 @@ const friendMessageSchema = z.object({
     message: z.string().min(1, 'Message is required.'),
 });
 
+const memorySchema = z.object({
+  src: z.string(),
+});
+
 const formSchema = z.object({
   toName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   fromName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -68,7 +72,7 @@ const formSchema = z.object({
 
   // Celestial Wishes Fields
   profilePhoto: z.string().optional(),
-  beautifulMemories: z.array(z.string()).optional(),
+  beautifulMemories: z.array(memorySchema).optional(),
   specialGiftMessage: z.string().optional(),
   friendsMessages: z.array(friendMessageSchema).optional(),
   saveKeepsakeMessage: z.string().optional(),
@@ -221,7 +225,7 @@ function CreateWishForm() {
             } else if (field === 'beautifulMemories' && index !== undefined) {
                 // This logic is for replacing an existing memory, which we don't need if we just append
             } else if (field === 'beautifulMemories') {
-                appendMemory(base64);
+                appendMemory({ src: base64 });
             }
         };
         reader.onerror = (error) => {
@@ -248,7 +252,10 @@ function CreateWishForm() {
             localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
 
             // Store large data separately
-            const additionalData = { beautifulMemories, friendsMessages };
+            const additionalData = { 
+                beautifulMemories: values.beautifulMemories?.map(mem => mem.src), 
+                friendsMessages 
+            };
             localStorage.setItem(`wish_data_${fullWishData.id}`, JSON.stringify(additionalData));
 
         } catch (error) {
@@ -587,7 +594,7 @@ function CreateWishForm() {
                     <CardContent className='space-y-2'>
                         {memoryFields.map((field, index) => (
                              <div key={field.id} className="flex items-center gap-2">
-                                <Image src={field.value} alt={`Memory ${index + 1}`} width={40} height={40} className="w-10 h-10 rounded-md object-cover" />
+                                <Image src={field.src} alt={`Memory ${index + 1}`} width={40} height={40} className="w-10 h-10 rounded-md object-cover" />
                                 <span className='text-sm text-gray-700 truncate flex-1'>Memory #{index+1}</span>
                                 <Button type="button" variant="ghost" size="icon" onClick={() => removeMemory(index)}>
                                     <Trash2 className="h-4 w-4 text-destructive" />
