@@ -17,7 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Loader2, Cake } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useRequireAuth } from '@/hooks/use-auth';
@@ -57,6 +57,25 @@ const popularTemplates = [
         dataAiHint: 'celestial gift'
     },
 ];
+
+const CupcakeIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" width="48" height="48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        {/* Sparkles */}
+        <path d="M15.5 4.5L15.8536 5.14645L16.5 5.5L15.8536 5.85355L15.5 6.5L15.1464 5.85355L14.5 5.5L15.1464 5.14645L15.5 4.5Z" fill="#F472B6"/>
+        <path d="M8 6L8.35355 6.64645L9 7L8.35355 7.35355L8 8L7.64645 7.35355L7 7L7.64645 6.64645L8 6Z" fill="#F472B6"/>
+        {/* Flame */}
+        <path d="M12.35 5.08a.5.5 0 0 0-.7 0C11.45 5.28 11.6 5.6 11.85 5.94c.26.34.7.78.7.78s1.08-1.04 1.08-1.72c0-.44-.36-.8-.8-.8-.32 0-.6.18-.88.4Z" fill="white"/>
+        {/* Candle */}
+        <rect x="11.25" y="7" width="1.5" height="3" rx="0.75" fill="#F9A8D4"/>
+        {/* Frosting */}
+        <path d="M18.5 10C18.5 10 19.5 11 19.5 13C19.5 15 18 16 16.5 16C16.5 16 16.5 18 14.5 18H9.5C7.5 18 7.5 16 7.5 16C6 16 4.5 15 4.5 13C4.5 11 5.5 10 5.5 10H18.5Z" fill="#F472B6"/>
+        {/* Base */}
+        <path d="M7 15.5H17L16 20H8L7 15.5Z" fill="#D946EF"/>
+        {/* Eyes */}
+        <circle cx="9.5" cy="14" r="0.75" fill="#4C1D95"/>
+        <circle cx="14.5" cy="14" r="0.75" fill="#4C1D95"/>
+    </svg>
+);
 
 export default function DashboardPage() {
     const auth = useRequireAuth();
@@ -104,16 +123,12 @@ export default function DashboardPage() {
 
                 {/* Action Card */}
                 <section className="mb-10">
-                    <Link href="/templates" className="block">
-                        <div className="rounded-2xl bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 p-0.5 shadow-lg shadow-purple-500/20 hover:shadow-xl hover:shadow-pink-500/20 transition-all duration-300">
-                            <div className="bg-[#191428] rounded-[14px] p-4 flex items-center gap-4">
-                                <div className="bg-gradient-to-br from-purple-500 to-pink-500 p-2 rounded-lg">
-                                    <Cake className="w-8 h-8 text-white" />
-                                </div>
-                                <div className="flex-grow">
-                                    <p className="font-bold text-white text-lg">Create New Wish</p>
-                                    <p className="text-sm text-white/70">Start a New Wish Page</p>
-                                </div>
+                    <Link href="/templates" className="block group">
+                        <div className="rounded-2xl bg-gradient-to-r from-fuchsia-800 via-purple-900 to-indigo-950 p-4 flex items-center gap-4 border border-fuchsia-500/50 shadow-[0_0_20px_rgba(192,132,252,0.2)] transition-all duration-300 group-hover:border-fuchsia-400 group-hover:shadow-[0_0_30px_rgba(192,132,252,0.4)]">
+                            <CupcakeIcon className="w-12 h-12 flex-shrink-0" />
+                            <div className="flex-grow">
+                                <p className="font-bold text-neutral-100 text-lg">Create New Wish</p>
+                                <p className="text-sm text-neutral-300">Start a New Wish Page</p>
                             </div>
                         </div>
                     </Link>
