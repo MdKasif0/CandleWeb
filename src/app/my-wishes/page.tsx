@@ -199,28 +199,26 @@ export default function MyWishesPage() {
                             )})}
                         </div>
                     ) : (
-                         <Card className="bg-foreground/5 p-6 border-transparent text-center">
-                            <CardContent className="p-0 flex flex-col items-center gap-4">
-                                <h3 className="font-semibold text-white text-xl">No CandleWebs Built Yet</h3>
-                                <p className="text-sm text-muted-foreground">Get started by choosing a template and creating your first CandleWeb!</p>
-                                <Link href="/templates" className="block group w-full">
-                                    <div className="rounded-2xl bg-gradient-to-r from-purple-900 via-indigo-950 to-slate-950 p-4 flex items-center gap-4 border border-fuchsia-600 shadow-[0_0_20px_rgba(192,38,211,0.3)] transition-all duration-300 group-hover:border-fuchsia-500 group-hover:shadow-[0_0_30px_rgba(192,38,211,0.5)]">
-                                        <Image
-                                            src="/cup-cake.png"
-                                            alt="Create new wish icon"
-                                            width={48}
-                                            height={48}
-                                            className="flex-shrink-0"
-                                            data-ai-hint="cupcake celebration"
-                                        />
-                                        <div className="flex-grow text-left">
-                                            <p className="font-bold text-neutral-100 text-lg">Create a CandleWeb</p>
-                                            <p className="text-sm text-neutral-300">Choose a template to get started</p>
-                                        </div>
+                        <div className="text-center mt-10">
+                            <h3 className="font-semibold text-white text-xl">No CandleWebs Built Yet</h3>
+                            <p className="text-sm text-muted-foreground mb-6">Get started by creating your first CandleWeb!</p>
+                             <Link href="/templates" className="block group max-w-md mx-auto">
+                                <div className="rounded-2xl bg-gradient-to-r from-purple-900 via-indigo-950 to-slate-950 p-4 flex items-center gap-4 border border-fuchsia-600 shadow-[0_0_20px_rgba(192,38,211,0.3)] transition-all duration-300 group-hover:border-fuchsia-500 group-hover:shadow-[0_0_30px_rgba(192,38,211,0.5)]">
+                                    <Image
+                                        src="/cup-cake.png"
+                                        alt="Create new wish icon"
+                                        width={48}
+                                        height={48}
+                                        className="flex-shrink-0"
+                                        data-ai-hint="cupcake celebration"
+                                    />
+                                    <div className="flex-grow text-left">
+                                        <p className="font-bold text-neutral-100 text-lg">Create New Wish</p>
+                                        <p className="text-sm text-neutral-300">Start a New Wish Page</p>
                                     </div>
-                                </Link>
-                            </CardContent>
-                        </Card>
+                                </div>
+                            </Link>
+                        </div>
                     )}
                 </section>
             </div>
