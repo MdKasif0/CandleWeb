@@ -26,7 +26,9 @@ const GenerateWishContentOutputSchema = z.object({
   letsBlowCandlesTitle: z.string().describe("A short title for the candle blowing pop-up (e.g., \"Ready to make a wish?\")."),
   thanksForWatchingTitle: z.string().describe("A short title for the final pop-up (e.g., 'Thanks for watching!')."),
   didYouLikeItMessage: z.string().describe("A short question for the final pop-up asking for feedback (e.g., 'Hope you liked it!')."),
-  endMessage: z.string().describe("A very short message to signify the end (e.g., 'The End').")
+  endMessage: z.string().describe("A very short message to signify the end (e.g., 'The End')."),
+  specialGiftMessage: z.string().describe("A short, heartfelt message for the 'Special Gift' card. (e.g., 'May every moment of your special day be filled with the same joy and happiness you bring to others!')"),
+  saveKeepsakeMessage: z.string().describe("A short, instructional message for the 'Save Keepsake' button. (e.g., 'Save this memory forever.')")
 });
 export type GenerateWishContentOutput = z.infer<typeof GenerateWishContentOutputSchema>;
 
@@ -50,7 +52,9 @@ const generateWishContentPrompt = ai.definePrompt({
   6.  A short title for the candle blowing pop-up (e.g., "Ready to make a wish?").
   7.  A short title for the final pop-up (e.g., "Thanks for watching!").
   8.  A short question for the final pop-up asking for feedback (e.g., "Hope you liked it!").
-  9.  A very short message to signify the end (e.g., "The End").`,
+  9.  A very short message to signify the end (e.g., "The End").
+  10. A heartfelt message for the 'Special Gift' card, like 'May your day be as joyful as you make others'.
+  11. A short message for the 'Save Keepsake' button, like 'Save this memory forever.'`,
 });
 
 const generateWishContentFlow = ai.defineFlow(

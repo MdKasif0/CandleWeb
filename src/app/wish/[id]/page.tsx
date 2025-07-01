@@ -3,11 +3,12 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import type { Metadata } from 'next';
-import { useSearchParams, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import NightSkyTemplate from '@/app/templates/night-sky/NightSkyTemplate';
 import { Loader2 } from 'lucide-react';
 
 interface WishData {
+  id: string;
   toName: string;
   fromName: string;
   message: string;
@@ -20,6 +21,11 @@ interface WishData {
   thanksForWatchingTitle?: string;
   didYouLikeItMessage?: string;
   endMessage?: string;
+  profilePhoto?: string;
+  beautifulMemories?: string[];
+  specialGiftMessage?: string;
+  friendsMessages?: { name: string; message: string }[];
+  saveKeepsakeMessage?: string;
 }
 
 function WishDisplay() {
@@ -38,26 +44,10 @@ function WishDisplay() {
                     const additionalDataString = localStorage.getItem(`wish_data_${id}`);
                     const additionalData = additionalDataString ? JSON.parse(additionalDataString) : {};
                     
-                    const fullData: WishData = {
-                        toName: mainData.toName || 'Someone',
-                        fromName: mainData.fromName || 'A friend',
-                        message: mainData.message || 'Happy Birthday!',
-                        template: mainData.template || 'night-sky',
-                        closingMessages: additionalData.closingMessages || '',
-                        secretMessage: additionalData.secretMessage || '',
-                        blowCandlesInstruction: additionalData.blowCandlesInstruction || '',
-                        wishYouTheBestMessage: additionalData.wishYouTheBestMessage || '',
-                        letsBlowCandlesTitle: additionalData.letsBlowCandlesTitle || '',
-                        thanksForWatchingTitle: additionalData.thanksForWatchingTitle || '',
-                        didYouLikeItMessage: additionalData.didYouLikeItMessage || '',
-                        endMessage: additionalData.endMessage || '',
-                    };
+                    const fullData: WishData = { ...mainData, ...additionalData };
 
                     setWishData(fullData);
-
-                    // Update document title dynamically
                     document.title = `A Birthday Wish for ${fullData.toName}!`;
-
                 }
             } catch (error) {
                 console.error("Failed to load wish data", error);
@@ -79,40 +69,21 @@ function WishDisplay() {
       return <div>Template not found or data is missing.</div>;
     }
 
-    const props = { 
-        toName: wishData.toName,
-        fromName: wishData.fromName,
-        message: wishData.message
-    };
-    
-    const urlParams = new URLSearchParams({
-        toName: wishData.toName,
-        fromName: wishData.fromName,
-        message: wishData.message,
-        closingMessages: wishData.closingMessages || '',
-        secretMessage: wishData.secretMessage || '',
-        blowCandlesInstruction: wishData.blowCandlesInstruction || "'Blow the candles'",
-        wishYouTheBestMessage: wishData.wishYouTheBestMessage || "💝 Wish you the best 💝",
-        letsBlowCandlesTitle: wishData.letsBlowCandlesTitle || "Let's blow out the candles.",
-        thanksForWatchingTitle: wishData.thanksForWatchingTitle || "Thanks for watching!",
-        didYouLikeItMessage: wishData.didYouLikeItMessage || "Did you like it?",
-        endMessage: wishData.endMessage || "The End",
-    });
-
-    switch (wishData.template) {
-        case 'night-sky':
-            return <NightSkyTemplate {...props} />;
-        case 'premium-night-sky':
-        case 'celestial-wishes':
-             if (typeof window !== 'undefined') {
-                window.location.href = `/templates/${wishData.template}/index.html?${urlParams.toString()}`;
-            }
-            return null;
-        default:
-            return <NightSkyTemplate {...props} />;
+    if (wishData.template === 'night-sky') {
+        return <NightSkyTemplate toName={wishData.toName} fromName={wishData.fromName} message={wishData.message} />;
     }
-}
 
+    if (wishData.template === 'premium-night-sky' || wishData.template === 'celestial-wishes') {
+        if (typeof window !== 'undefined') {
+            // For premium templates, we pass the ID and let the template's JS fetch from localStorage
+            const url = `/templates/${wishData.template}/index.html?id=${wishData.id}`;
+            window.location.href = url;
+        }
+        return null; // Redirecting...
+    }
+
+    return <NightSkyTemplate toName={wishData.toName} fromName={wishData.fromName} message={wishData.message} />;
+}
 
 export default function WishPage() {
     return (

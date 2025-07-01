@@ -49,7 +49,7 @@
     <div class="main-content" id="mainContent">
         <!-- Hero Section -->
         <section class="hero" id="hero">
-            <h1 class="hero-title" id="heroTitle">Happy Birthday Sarah!</h1>
+            <h1 class="hero-title" id="heroTitle">Happy Birthday!</h1>
             <p class="hero-subtitle">Today is all about celebrating you! 🎂</p>
             <div class="profile-photo" id="profilePhoto"></div>
             <div class="scroll-indicator">↓</div>
@@ -66,13 +66,10 @@
         </section>
 
         <!-- Photo Gallery Section -->
-        <section class="section" id="gallery">
+        <section class="section" id="gallerySection">
             <h2 class="section-title">Beautiful Memories</h2>
-            <div class="gallery">
-                <div class="gallery-item">📸</div>
-                <div class="gallery-item">🌟</div>
-                <div class="gallery-item">💝</div>
-                <div class="gallery-item">🎭</div>
+            <div class="gallery" id="galleryContainer">
+                <!-- Images will be inserted here by JS -->
             </div>
         </section>
 
@@ -80,10 +77,7 @@
         <section class="section" id="quotes">
             <h2 class="section-title">Birthday Wishes</h2>
             <div class="quotes-container" id="quotesContainer">
-                <div class="quote active">"May your birthday be filled with sunshine, smiles, laughter, love, and cheer!" ✨</div>
-                <div class="quote">"Another year older, another year wiser, another year more fabulous!" 💫</div>
-                <div class="quote">"May this new year of your life be filled with joy, adventure, and endless possibilities!" 🌈</div>
-                <div class="quote">"Wishing you a day filled with happiness and a year filled with joy!" 🎈</div>
+                 <!-- Quotes will be inserted here by JS -->
             </div>
         </section>
 
@@ -100,8 +94,8 @@
                     </div>
                     <div class="card-back">
                         <div>
-                            <h3>Your Gift: A Day of Joy!</h3>
-                            <p>May every moment of your special day be filled with the same joy and happiness you bring to others!</p>
+                            <h3 id="specialGiftTitle">Your Gift: A Day of Joy!</h3>
+                            <p id="specialGiftMessage"></p>
                             <p>🎉 Happy Birthday! 🎂</p>
                         </div>
                     </div>
@@ -110,37 +104,26 @@
         </section>
 
         <!-- Friends Wishes Section -->
-        <section class="section" id="friends">
+        <section class="section" id="friendsSection">
             <h2 class="section-title">Messages from Friends</h2>
-            <div class="friends-grid">
-                <div class="friend-card">
-                    <div class="friend-name">Alex</div>
-                    <div class="friend-message">"Happy Birthday! Hope your day is as amazing as you are! 🎈"</div>
-                </div>
-                <div class="friend-card">
-                    <div class="friend-name">Jamie</div>
-                    <div class="friend-message">"Wishing you all the happiness in the world on your special day! 🌟"</div>
-                </div>
-                <div class="friend-card">
-                    <div class="friend-name">Taylor</div>
-                    <div class="friend-message">"Another year of awesome! Have the best birthday ever! 🎂"</div>
-                </div>
-                <div class="friend-card">
-                    <div class="friend-name">Morgan</div>
-                    <div class="friend-message">"Hope your birthday is filled with love, laughter, and cake! 🍰"</div>
-                </div>
+            <div class="friends-grid" id="friendsGrid">
+                <!-- Friend messages will be inserted here by JS -->
             </div>
         </section>
 
         <!-- Closing Section -->
         <section class="section" id="closing">
             <div class="message-card">
-                <h2 class="section-title">Wishing You the Best Year Ever!</h2>
-                <p class="typed-text" style="font-size: 1.3rem; color: #666;">
+                <h2 class="section-title" id="closingTitle">Wishing You the Best Year Ever!</h2>
+                <p class="typed-text" id="closingMessage" style="font-size: 1.3rem; color: #666;">
                     Thank you for being such an incredible person. May this new year of your life be filled with 
                     love, laughter, adventure, and all the beautiful moments that make life special. 
                     Here's to celebrating you today and always! 🥳✨
                 </p>
+                 <div id="secretMessageContainer" class="secret-message">
+                    <p><strong>P.S. A little secret...</strong></p>
+                    <p id="secretMessageText"></p>
+                </div>
             </div>
         </section>
     </div>

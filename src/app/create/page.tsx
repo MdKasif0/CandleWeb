@@ -2,7 +2,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,7 +26,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState, Suspense, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, Sparkles, Loader2, Copy, ArrowRight, PartyPopper, QrCode, Share2, Calendar as CalendarIcon, SendHorizonal } from 'lucide-react';
+import { ChevronLeft, Sparkles, Loader2, Copy, ArrowRight, PartyPopper, QrCode, Share2, Calendar as CalendarIcon, SendHorizonal, Plus, Trash2, Image as ImageIcon, MessageSquare } from 'lucide-react';
 import { generateWishContent, GenerateWishContentInput } from '@/ai/flows/generateWishContent';
 import { cn } from '@/lib/utils';
 import { useRequireAuth } from '@/hooks/use-auth';
@@ -34,6 +34,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import QRCode from 'qrcode.react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,11 +45,18 @@ declare global {
   }
 }
 
+const friendMessageSchema = z.object({
+    name: z.string().min(1, 'Name is required.'),
+    message: z.string().min(1, 'Message is required.'),
+});
+
 const formSchema = z.object({
   toName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   fromName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
   template: z.enum(['night-sky', 'premium-night-sky', 'celestial-wishes']),
+  
+  // Premium Fields
   closingMessages: z.string().optional(),
   secretMessage: z.string().optional(),
   blowCandlesInstruction: z.string().optional(),
@@ -56,6 +65,13 @@ const formSchema = z.object({
   thanksForWatchingTitle: z.string().optional(),
   didYouLikeItMessage: z.string().optional(),
   endMessage: z.string().optional(),
+
+  // Celestial Wishes Fields
+  profilePhoto: z.string().optional(),
+  beautifulMemories: z.array(z.string()).optional(),
+  specialGiftMessage: z.string().optional(),
+  friendsMessages: z.array(friendMessageSchema).optional(),
+  saveKeepsakeMessage: z.string().optional(),
 });
 
 const defaultClosingMessages = "Wishing you all the best!\nMay all your dreams come true!\nMay your whole life be healthy and peaceful";
@@ -94,21 +110,29 @@ function CreateWishForm() {
       thanksForWatchingTitle: '',
       didYouLikeItMessage: '',
       endMessage: '',
+      profilePhoto: '',
+      beautifulMemories: [],
+      specialGiftMessage: '',
+      friendsMessages: [],
+      saveKeepsakeMessage: '',
     },
   });
+
+    const { fields: memoryFields, append: appendMemory, remove: removeMemory } = useFieldArray({
+        control: form.control,
+        name: "beautifulMemories",
+    });
+
+    const { fields: friendFields, append: appendFriend, remove: removeFriend } = useFieldArray({
+        control: form.control,
+        name: "friendsMessages",
+    });
 
   useEffect(() => {
     const templateId = searchParams.get('template');
     if (templateId === 'night-sky' || templateId === 'premium-night-sky' || templateId === 'celestial-wishes') {
       form.setValue('template', templateId);
       setTemplate(templateId);
-      if (templateId === 'premium-night-sky' || templateId === 'celestial-wishes') {
-        form.setValue('closingMessages', defaultClosingMessages);
-        form.setValue('secretMessage', defaultSecretMessage);
-      } else {
-        form.setValue('closingMessages', '');
-        form.setValue('secretMessage', '');
-      }
     } else {
       form.setValue('template', 'night-sky');
       setTemplate('night-sky');
@@ -146,6 +170,12 @@ function CreateWishForm() {
         form.setValue('endMessage', result.endMessage, { shouldValidate: true });
       }
 
+      if (form.getValues('template') === 'celestial-wishes') {
+        form.setValue('specialGiftMessage', result.specialGiftMessage, { shouldValidate: true });
+        form.setValue('saveKeepsakeMessage', result.saveKeepsakeMessage, { shouldValidate: true });
+      }
+
+
       toast({
           title: "Content Generated!",
           description: "All fields have been filled with AI magic."
@@ -181,28 +211,36 @@ function CreateWishForm() {
     });
   };
 
+    const handleImageUpload = (file: File, field: 'profilePhoto' | 'beautifulMemories', index?: number) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            const base64 = reader.result as string;
+            if (field === 'profilePhoto') {
+                form.setValue('profilePhoto', base64, { shouldValidate: true });
+            } else if (field === 'beautifulMemories' && index !== undefined) {
+                // This logic is for replacing an existing memory, which we don't need if we just append
+            } else if (field === 'beautifulMemories') {
+                appendMemory(base64);
+            }
+        };
+        reader.onerror = (error) => {
+            console.error('Error converting file to base64', error);
+            toast({ variant: 'destructive', title: 'Image Upload Failed' });
+        };
+    };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
         const fullWishData = {
             id: `wish_${Date.now()}`,
             createdAt: new Date().toISOString(),
-            toName: values.toName,
-            fromName: values.fromName,
-            message: values.message,
-            template: values.template,
             status: 'Published',
-            closingMessages: values.closingMessages,
-            secretMessage: values.secretMessage,
-            blowCandlesInstruction: values.blowCandlesInstruction,
-            wishYouTheBestMessage: values.wishYouTheBestMessage,
-            letsBlowCandlesTitle: values.letsBlowCandlesTitle,
-            thanksForWatchingTitle: values.thanksForWatchingTitle,
-            didYouLikeItMessage: values.didYouLikeItMessage,
-            endMessage: values.endMessage,
+            ...values
         };
 
-        const { closingMessages, secretMessage, blowCandlesInstruction, wishYouTheBestMessage, letsBlowCandlesTitle, thanksForWatchingTitle, didYouLikeItMessage, endMessage, ...wishMetadata } = fullWishData;
+        const { beautifulMemories, friendsMessages, ...wishMetadata } = fullWishData;
 
         try {
             const existingWishes = JSON.parse(localStorage.getItem('userWishes') || '[]');
@@ -210,7 +248,7 @@ function CreateWishForm() {
             localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
 
             // Store large data separately
-            const additionalData = { closingMessages, secretMessage, blowCandlesInstruction, wishYouTheBestMessage, letsBlowCandlesTitle, thanksForWatchingTitle, didYouLikeItMessage, endMessage };
+            const additionalData = { beautifulMemories, friendsMessages };
             localStorage.setItem(`wish_data_${fullWishData.id}`, JSON.stringify(additionalData));
 
         } catch (error) {
@@ -460,7 +498,7 @@ function CreateWishForm() {
               )}
             />
 
-            {(template === 'premium-night-sky' || template === 'celestial-wishes') && (
+            {(isPremium || isCelestial) && (
               <>
                 <FormField
                   control={form.control}
@@ -505,6 +543,95 @@ function CreateWishForm() {
                   )}
                 />
               </>
+            )}
+
+             {isCelestial && (
+              <div className='space-y-6'>
+                <FormField control={form.control} name="profilePhoto" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Birthday Person's Photo</FormLabel>
+                        <FormControl>
+                            <div className="flex items-center gap-4">
+                                {field.value ? (
+                                    <Image src={field.value} alt="Profile preview" width={64} height={64} className="rounded-full w-16 h-16 object-cover" />
+                                ) : (
+                                    <div className="w-16 h-16 rounded-full bg-white/60 flex items-center justify-center">
+                                        <ImageIcon className="w-8 h-8 text-gray-500" />
+                                    </div>
+                                )}
+                                <Input type="file" accept="image/*" className='flex-1' onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'profilePhoto')} />
+                            </div>
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )} />
+
+                <Card className="bg-white/60 border-rose-200">
+                    <CardHeader>
+                        <CardTitle className="text-lg text-gray-800 flex justify-between items-center">
+                            Beautiful Memories
+                             <Button type='button' size="sm" onClick={() => {
+                                const input = document.createElement('input');
+                                input.type = 'file';
+                                input.accept = 'image/*';
+                                input.onchange = (e) => {
+                                    const file = (e.target as HTMLInputElement).files?.[0];
+                                    if(file) handleImageUpload(file, 'beautifulMemories');
+                                };
+                                input.click();
+                            }}>
+                                <Plus className='mr-2 h-4 w-4' /> Add Image
+                            </Button>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className='space-y-2'>
+                        {memoryFields.map((field, index) => (
+                             <div key={field.id} className="flex items-center gap-2">
+                                <Image src={field.value} alt={`Memory ${index + 1}`} width={40} height={40} className="w-10 h-10 rounded-md object-cover" />
+                                <span className='text-sm text-gray-700 truncate flex-1'>Memory #{index+1}</span>
+                                <Button type="button" variant="ghost" size="icon" onClick={() => removeMemory(index)}>
+                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                            </div>
+                        ))}
+                         {memoryFields.length === 0 && <p className="text-sm text-center text-gray-500 py-4">No memories added yet.</p>}
+                    </CardContent>
+                </Card>
+                
+                <Card className="bg-white/60 border-rose-200">
+                    <CardHeader>
+                        <CardTitle className="text-lg text-gray-800 flex justify-between items-center">
+                            Messages from Friends
+                             <Button type='button' size="sm" onClick={() => appendFriend({ name: '', message: '' })}>
+                                <Plus className='mr-2 h-4 w-4' /> Add Friend
+                            </Button>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className='space-y-4'>
+                        {friendFields.map((field, index) => (
+                             <div key={field.id} className="flex flex-col gap-2 p-3 rounded-lg bg-white/50 relative">
+                                <FormField control={form.control} name={`friendsMessages.${index}.name`} render={({ field }) => (
+                                    <FormItem><FormControl><Input placeholder="Friend's Name" {...field} /></FormControl><FormMessage /></FormItem>
+                                )}/>
+                                 <FormField control={form.control} name={`friendsMessages.${index}.message`} render={({ field }) => (
+                                    <FormItem><FormControl><Textarea placeholder="Friend's Message" {...field} className='min-h-[60px]' /></FormControl><FormMessage /></FormItem>
+                                )}/>
+                                 <Button type="button" variant="ghost" size="icon" className="absolute top-1 right-1" onClick={() => removeFriend(index)}>
+                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                            </div>
+                        ))}
+                         {friendFields.length === 0 && <p className="text-sm text-center text-gray-500 py-4">No friend messages added.</p>}
+                    </CardContent>
+                </Card>
+                
+                 <FormField control={form.control} name="specialGiftMessage" render={({ field }) => (
+                    <FormItem><FormLabel>Special Gift Message</FormLabel><FormControl><Textarea placeholder="Your special gift message..." {...field} /></FormControl><FormMessage /></FormItem>
+                 )} />
+                 <FormField control={form.control} name="saveKeepsakeMessage" render={({ field }) => (
+                    <FormItem><FormLabel>Save Keepsake Button Text</FormLabel><FormControl><Input placeholder="e.g. Save this memory" {...field} /></FormControl><FormMessage /></FormItem>
+                 )} />
+              </div>
             )}
             
             <div className="pt-4">

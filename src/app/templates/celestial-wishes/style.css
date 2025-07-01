@@ -298,6 +298,8 @@ body {
     box-shadow: 0 20px 60px var(--shadow), 0 0 40px var(--glow);
     animation: photoFloat 4s ease-in-out infinite;
     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="100" fill="%23FFE4E6"/><circle cx="70" cy="80" r="15" fill="%23FFD700"/><circle cx="130" cy="80" r="15" fill="%23FFD700"/><path d="M60 130 Q100 160 140 130" stroke="%23FFD700" stroke-width="5" fill="none"/></svg>') center/cover;
+    background-size: cover;
+    background-position: center;
 }
 
 @keyframes photoFloat {
@@ -404,6 +406,7 @@ body {
     color: #444;
     position: relative;
     z-index: 1;
+    min-height: 1.2em;
 }
 
 .cursor {
@@ -412,6 +415,7 @@ body {
     height: 1.2em;
     background: var(--gold);
     animation: blink 1s infinite;
+    vertical-align: bottom;
 }
 
 @keyframes blink {
@@ -422,7 +426,7 @@ body {
 /* Gallery */
 .gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
     margin-top: 40px;
 }
@@ -441,15 +445,24 @@ body {
     color: var(--gold);
 }
 
-.gallery-item:hover {
-    transform: translateY(-10px) scale(1.05);
-    box-shadow: 0 25px 60px var(--shadow);
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
 }
 
 /* Quotes Carousel */
 .quotes-container {
     position: relative;
-    height: 200px;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
     border-radius: 20px;
     background: rgba(255, 255, 255, 0.1);
@@ -504,6 +517,7 @@ body {
     backface-visibility: hidden;
     border-radius: 20px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -553,6 +567,14 @@ body {
 .friend-message {
     color: #666;
     line-height: 1.6;
+}
+
+/* Closing Section */
+.secret-message {
+    display: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--rose-gold);
 }
 
 /* Controls */
@@ -607,7 +629,7 @@ body {
     }
     
     .gallery {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: 1fr;
         gap: 20px;
     }
     
@@ -632,6 +654,13 @@ body {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
+@keyframes sparkleFloat {
+    0% { transform: translateY(0) scale(0); opacity: 0; }
+    50% { transform: translateY(-30px) scale(1); opacity: 1; }
+    100% { transform: translateY(-60px) scale(0); opacity: 0; }
+}
+
 
 .hidden {
     display: none !important;
