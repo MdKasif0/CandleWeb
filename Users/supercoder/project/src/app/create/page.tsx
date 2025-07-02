@@ -95,7 +95,8 @@ function CreateWishForm() {
   const [scheduleDate, setScheduleDate] = useState<Date>();
   const [scheduleTime, setScheduleTime] = useState('09:00');
   const [isQrDialogOpen, setIsQrDialogOpen] = useState(false);
-  const [uploading, setUploading] = useState<Record<string, boolean>>({});
+  const [isUploadingProfile, setIsUploadingProfile] = useState(false);
+  const [isUploadingMemory, setIsUploadingMemory] = useState(false);
 
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -214,11 +215,14 @@ function CreateWishForm() {
     });
   };
 
-  const handleImageUpload = async (file: File, field: 'profilePhoto' | 'beautifulMemories', index?: number) => {
+  const handleImageUpload = async (file: File, field: 'profilePhoto' | 'beautifulMemories') => {
     if (!file) return;
 
-    const uniqueId = field === 'profilePhoto' ? 'profilePhoto' : `memory-${index}`;
-    setUploading(prev => ({ ...prev, [uniqueId]: true }));
+    if (field === 'profilePhoto') {
+        setIsUploadingProfile(true);
+    } else {
+        setIsUploadingMemory(true);
+    }
 
     const formData = new FormData();
     formData.append('file', file);
@@ -238,11 +242,8 @@ function CreateWishForm() {
         
         if (field === 'profilePhoto') {
             form.setValue('profilePhoto', url, { shouldValidate: true });
-        } else if (field === 'beautifulMemories' && typeof index !== 'undefined') {
-            const currentMemories = form.getValues('beautifulMemories') || [];
-            const newMemories = [...currentMemories];
-            newMemories[index] = { src: url };
-            form.setValue('beautifulMemories', newMemories, { shouldValidate: true });
+        } else {
+            appendMemory({ src: url });
         }
         
         toast({ title: 'Image uploaded successfully!' });
@@ -254,7 +255,11 @@ function CreateWishForm() {
             description: error.message || 'Could not upload the image. Please try again.',
         });
     } finally {
-        setUploading(prev => ({ ...prev, [uniqueId]: false }));
+        if (field === 'profilePhoto') {
+            setIsUploadingProfile(false);
+        } else {
+            setIsUploadingMemory(false);
+        }
     }
   };
 
@@ -531,7 +536,7 @@ function CreateWishForm() {
                         <FormLabel>Birthday Person's Photo</FormLabel>
                         <FormControl>
                             <div className="flex items-center gap-4">
-                                {uploading['profilePhoto'] ? (
+                                {isUploadingProfile ? (
                                     <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
                                         <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
                                     </div>
@@ -547,7 +552,7 @@ function CreateWishForm() {
                                     accept="image/*" 
                                     className='flex-1' 
                                     onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'profilePhoto')} 
-                                    disabled={uploading['profilePhoto']}
+                                    disabled={isUploadingProfile}
                                 />
                             </div>
                         </FormControl>
@@ -559,38 +564,39 @@ function CreateWishForm() {
                     <CardHeader>
                         <CardTitle className="text-lg flex justify-between items-center">
                             Beautiful Memories
-                             <Button type='button' size="sm" onClick={() => appendMemory({ src: '' })}>
-                                <Plus className='mr-2 h-4 w-4' /> Add Memory
+                             <Button type='button' size="sm" onClick={() => {
+                                const input = document.createElement('input');
+                                input.type = 'file';
+                                input.accept = 'image/*';
+                                input.onchange = (e) => {
+                                    const file = (e.target as HTMLInputElement).files?.[0];
+                                    if(file) handleImageUpload(file, 'beautifulMemories');
+                                };
+                                input.click();
+                            }}
+                            disabled={isUploadingMemory}
+                            >
+                                <Plus className='mr-2 h-4 w-4' /> Add Image
                             </Button>
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className='space-y-3'>
+                    <CardContent className='space-y-2'>
                         {memoryFields.map((field, index) => (
                              <div key={field.id} className="flex items-center gap-2">
-                                {uploading[`memory-${index}`] ? (
-                                    <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center shrink-0">
-                                        <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-                                    </div>
-                                ) : field.src ? (
-                                    <Image src={field.src} alt={`Memory ${index + 1}`} width={40} height={40} className="w-10 h-10 rounded-md object-cover shrink-0" />
-                                ): (
-                                    <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center shrink-0">
-                                        <ImageIcon className="w-5 h-5 text-muted-foreground" />
-                                    </div>
-                                )}
-                                <Input 
-                                    type="file" 
-                                    accept="image/*" 
-                                    className='flex-1 h-10' 
-                                    onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'beautifulMemories', index)} 
-                                    disabled={uploading[`memory-${index}`]}
-                                />
+                                <Image src={field.src} alt={`Memory ${index + 1}`} width={40} height={40} className="w-10 h-10 rounded-md object-cover" />
+                                <span className='text-sm text-muted-foreground truncate flex-1'>Memory #{index+1}</span>
                                 <Button type="button" variant="ghost" size="icon" onClick={() => removeMemory(index)}>
                                     <Trash2 className="h-4 w-4 text-destructive" />
                                 </Button>
                             </div>
                         ))}
-                         {memoryFields.length === 0 && <p className="text-sm text-center text-muted-foreground py-4">No memories added yet.</p>}
+                        {isUploadingMemory && (
+                            <div className="flex items-center gap-2 text-muted-foreground p-2 justify-center">
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                                <span>Uploading memory...</span>
+                            </div>
+                        )}
+                        {memoryFields.length === 0 && !isUploadingMemory && <p className="text-sm text-center text-muted-foreground py-4">No memories added yet.</p>}
                     </CardContent>
                 </Card>
                 
@@ -631,7 +637,7 @@ function CreateWishForm() {
             )}
             
             <div className="pt-4">
-              <Button type="submit" disabled={isSubmitting || isGenerating || Object.values(uploading).some(Boolean)} className="w-full rounded-full py-6 text-lg font-semibold shadow-lg shadow-primary/20 transition-opacity hover:opacity-90">
+              <Button type="submit" disabled={isSubmitting || isGenerating || isUploadingProfile || isUploadingMemory} className="w-full rounded-full py-6 text-lg font-semibold shadow-lg shadow-primary/20 transition-opacity hover:opacity-90">
                 {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
                 Generate CandleWeb
               </Button>
