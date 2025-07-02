@@ -79,6 +79,51 @@ const formSchema = z.object({
   saveKeepsakeMessage: z.string().optional(),
 });
 
+const createShareableUrl = (values: z.infer<typeof formSchema>) => {
+    const params = new URLSearchParams();
+    
+    params.append('toName', values.toName);
+    params.append('fromName', values.fromName);
+    params.append('message', values.message);
+
+    const isPremium = values.template === 'premium-night-sky';
+    const isCelestial = values.template === 'celestial-wishes';
+
+    if (isPremium || isCelestial) {
+        if (values.closingMessages) params.append('closingMessages', values.closingMessages);
+        if (values.secretMessage) params.append('secretMessage', values.secretMessage);
+        if (values.blowCandlesInstruction) params.append('blowCandlesInstruction', values.blowCandlesInstruction);
+        if (values.wishYouTheBestMessage) params.append('wishYouTheBestMessage', values.wishYouTheBestMessage);
+        if (values.letsBlowCandlesTitle) params.append('letsBlowCandlesTitle', values.letsBlowCandlesTitle);
+        if (values.thanksForWatchingTitle) params.append('thanksForWatchingTitle', values.thanksForWatchingTitle);
+        if (values.didYouLikeItMessage) params.append('didYouLikeItMessage', values.didYouLikeItMessage);
+        if (values.endMessage) params.append('endMessage', values.endMessage);
+    }
+
+    if (isCelestial) {
+        if (values.profilePhoto) params.append('profilePhoto', values.profilePhoto);
+        if (values.beautifulMemories && values.beautifulMemories.length > 0) {
+            params.append('beautifulMemories', JSON.stringify(values.beautifulMemories));
+        }
+        if (values.specialGiftMessage) params.append('specialGiftMessage', values.specialGiftMessage);
+        if (values.friendsMessages && values.friendsMessages.length > 0) {
+            params.append('friendsMessages', JSON.stringify(values.friendsMessages));
+        }
+        if (values.saveKeepsakeMessage) params.append('saveKeepsakeMessage', values.saveKeepsakeMessage);
+    }
+    
+    let baseUrl = '';
+    if (isCelestial || isPremium) {
+        baseUrl = `/templates/${values.template}/index.html`;
+    } else {
+        baseUrl = '/wish/preview';
+        params.append('template', values.template);
+    }
+
+    return `${baseUrl}?${params.toString()}`;
+};
+
+
 function CreateWishForm() {
   const auth = useRequireAuth();
   const { toast } = useToast();
@@ -278,7 +323,7 @@ function CreateWishForm() {
         const updatedWishes = [fullWishData, ...existingWishes];
         localStorage.setItem('userWishes', JSON.stringify(updatedWishes));
         
-        const relativeUrl = `/wish/${fullWishData.id}`;
+        const relativeUrl = createShareableUrl(values);
         
         setSubmittedWish(fullWishData);
         setGeneratedLink(relativeUrl);
